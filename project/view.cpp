@@ -5,8 +5,10 @@ namespace Project {
     View::View(int x, int y, int w, int h, Controller& ctrl) :
       Fl_Group(x, y, w, h), controller(ctrl)
     {
+        // Based on the width of the current screen (ie: Fl::w()).
         int screenFourth = Fl::w() / 4; 
 
+        // Create the project's elements.
         channelStrip = new ChannelStrip(x, y, screenFourth / 2, h);
         trackList = new TrackList(x + screenFourth / 2, y, screenFourth / 2, h, controller);
         trackList->box(FL_DOWN_BOX);
