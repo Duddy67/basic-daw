@@ -9,7 +9,7 @@ namespace Project {
     class Observer {
       public:
 
-          virtual void onEvent(ProjectEvent event, int index) = 0;
+          virtual void onCtrlEvent(CtrlEvent event, int index) = 0;
 
           // Virtual destructor for proper cleanup.
           virtual ~Observer() {}

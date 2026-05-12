@@ -20,10 +20,10 @@ namespace Project {
         }
     }
 
-    void Controller::notify(ProjectEvent event, int index)
+    void Controller::notify(CtrlEvent event, int index)
     {
         for (auto* observer : observers) {
-            observer->onEvent(event, index);  
+            observer->onCtrlEvent(event, index);  
         }
     }
 
@@ -31,6 +31,6 @@ namespace Project {
     {
         model.addTrack();
         std::cout << "Controller => onAddTrack()" << std::endl;
-        notify(ProjectEvent::ADD_TRACK, 0);
+        notify(CtrlEvent::ADD_TRACK, 0);
     }
 }

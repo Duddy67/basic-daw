@@ -77,6 +77,7 @@ class Application : public Fl_Double_Window
 
         void openFile(const char* filename);
         void createProject();
+        Project::Model& getProject() { return *projectModel; }
         Audio::Engine& getAudioEngine() { return *audioEngine; }
 
         // Call back functions.

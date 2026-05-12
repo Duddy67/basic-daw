@@ -9,24 +9,24 @@
 #include "../views/channel_strip.h"
 #include "../views/timeline.h"
 
-// Forward declarations (for classes outside Project namespace)
+// Forward declarations (for classes outside the Project namespace)
 class TrackList;
 
 namespace Project {
-    // Forward declarations (for classes inside Project namespace)
+    // Forward declarations (for classes inside the Project namespace)
     class Controller;
 
     class View : public Fl_Group
     {
-      Controller& controller;
-      TrackList* trackList = nullptr;
-      ChannelStrip* channelStrip = nullptr;
-      Timeline* timeline = nullptr;
+        Controller& controller;
+        TrackList* trackList = nullptr;
+        ChannelStrip* channelStrip = nullptr;
+        Timeline* timeline = nullptr;
 
-      public:
+        public:
 
-          View(int x, int y, int w, int h, Controller& ctrl);
-          ~View();
+            View(int x, int y, int w, int h, Controller& ctrl);
+            ~View();
     };
 }
 

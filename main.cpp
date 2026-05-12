@@ -38,9 +38,9 @@ Application::Application(int w, int h, const char *l, int argc, char *argv[]) : 
     // Prevent toolbar (and its children) from being resized.
     toolbar->resizable(nullptr);
 
-    projectModel = new Project::Model(*this);
-    projectCtrl = new Project::Controller(*this, *projectModel);
-    projectView = new Project::View(0, SMALL_SPACE * 2, Fl::w(), Fl::h() - (SMALL_SPACE * 2), *projectCtrl);
+    //projectModel = new Project::Model(*this);
+    //projectCtrl = new Project::Controller(*this, *projectModel);
+    //projectView = new Project::View(0, SMALL_SPACE * 2, Fl::w(), Fl::h() - (SMALL_SPACE * 2), *projectCtrl);
 
     // Stop adding children to the main window.
     end();

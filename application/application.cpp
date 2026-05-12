@@ -43,7 +43,10 @@ int Application::isFileExist(const char* filename) {
 
 void Application::createProject()
 {
+    projectModel = new Project::Model(*this);
     projectCtrl = new Project::Controller(*this, *projectModel);
-    projectView = new Project::View(0, SMALL_SPACE * 2, Application::w(), Application::h() - (SMALL_SPACE * 2), *projectCtrl);
+    projectView = new Project::View(0, SMALL_SPACE * 2, Fl::w(), Fl::h() - (SMALL_SPACE * 2), *projectCtrl);
+
+    add(projectView);
     redraw();
 }

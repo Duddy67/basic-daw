@@ -21,7 +21,7 @@ namespace Project {
       // List of all registered observers.
       std::vector<Observer*> observers;  
 
-      void notify(ProjectEvent event, int index);
+      void notify(CtrlEvent event, int index);
 
       public:
 
