@@ -1,7 +1,7 @@
 #ifndef PROJECT_OBSERVER_H
 #define PROJECT_OBSERVER_H
 
-#include "../main.h"
+#include "../constants.h"
 
 
 namespace Project {

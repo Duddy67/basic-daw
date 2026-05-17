@@ -20,7 +20,7 @@ void AddTrackDialog::buildDialog()
 
 void AddTrackDialog::onOk()
 {
-    // Set the option values chosen by the user (ie: cpp/java).
+    // Set the option values chosen by the user (ie: midi/audio).
     options.midi = midi->value() ? true : false;
 
     Dialog::onOk();

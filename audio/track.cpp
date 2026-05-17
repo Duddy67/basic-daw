@@ -3,9 +3,9 @@
 
 namespace Audio {
 
-    Track::Track(Engine& e) : engine(e)
+    Track::Track(Engine& e, int id) : engine(e)
     {
-
+        this->id = id;
     }
 
     Track::~Track()

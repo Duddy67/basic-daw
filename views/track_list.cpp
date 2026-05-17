@@ -11,8 +11,12 @@ TrackList::TrackList(int x, int y, int w, int h, Project::Controller& ctrl) : Fl
 void TrackList::onCtrlEvent(CtrlEvent event, int index)
 {
     switch (event) {
-        case CtrlEvent::ADD_TRACK:
-          addTrack();
+        case CtrlEvent::ADD_MIDI_TRACK:
+          addTrack(index, TrackType::MIDI);
+          break;
+
+        case CtrlEvent::ADD_AUDIO_TRACK:
+          addTrack(index, TrackType::AUDIO);
           break;
 
         case CtrlEvent::REMOVE_TRACK:
@@ -22,7 +26,7 @@ void TrackList::onCtrlEvent(CtrlEvent event, int index)
 
 }
 
-void TrackList::addTrack()
+void TrackList::addTrack(int id, TrackType type)
 {
     int x, y;
 
@@ -32,12 +36,13 @@ void TrackList::addTrack()
         y = this->y() + BORDER_INTERSTICE;
     }
     else {
+        // Position the new track below the last track of the list.
         auto lastTrack = tracks.back();
         x = lastTrack->x();
         y = lastTrack->y() + MEDIUM_SPACE + BORDER_INTERSTICE;
     }
 
-    Widget::Track* track = new Widget::Track(x, y, w() - (BORDER_INTERSTICE * 2), MEDIUM_SPACE);
+    Widget::Track* track = new Widget::Track(x, y, w() - (BORDER_INTERSTICE * 2), MEDIUM_SPACE, id, type);
     // Add the new track as TrackList's child.
     add(track);
     // Add the new track to the list.

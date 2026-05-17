@@ -9,13 +9,15 @@ namespace Audio {
     class Engine;
 
     class Track {
-      Engine& engine;
+        Engine& engine;
+        int id = 0;
 
-      public:
+        public:
 
-          Track(Engine& e);
-          ~Track();
+            Track(Engine& e, int id);
+            ~Track();
 
+            int getId() { return id; }
     };
 }
 

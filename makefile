@@ -4,9 +4,9 @@ SRC = main.cpp application/menu.cpp application/application.cpp application/call
       audio/engine.cpp audio/track.cpp views/channel_strip.cpp views/timeline.cpp dialogs/add_track.cpp \
       project/controller.cpp widgets/strip.cpp
 CXX = g++
-CXXFLAGS = -Wall $(shell fltk-config --cxxflags)
+CXXFLAGS = -Wall -g -O0 $(shell fltk-config --cxxflags) -fsanitize=address
 
-LFLAGS = $(shell fltk-config --ldflags)
+LFLAGS = $(shell fltk-config --ldflags) -fsanitize=address
 
 OBJS = $(SRC:.cpp=.o)
 DIR_OBJ = obj/

@@ -8,10 +8,10 @@ void Application::onAdd()
     }
 
     if (addTrackDlg->runModal() == DIALOG_OK) {
-        // Add new file logic here...
+        auto options = addTrackDlg->getOptions();
+        TrackType type = options.midi ? TrackType::MIDI : TrackType::AUDIO;
+        projectCtrl->onAddTrack(type);
     }
-    // Add add track logic here...
-    projectCtrl->onAddTrack();
 }
 
 void Application::onRemove()

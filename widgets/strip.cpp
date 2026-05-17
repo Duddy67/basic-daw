@@ -1,8 +1,10 @@
 #include "strip.h"
 
-Strip::Strip(int x, int y, int w, int h) : Fl_Group(x, y, w, h)
+Strip::Strip(int x, int y, int w, int h, int i, TrackType t) : Fl_Group(x, y, w, h), id(i), type(t)
 {
     box(FL_UP_BOX);
+    // Stop adding children (Important!).
+    end();
 }
 
 Strip::~Strip()

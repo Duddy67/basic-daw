@@ -39,6 +39,10 @@ enum class TrackID {
     ADD, REMOVE
 };
 
+enum class TrackType {
+    MIDI, AUDIO
+};
+
 enum class TransportID { PLAY, STOP, PAUSE, RECORD, LOOP };
 
 enum class Action {ACTIVATE, DEACTIVATE};
@@ -60,7 +64,7 @@ inline std::map<EditID, std::string> EditLabels {
 };
 
 enum class CtrlEvent {
-    ADD_TRACK, REMOVE_TRACK
+    ADD_MIDI_TRACK, ADD_AUDIO_TRACK, REMOVE_TRACK
 };
 
 inline std::map<MenuItemID, std::string> MenuLabels {

@@ -19,9 +19,8 @@ namespace Audio {
           Engine(Application* app);
           ~Engine();
 
-          void addTrack();
+          void createTrack();
           void removeTrack();
-
     };
 }
 

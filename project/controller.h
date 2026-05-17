@@ -16,7 +16,7 @@ namespace Project {
 
     class Controller {
 
-      Application& pApplication;
+      Application& application;
       Model& model;
       // List of all registered observers.
       std::vector<Observer*> observers;  
@@ -32,7 +32,7 @@ namespace Project {
           void addObserver(Observer* observer) { observers.push_back(observer); }
           void removeObserver(Observer* observer);
 
-          void onAddTrack();
+          void onAddTrack(TrackType type);
     };
 }
 

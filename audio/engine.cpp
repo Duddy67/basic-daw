@@ -14,7 +14,7 @@ namespace Audio {
         // ...
     }
 
-    void Engine::addTrack()
+    void Engine::createTrack()
     {
         // ...
     }

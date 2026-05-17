@@ -52,6 +52,7 @@ class Application : public Fl_Double_Window
     public:
 
         Application(int w, int h, const char* l, int argc, char* argv[]);
+        ~Application();
 
         void createMenu();
         const char* untitledDefault();

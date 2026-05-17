@@ -3,7 +3,7 @@
 
 namespace Project {
 
-    Controller::Controller(Application& app, Model& m) : pApplication(app), model(m)
+    Controller::Controller(Application& app, Model& m) : application(app), model(m)
     {
 
     }
@@ -27,10 +27,17 @@ namespace Project {
         }
     }
 
-    void Controller::onAddTrack()
+    void Controller::onAddTrack(TrackType type)
     {
-        model.addTrack();
-        std::cout << "Controller => onAddTrack()" << std::endl;
-        notify(CtrlEvent::ADD_TRACK, 0);
+        CtrlEvent event = type == TrackType::MIDI ? CtrlEvent::ADD_MIDI_TRACK : CtrlEvent::ADD_AUDIO_TRACK;
+        int trackId = type == TrackType::MIDI ? model.addMidiTrack() : model.addAudioTrack();
+
+        std::cout << "Controller => onAddTrack() " << std::endl;
+        notify(event, trackId);
+    }
+
+    Controller::~Controller()
+    {
+        // ...
     }
 }

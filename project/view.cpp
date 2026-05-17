@@ -9,7 +9,7 @@ namespace Project {
         int screenFourth = Fl::w() / 4; 
 
         // Create the project's elements.
-        channelStrip = new ChannelStrip(x, y, screenFourth / 2, h);
+        channelStrip = new ChannelStrip(x, y, screenFourth / 2, h, controller);
         trackList = new TrackList(x + screenFourth / 2, y, screenFourth / 2, h, controller);
         trackList->box(FL_DOWN_BOX);
         timeline = new Timeline(x + screenFourth, y, screenFourth * 3, h);

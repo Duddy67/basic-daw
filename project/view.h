@@ -11,6 +11,7 @@
 
 // Forward declarations (for classes outside the Project namespace)
 class TrackList;
+class ChannelStrip;
 
 namespace Project {
     // Forward declarations (for classes inside the Project namespace)

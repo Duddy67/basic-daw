@@ -61,11 +61,27 @@ Application::Application(int w, int h, const char *l, int argc, char *argv[]) : 
     this->callback(noEscapeKey_cb, this);
 }
 
+Application::~Application() 
+{
+    delete projectModel;
+    delete projectCtrl;
+    delete audioEngine;
+    delete fileChooser;
+    delete newDlg;
+    delete addTrackDlg;
+    // Don't delete menu, toolbar, container - FLTK manages these
+}
+
 int main(int argc, char *argv[])
 {
     // Set the application to screen size (ie: Fl::w() and Fl::h()).
     //Application app(Fl::w(), Fl::h(), "Basic Application", argc, argv);
     Application app(900, 600, "Basic DAW", argc, argv);
+    /*Application* app = new Application(900, 600, "Basic DAW", argc, argv);
+    app->show();
+    int result = Fl::run();
+    delete app;
+    return result;*/
 
     return Fl::run();
 }
