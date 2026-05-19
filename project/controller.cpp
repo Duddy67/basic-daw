@@ -36,6 +36,23 @@ namespace Project {
         notify(event, trackId);
     }
 
+    void Controller::onMuteTrack(int id, TrackType type, State state)
+    {
+        // logic here...
+    }
+
+    void Controller::onSoloTrack(int id, TrackType type, State state)
+    {
+        CtrlEvent event = state == State::ON ? CtrlEvent::SOLOED_TRACK : CtrlEvent::UNSOLOED_TRACK; 
+
+        notify(event, id);
+    }
+
+    void Controller::onTrackSelected(int id)
+    {
+        notify(CtrlEvent::TRACK_SELECTED, id);
+    }
+
     Controller::~Controller()
     {
         // ...

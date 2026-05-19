@@ -19,6 +19,7 @@ class ChannelStrip : public Fl_Group, public Project::Observer
 {
     Project::Controller& projectCtrl;
     std::vector<Strip*> strips;
+    void showCurrentStrip(int id);
 
     public:
 

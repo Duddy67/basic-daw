@@ -5,8 +5,10 @@ SRC = main.cpp application/menu.cpp application/application.cpp application/call
       project/controller.cpp widgets/strip.cpp
 CXX = g++
 CXXFLAGS = -Wall -g -O0 $(shell fltk-config --cxxflags) -fsanitize=address
+#CXXFLAGS = -Wall $(shell fltk-config --cxxflags)
 
 LFLAGS = $(shell fltk-config --ldflags) -fsanitize=address
+#LFLAGS = $(shell fltk-config --ldflags)
 
 OBJS = $(SRC:.cpp=.o)
 DIR_OBJ = obj/

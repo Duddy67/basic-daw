@@ -20,6 +20,7 @@ class TrackList : public Fl_Group, public Project::Observer
 {
     Project::Controller& projectCtrl;
     std::vector<Widget::Track*> tracks;
+    void setSelectedTrack(int id);
 
   public:
 

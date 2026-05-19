@@ -47,6 +47,10 @@ enum class TransportID { PLAY, STOP, PAUSE, RECORD, LOOP };
 
 enum class Action {ACTIVATE, DEACTIVATE};
 
+enum class State {
+    ON, OFF
+};
+
 enum class MenuItemID {
     FILE_SUB, FILE_NEW, FILE_OPEN, FILE_SAVE, FILE_SAVE_AS, FILE_QUIT, EDIT_SUB,
     EDIT_UNDO, EDIT_REDO, EDIT_DELETE, EDIT_COPY, EDIT_PASTE, EDIT_CUT, TRACK_SUB,
@@ -64,7 +68,8 @@ inline std::map<EditID, std::string> EditLabels {
 };
 
 enum class CtrlEvent {
-    ADD_MIDI_TRACK, ADD_AUDIO_TRACK, REMOVE_TRACK
+    ADD_MIDI_TRACK, ADD_AUDIO_TRACK, REMOVE_TRACK, MUTED_TRACK,
+    UNMUTED_TRACK, SOLOED_TRACK, UNSOLOED_TRACK, TRACK_SELECTED
 };
 
 inline std::map<MenuItemID, std::string> MenuLabels {
