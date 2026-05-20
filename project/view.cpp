@@ -11,8 +11,7 @@ namespace Project {
         // Create the project's elements.
         channelStrip = new ChannelStrip(x, y, screenFourth / 2, h, controller);
         trackList = new TrackList(x + screenFourth / 2, y, screenFourth / 2, h, controller);
-        trackList->box(FL_DOWN_BOX);
-        timeline = new Timeline(x + screenFourth, y, screenFourth * 3, h);
+        timeline = new Timeline(x + screenFourth + BORDER_INTERSTICE, y + BORDER_INTERSTICE, (screenFourth * 3) - (BORDER_INTERSTICE * 2), h - (BORDER_INTERSTICE * 2));
         //Fl_Group* bottomRow = new Fl_Group(x, y + h - 100, w, 100);
         //bottomRow->box(FL_DOWN_BOX);
         //bottomRow->color((Fl_Color) FL_INACTIVE_COLOR);

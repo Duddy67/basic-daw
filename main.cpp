@@ -77,6 +77,7 @@ int main(int argc, char *argv[])
     // Set the application to screen size (ie: Fl::w() and Fl::h()).
     //Application app(Fl::w(), Fl::h(), "Basic Application", argc, argv);
     Application app(900, 600, "Basic DAW", argc, argv);
+    app.initAudioSystem();
     /*Application* app = new Application(900, 600, "Basic DAW", argc, argv);
     app->show();
     int result = Fl::run();

@@ -17,6 +17,9 @@
 #include "project/controller.h"
 #include "project/view.h"
 #include "audio/engine.h"
+#include "../libraries/json.hpp"
+
+using json = nlohmann::json;
 
 // Forward class declarations.
 namespace Project {
@@ -49,6 +52,16 @@ class Application : public Fl_Double_Window
     Project::View* projectView = nullptr;
     Audio::Engine* audioEngine = nullptr;
 
+    struct AppConfig {
+        std::string backend;
+        std::string outputDevice;
+        std::string inputDevice;
+        //std::string volume;
+    };
+
+    void initAudioBackend();
+    void initAudioDevices();
+
     public:
 
         Application(int w, int h, const char* l, int argc, char* argv[]);
@@ -57,6 +70,12 @@ class Application : public Fl_Double_Window
         void createMenu();
         const char* untitledDefault();
         int isFileExist(const char* filename);
+        // Function to load configuration from file
+        AppConfig loadConfig(const std::string& filename);
+        void saveConfig(const AppConfig& config, const std::string& filename);
+        std::string getMessage() { return message; }
+        void setMessage(std::string msg) { message = msg; }
+
         // Menu actions.
         void onMenuFile(FileID id);
         void onNew();
@@ -80,6 +99,7 @@ class Application : public Fl_Double_Window
         void createProject();
         Project::Model& getProject() { return *projectModel; }
         Audio::Engine& getAudioEngine() { return *audioEngine; }
+        void initAudioSystem();
 
         // Call back functions.
         static void noEscapeKey_cb(Fl_Widget* w, void* data);
