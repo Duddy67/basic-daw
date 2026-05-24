@@ -2,7 +2,8 @@ SRC = main.cpp application/menu.cpp application/application.cpp application/call
       dialogs/new.cpp application/menu/edit.cpp project/model.cpp project/view.cpp \
       application/menu/file.cpp widgets/track.cpp views/track_list.cpp application/menu/track.cpp \
       audio/engine.cpp audio/track.cpp views/channel_strip.cpp views/timeline.cpp dialogs/add_track.cpp \
-      project/controller.cpp widgets/strip.cpp application/init_audio.cpp
+      project/controller.cpp widgets/strip.cpp application/init_audio.cpp midi/engine.cpp config/config.cpp
+
 CXX = g++
 CXXFLAGS = -Wall -g -O0 $(shell fltk-config --cxxflags) -fsanitize=address
 #CXXFLAGS = -Wall $(shell fltk-config --cxxflags)

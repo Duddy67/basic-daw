@@ -3,11 +3,11 @@
 void Application::initAudioBackend()
 {
     auto backends = getAudioEngine().getBackends();
-    auto config = loadConfig(CONFIG_FILENAME);
+    AppConfig& config = loadConfig();
     unsigned int index = 0;
 
     // Check for first starting.
-    if (config.backend == "") {
+    if (config.audio.backend == "") {
         // Search for JACK or the backend set by the system by default.
         // If nothing found, the first backend on the list will be used (ie: index 0).
         for (size_t i = 0; i < backends.size(); ++i) {
@@ -23,21 +23,21 @@ void Application::initAudioBackend()
         }
 
         // Update setting.
-        config.backend = backends[index].name;
-        saveConfig(config, CONFIG_FILENAME);
+        config.audio.backend = backends[index].name;
+        saveConfig();
     }
 
     // Initialize backend.
-    getAudioEngine().setBackend(config.backend.c_str());
+    getAudioEngine().setBackend(config.audio.backend.c_str());
 }
 
 void Application::initAudioDevices()
 {
-    auto config = loadConfig(CONFIG_FILENAME);
+    AppConfig& config = loadConfig();
     unsigned int index = 0;
 
     // Check for first starting.
-    if (config.outputDevice == "") {
+    if (config.audio.outputDevice == "") {
         // Privilege duplex devices if available.
         auto duplexDevices = getAudioEngine().getDuplexDevices();
 
@@ -50,8 +50,8 @@ void Application::initAudioDevices()
                 }
             }
 
-            config.outputDevice = duplexDevices[index].name;
-            config.inputDevice = duplexDevices[index].name;
+            config.audio.outputDevice = duplexDevices[index].name;
+            config.audio.inputDevice = duplexDevices[index].name;
         }
         else {
             auto outputDevices = getAudioEngine().getOutputDevices();
@@ -61,7 +61,7 @@ void Application::initAudioDevices()
                 }
             }
 
-            config.outputDevice = outputDevices[index].name;
+            config.audio.outputDevice = outputDevices[index].name;
 
             auto inputDevices = getAudioEngine().getInputDevices();
             index = 0;
@@ -71,22 +71,22 @@ void Application::initAudioDevices()
                 }
             }
 
-            config.inputDevice = inputDevices[index].name;
+            config.audio.inputDevice = inputDevices[index].name;
         }
 
-        saveConfig(config, CONFIG_FILENAME);
+        saveConfig();
     }
 
     // Check first if the selected device is duplex. 
-    if (config.outputDevice.compare(config.inputDevice) == 0 && getAudioEngine().isDeviceDuplex(config.outputDevice.c_str())) {
-        getAudioEngine().setDuplexDevice(config.outputDevice.c_str());
+    if (config.audio.outputDevice.compare(config.audio.inputDevice) == 0 && getAudioEngine().isDeviceDuplex(config.audio.outputDevice.c_str())) {
+        getAudioEngine().setDuplexDevice(config.audio.outputDevice.c_str());
         getAudioEngine().startDuplex();
     }
     // If no duplex device, fall back on standard output/input devices.
     else {
-        getAudioEngine().setOutputDevice(config.outputDevice.c_str());
+        getAudioEngine().setOutputDevice(config.audio.outputDevice.c_str());
         getAudioEngine().startPlayback();
-        getAudioEngine().setInputDevice(config.inputDevice.c_str());
+        getAudioEngine().setInputDevice(config.audio.inputDevice.c_str());
         getAudioEngine().startCapture();
     }
 }
@@ -104,9 +104,6 @@ void Application::initAudioSystem()
         std::cerr << "Backend error: " << std::string(e.what()) << std::endl;
         return;
     }
-
-    // Get the initialized config file.
-    auto config = loadConfig(CONFIG_FILENAME);
 
     // Initialize devices.
     try {

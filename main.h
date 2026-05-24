@@ -11,6 +11,7 @@
 #include <cstdlib>
 #include <iostream>
 #include "constants.h"
+#include "config/config.h"
 #include "dialogs/new.h"
 #include "dialogs/add_track.h"
 #include "project/model.h"
@@ -52,13 +53,6 @@ class Application : public Fl_Double_Window
     Project::View* projectView = nullptr;
     Audio::Engine* audioEngine = nullptr;
 
-    struct AppConfig {
-        std::string backend;
-        std::string outputDevice;
-        std::string inputDevice;
-        //std::string volume;
-    };
-
     void initAudioBackend();
     void initAudioDevices();
 
@@ -70,9 +64,6 @@ class Application : public Fl_Double_Window
         void createMenu();
         const char* untitledDefault();
         int isFileExist(const char* filename);
-        // Function to load configuration from file
-        AppConfig loadConfig(const std::string& filename);
-        void saveConfig(const AppConfig& config, const std::string& filename);
         std::string getMessage() { return message; }
         void setMessage(std::string msg) { message = msg; }
 
