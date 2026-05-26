@@ -4,7 +4,7 @@
 #include <vector>
 #include <atomic>
 #include "../main.h"
-#include "../../libraries/miniaudio.h"
+#include "miniaudio.h"
 
 class Application;
 

@@ -1,36 +1,85 @@
-SRC = main.cpp application/menu.cpp application/application.cpp application/callbacks.cpp dialogs/dialog.cpp \
-      dialogs/new.cpp application/menu/edit.cpp project/model.cpp project/view.cpp \
-      application/menu/file.cpp widgets/track.cpp views/track_list.cpp application/menu/track.cpp \
-      audio/engine.cpp audio/track.cpp views/channel_strip.cpp views/timeline.cpp dialogs/add_track.cpp \
-      project/controller.cpp widgets/strip.cpp application/init_audio.cpp midi/engine.cpp config/config.cpp
-
+# Compiler
 CXX = g++
-CXXFLAGS = -Wall -g -O0 $(shell fltk-config --cxxflags) -fsanitize=address
-#CXXFLAGS = -Wall $(shell fltk-config --cxxflags)
 
-LFLAGS = $(shell fltk-config --ldflags) -fsanitize=address
-#LFLAGS = $(shell fltk-config --ldflags)
-
-OBJS = $(SRC:.cpp=.o)
-DIR_OBJ = obj/
-DIR_OBJS = $(addprefix $(DIR_OBJ), $(OBJS))
-
-$(DIR_OBJ)%.o: %.cpp *.h
-	$(CXX) $(CXXFLAGS) -c $(<) -o $(@)
-
+# Executable
 EXE = basicDAW
 
+# Object directory
+OBJDIR = obj
+
+# Source files
+LOCAL_SRC = \
+	main.cpp \
+	application/menu.cpp \
+	application/application.cpp \
+	application/callbacks.cpp \
+	dialogs/dialog.cpp \
+	dialogs/new.cpp \
+	application/menu/edit.cpp \
+	project/model.cpp \
+	project/view.cpp \
+	application/menu/file.cpp \
+	widgets/track.cpp \
+	views/track_list.cpp \
+	application/menu/track.cpp \
+	audio/engine.cpp \
+	audio/track.cpp \
+	views/channel_strip.cpp \
+	views/timeline.cpp \
+	dialogs/add_track.cpp \
+	project/controller.cpp \
+	widgets/strip.cpp \
+	application/init_engines.cpp \
+	midi/engine.cpp \
+	config/config.cpp 
+
+EXT_SRC = \
+          ../libraries/RtMidi.cpp
+
+# Object files
+LOCAL_OBJ = $(addprefix $(OBJDIR)/,$(LOCAL_SRC:.cpp=.o))
+EXT_OBJ = $(addprefix $(OBJDIR)/libraries/,$(notdir $(EXT_SRC:.cpp=.o)))
+
+OBJS = $(LOCAL_OBJ) $(EXT_OBJ)
+
+# Compiler flags
+CXXFLAGS = \
+	-Wall \
+	-I../libraries \
+        -g -O0 \
+	$(shell fltk-config --cxxflags) -fsanitize=address
+
+# Linker flags
+LFLAGS = \
+	$(shell fltk-config --ldflags) \
+	-lasound \
+	-lpthread \
+        -fsanitize=address
+
+# Default target
 all: $(EXE)
 
-$(EXE): $(DIR_OBJS)
+# Link executable
+$(EXE): $(OBJS)
 	$(CXX) -o $@ $^ $(LFLAGS)
 
-depend:
-	makedepend -- $(CXXFLAGS) -- $(SRC)
+# Compile source files
+$(OBJDIR)/%.o: %.cpp
+	@mkdir -p $(dir $@)
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
+$(OBJDIR)/libraries/%.o: ../libraries/%.cpp
+	@mkdir -p $(dir $@)
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+# Clean
+clean:
+	rm -rf $(OBJDIR)
+	rm -f $(EXE)
+
+# Strip binary
 strip: $(EXE)
 	strip --strip-all $(EXE)
 
-clean:
-	rm -f $(DIR_OBJS)
-	rm -f $(EXE)
+.PHONY: all clean strip
+

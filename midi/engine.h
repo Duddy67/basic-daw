@@ -3,7 +3,7 @@
 
 #include <vector>
 #include "../main.h"
-#include "../../libraries/RtMidi.h"
+#include "RtMidi.h"
 
 
 class Application;

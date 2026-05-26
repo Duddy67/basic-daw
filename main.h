@@ -18,7 +18,8 @@
 #include "project/controller.h"
 #include "project/view.h"
 #include "audio/engine.h"
-#include "../libraries/json.hpp"
+#include "midi/engine.h"
+#include "json.hpp"
 
 using json = nlohmann::json;
 
@@ -29,6 +30,10 @@ namespace Project {
 }
 
 namespace Audio {
+    class Engine;
+}
+
+namespace Midi {
     class Engine;
 }
 
@@ -52,6 +57,7 @@ class Application : public Fl_Double_Window
     Project::Controller* projectCtrl = nullptr;
     Project::View* projectView = nullptr;
     Audio::Engine* audioEngine = nullptr;
+    Midi::Engine* midiEngine = nullptr;
 
     void initAudioBackend();
     void initAudioDevices();
@@ -91,6 +97,8 @@ class Application : public Fl_Double_Window
         Project::Model& getProject() { return *projectModel; }
         Audio::Engine& getAudioEngine() { return *audioEngine; }
         void initAudioSystem();
+        Midi::Engine& getMidiEngine() { return *midiEngine; }
+        void initMidiSystem();
 
         // Call back functions.
         static void noEscapeKey_cb(Fl_Widget* w, void* data);

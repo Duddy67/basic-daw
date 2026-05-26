@@ -5,7 +5,7 @@
 #include <fstream>
 #include <iostream>
 #include "../constants.h"
-#include "../../libraries/json.hpp"
+#include "json.hpp"
 
 using json = nlohmann::json;
 

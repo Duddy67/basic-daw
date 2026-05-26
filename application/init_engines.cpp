@@ -121,3 +121,15 @@ void Application::initAudioSystem()
     std::cout << "=== Audio system initialized ===" << std::endl;
 }
 
+void Application::initMidiSystem()
+{
+    try {
+        // Create and initialize the midi engine object.
+        midiEngine = new Midi::Engine(*this);
+    }
+    catch (RtMidiError& e) {
+        std::cerr << "RtMidi error: " << std::string(e.what()) << std::endl;
+        return;
+    }
+}
+

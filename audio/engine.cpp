@@ -1,6 +1,6 @@
 #include "engine.h"
 #define MINIAUDIO_IMPLEMENTATION
-#include "../../libraries/miniaudio.h"
+#include "miniaudio.h"
 
 
 namespace Audio {

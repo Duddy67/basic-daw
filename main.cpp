@@ -66,6 +66,7 @@ Application::~Application()
     delete projectModel;
     delete projectCtrl;
     delete audioEngine;
+    delete midiEngine;
     delete fileChooser;
     delete newDlg;
     delete addTrackDlg;
