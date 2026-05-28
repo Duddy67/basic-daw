@@ -123,13 +123,29 @@ void Application::initAudioSystem()
 
 void Application::initMidiSystem()
 {
+    // Create and initialize the midi engine object.
+    midiEngine = new Midi::Engine(*this);
+
+    AppConfig& config = loadConfig();
+
+    // Initialize midi device.
     try {
-        // Create and initialize the midi engine object.
-        midiEngine = new Midi::Engine(*this);
+        midiEngine->initMidiDevice(config);
     }
     catch (RtMidiError& e) {
         std::cerr << "RtMidi error: " << std::string(e.what()) << std::endl;
         return;
     }
+
+    // Initialize midi ports.
+    try {
+        midiEngine->initMidiPorts(config);
+    }
+    catch (RtMidiError& e) {
+        std::cerr << "RtMidi error: " << std::string(e.what()) << std::endl;
+        return;
+    }
+
+    std::cout << "=== MIDI system initialized ===" << std::endl;
 }
 

@@ -21,9 +21,9 @@ struct AppConfig {
     } audio;
 
     struct Midi {
-        std::string port = "";
-        std::string outputDevice = "";
-        std::string inputDevice = "";
+        std::string device = "";
+        std::string outputPort = "";
+        std::string inputPort = "";
     } midi;
 };
 

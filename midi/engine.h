@@ -2,6 +2,7 @@
 #define MIDI_ENGINE_H
 
 #include <vector>
+#include <map>
 #include "../main.h"
 #include "RtMidi.h"
 
@@ -14,14 +15,21 @@ namespace Midi {
         Application& application;
         RtMidiIn* midiIn = nullptr;
         RtMidiOut* midiOut = nullptr;
+        std::map<int, std::string> apiMap;
+        std::vector<RtMidi::Api> apis;
 
         public:
 
             Engine(Application& app);
             ~Engine();
 
+            size_t getDeviceCount() { return apis.size(); }
+            void initMidiDevice(AppConfig& config);
+            void initMidiPorts(AppConfig& config);
             RtMidiIn& getMidiIn() { return *midiIn; }
             RtMidiOut& getMidiOut() { return *midiOut; }
+            int getInputPortCount() { return midiIn ? midiIn->getPortCount() : 0; }
+            int getOutputPortCount() { return midiOut ? midiOut->getPortCount() : 0; }
     };
 }
 

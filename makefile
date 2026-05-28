@@ -54,7 +54,15 @@ LFLAGS = \
 	$(shell fltk-config --ldflags) \
 	-lasound \
 	-lpthread \
+        -ljack \
         -fsanitize=address
+
+# Detect if JACK is available
+JACK_TEST := $(shell pkg-config --exists jack 2>/dev/null && echo "yes")
+ifeq ($(JACK_TEST),yes)
+    CXXFLAGS += -D__LINUX_ALSA__ -D__UNIX_JACK__
+    LFLAGS += `pkg-config --libs jack`
+endif
 
 # Default target
 all: $(EXE)

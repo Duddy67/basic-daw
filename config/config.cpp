@@ -9,9 +9,9 @@ void from_json(const json& j, AppConfig& c)
     j.at("audio").at("output_device").get_to(c.audio.outputDevice);
     j.at("audio").at("input_device").get_to(c.audio.inputDevice);
 
-    j.at("midi").at("port").get_to(c.midi.port);
-    j.at("midi").at("output_device").get_to(c.midi.outputDevice);
-    j.at("midi").at("input_device").get_to(c.midi.inputDevice);
+    j.at("midi").at("device").get_to(c.midi.device);
+    j.at("midi").at("output_port").get_to(c.midi.outputPort);
+    j.at("midi").at("input_port").get_to(c.midi.inputPort);
 }
 
 /*
@@ -23,9 +23,9 @@ void to_json(json& j, const AppConfig& c)
     j["audio"]["output_device"] = c.audio.outputDevice;
     j["audio"]["input_device"] = c.audio.inputDevice;
 
-    j["midi"]["port"] = c.midi.port;
-    j["midi"]["output_device"] = c.midi.outputDevice;
-    j["midi"]["input_device"] = c.midi.inputDevice;
+    j["midi"]["device"] = c.midi.device;
+    j["midi"]["output_port"] = c.midi.outputPort;
+    j["midi"]["input_port"] = c.midi.inputPort;
 }
 
 AppConfig& loadConfig()

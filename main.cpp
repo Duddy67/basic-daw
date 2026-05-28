@@ -79,6 +79,7 @@ int main(int argc, char *argv[])
     //Application app(Fl::w(), Fl::h(), "Basic Application", argc, argv);
     Application app(900, 600, "Basic DAW", argc, argv);
     app.initAudioSystem();
+    app.initMidiSystem();
     /*Application* app = new Application(900, 600, "Basic DAW", argc, argv);
     app->show();
     int result = Fl::run();
