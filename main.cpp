@@ -69,6 +69,7 @@ Application::~Application()
     delete midiEngine;
     delete fileChooser;
     delete newDlg;
+    delete audioSettingsDlg;
     delete addTrackDlg;
     // Don't delete menu, toolbar, container - FLTK manages these
 }

@@ -40,6 +40,10 @@ enum class TrackID {
     ADD, REMOVE
 };
 
+enum class SettingsID {
+    AUDIO, MIDI
+};
+
 enum class TrackType {
     MIDI, AUDIO
 };
@@ -55,7 +59,7 @@ enum class State {
 enum class MenuItemID {
     FILE_SUB, FILE_NEW, FILE_OPEN, FILE_SAVE, FILE_SAVE_AS, FILE_QUIT, EDIT_SUB,
     EDIT_UNDO, EDIT_REDO, EDIT_DELETE, EDIT_COPY, EDIT_PASTE, EDIT_CUT, TRACK_SUB,
-    TRACK_ADD, TRACK_REMOVE
+    TRACK_ADD, TRACK_REMOVE, SETTINGS_SUB, SETTINGS_AUDIO, SETTINGS_MIDI
 };
 
 struct Selection {
@@ -89,7 +93,10 @@ inline std::map<MenuItemID, std::string> MenuLabels {
     {MenuItemID::EDIT_CUT, "Edit/&Cut"},
     {MenuItemID::TRACK_SUB, "Track"},
     {MenuItemID::TRACK_ADD, "Track/&Add"},
-    {MenuItemID::TRACK_REMOVE, "Track/&Remove"}
+    {MenuItemID::TRACK_REMOVE, "Track/&Remove"},
+    {MenuItemID::SETTINGS_SUB, "Settings"},
+    {MenuItemID::SETTINGS_AUDIO, "Settings/&Audio"},
+    {MenuItemID::SETTINGS_MIDI, "Settings/&MIDI"}
 };
 
 #endif

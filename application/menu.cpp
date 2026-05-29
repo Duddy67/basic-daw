@@ -50,6 +50,15 @@ void Application::createMenu()
                                       Application* app = static_cast<Application*>(userData);
                                       app->onMenuTrack(TrackID::REMOVE);
                                   }, (void*) this);
+    menu->add(MenuLabels[MenuItemID::SETTINGS_SUB].c_str(), 0, 0, 0, FL_SUBMENU);
+    menu->add(MenuLabels[MenuItemID::SETTINGS_AUDIO].c_str(), 0, [](Fl_Widget* w, void* userData) { 
+                                      Application* app = static_cast<Application*>(userData);
+                                      app->onMenuSettings(SettingsID::AUDIO);
+                                  }, (void*) this);
+    menu->add(MenuLabels[MenuItemID::SETTINGS_MIDI].c_str(), 0, [](Fl_Widget* w, void* userData) { 
+                                      Application* app = static_cast<Application*>(userData);
+                                      app->onMenuSettings(SettingsID::MIDI);
+                                  }, (void*) this);
     menu->add("Help", 0, 0, 0, FL_SUBMENU);
     menu->add("Help/Index", 0, 0, 0, 0);
     menu->add("Help/About", 0, 0, 0, 0);
@@ -137,6 +146,22 @@ void Application::onMenuTrack(TrackID id)
 
         case TrackID::REMOVE:
             onRemove();
+            break;
+    }
+}
+
+/*
+ * Maps the track menu item clicked to the according functions.
+ */
+void Application::onMenuSettings(SettingsID id)
+{
+    switch (id) {
+        case SettingsID::AUDIO:
+            onAudioSettings();
+            break;
+
+        case SettingsID::MIDI:
+            onMidiSettings();
             break;
     }
 }

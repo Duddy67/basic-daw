@@ -102,5 +102,38 @@ namespace Midi {
             throw std::runtime_error("No MIDI output port available on the system.");
         }
     }
+
+    std::vector<std::string> Engine::getDevices()
+    {
+        std::vector<std::string> devices;
+
+        for (unsigned int i = 0; i < apis.size(); i++) {
+            devices.push_back(apiMap[apis[i]]);
+        }
+
+        return devices;
+    }
+
+    std::vector<std::string> Engine::getInputPorts()
+    {
+        std::vector<std::string> inputs;
+
+        for (unsigned int i = 0; i < midiIn->getPortCount(); i++) {
+            inputs.push_back(midiIn->getPortName(i));
+        }
+
+        return inputs;
+    }
+
+    std::vector<std::string> Engine::getOutputPorts()
+    {
+        std::vector<std::string> outputs;
+
+        for (unsigned int i = 0; i < midiOut->getPortCount(); i++) {
+            outputs.push_back(midiOut->getPortName(i));
+        }
+
+        return outputs;
+    }
 }
 

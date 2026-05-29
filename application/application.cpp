@@ -56,3 +56,22 @@ void Application::createProject()
     }
 }
 
+/*
+ * Utility function which escapes characters considered as special by FLTK (ie: / & _).
+ */
+std::string Application::escapeMenuText(const std::string& input) {
+    std::string result;
+
+    for (char c : input) {
+        if (c == '/' || c == '&' || c == '_') {
+            result += '\\';  // FLTK uses backslash for escaping
+            result += c;
+        }
+        else {
+            result += c;
+        }
+    }
+
+    return result;
+}
+

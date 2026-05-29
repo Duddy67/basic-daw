@@ -30,6 +30,9 @@ namespace Midi {
             RtMidiOut& getMidiOut() { return *midiOut; }
             int getInputPortCount() { return midiIn ? midiIn->getPortCount() : 0; }
             int getOutputPortCount() { return midiOut ? midiOut->getPortCount() : 0; }
+            std::vector<std::string> getDevices();
+            std::vector<std::string> getInputPorts();
+            std::vector<std::string> getOutputPorts();
     };
 }
 

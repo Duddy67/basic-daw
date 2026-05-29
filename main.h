@@ -13,6 +13,8 @@
 #include "constants.h"
 #include "config/config.h"
 #include "dialogs/new.h"
+#include "dialogs/audio_settings.h"
+#include "dialogs/midi_settings.h"
 #include "dialogs/add_track.h"
 #include "project/model.h"
 #include "project/controller.h"
@@ -48,6 +50,7 @@ class Application : public Fl_Double_Window
     // Widget that holds the current project UI.
     Fl_Box* container = nullptr;
     NewDialog* newDlg = nullptr;
+    AudioSettingsDialog* audioSettingsDlg = nullptr;
     AddTrackDialog* addTrackDlg = nullptr;
     // Stores menu item labels to prevent trash characters (eg: ^$¨)
     // when updating labels.
@@ -91,6 +94,9 @@ class Application : public Fl_Double_Window
         void onMenuTrack(TrackID id);
         void onAdd();
         void onRemove();
+        void onMenuSettings(SettingsID id);
+        void onAudioSettings();
+        void onMidiSettings();
 
         void openFile(const char* filename);
         void createProject();
@@ -99,6 +105,7 @@ class Application : public Fl_Double_Window
         void initAudioSystem();
         Midi::Engine& getMidiEngine() { return *midiEngine; }
         void initMidiSystem();
+        std::string escapeMenuText(const std::string& input);
 
         // Call back functions.
         static void noEscapeKey_cb(Fl_Widget* w, void* data);

@@ -22,6 +22,7 @@ LOCAL_SRC = \
 	widgets/track.cpp \
 	views/track_list.cpp \
 	application/menu/track.cpp \
+	application/menu/settings.cpp \
 	audio/engine.cpp \
 	audio/track.cpp \
 	views/channel_strip.cpp \
@@ -31,7 +32,8 @@ LOCAL_SRC = \
 	widgets/strip.cpp \
 	application/init_engines.cpp \
 	midi/engine.cpp \
-	config/config.cpp 
+	config/config.cpp  \
+        dialogs/audio_settings.cpp
 
 EXT_SRC = \
           ../libraries/RtMidi.cpp
