@@ -70,6 +70,7 @@ Application::~Application()
     delete fileChooser;
     delete newDlg;
     delete audioSettingsDlg;
+    delete midiSettingsDlg;
     delete addTrackDlg;
     // Don't delete menu, toolbar, container - FLTK manages these
 }

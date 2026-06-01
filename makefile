@@ -33,7 +33,8 @@ LOCAL_SRC = \
 	application/init_engines.cpp \
 	midi/engine.cpp \
 	config/config.cpp  \
-        dialogs/audio_settings.cpp
+        dialogs/audio_settings.cpp \
+        dialogs/midi_settings.cpp
 
 EXT_SRC = \
           ../libraries/RtMidi.cpp

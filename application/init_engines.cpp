@@ -126,11 +126,9 @@ void Application::initMidiSystem()
     // Create and initialize the midi engine object.
     midiEngine = new Midi::Engine(*this);
 
-    AppConfig& config = loadConfig();
-
     // Initialize midi device.
     try {
-        midiEngine->initMidiDevice(config);
+        midiEngine->initDevice();
     }
     catch (RtMidiError& e) {
         std::cerr << "RtMidi error: " << std::string(e.what()) << std::endl;
@@ -138,8 +136,17 @@ void Application::initMidiSystem()
     }
 
     // Initialize midi ports.
+
     try {
-        midiEngine->initMidiPorts(config);
+        midiEngine->initInputPort();
+    }
+    catch (RtMidiError& e) {
+        std::cerr << "RtMidi error: " << std::string(e.what()) << std::endl;
+        return;
+    }
+
+    try {
+        midiEngine->initOutputPort();
     }
     catch (RtMidiError& e) {
         std::cerr << "RtMidi error: " << std::string(e.what()) << std::endl;

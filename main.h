@@ -51,6 +51,7 @@ class Application : public Fl_Double_Window
     Fl_Box* container = nullptr;
     NewDialog* newDlg = nullptr;
     AudioSettingsDialog* audioSettingsDlg = nullptr;
+    MidiSettingsDialog* midiSettingsDlg = nullptr;
     AddTrackDialog* addTrackDlg = nullptr;
     // Stores menu item labels to prevent trash characters (eg: ^$¨)
     // when updating labels.

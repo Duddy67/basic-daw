@@ -20,5 +20,13 @@ void Application::onAudioSettings()
 
 void Application::onMidiSettings()
 {
+    if (midiSettingsDlg == nullptr) {
+        midiSettingsDlg = new MidiSettingsDialog(x() + MODAL_WND_POS, y() + MODAL_WND_POS,
+                              XLARGE_SPACE + MEDIUM_SPACE, LARGE_SPACE + MEDIUM_SPACE,
+                              "MIDI Settings", *this);
+    }
 
+    if (midiSettingsDlg->runModal() == DIALOG_OK) {
+
+    }
 }

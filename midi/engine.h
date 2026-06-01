@@ -18,14 +18,17 @@ namespace Midi {
         std::map<int, std::string> apiMap;
         std::vector<RtMidi::Api> apis;
 
+        void deleteCurrentPorts();
+
         public:
 
             Engine(Application& app);
             ~Engine();
 
             size_t getDeviceCount() { return apis.size(); }
-            void initMidiDevice(AppConfig& config);
-            void initMidiPorts(AppConfig& config);
+            void initDevice(const char* name = "none");
+            void initInputPort(const char* name = "none");
+            void initOutputPort(const char* name = "none");
             RtMidiIn& getMidiIn() { return *midiIn; }
             RtMidiOut& getMidiOut() { return *midiOut; }
             int getInputPortCount() { return midiIn ? midiIn->getPortCount() : 0; }

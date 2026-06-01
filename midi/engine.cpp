@@ -1,4 +1,5 @@
 #include "engine.h"
+#include "RtMidi.h"
 
 
 namespace Midi {
@@ -15,27 +16,51 @@ namespace Midi {
 
     Engine::~Engine()
     {
-        delete midiIn;
-        delete midiOut;
+        deleteCurrentPorts();
     }
 
-    void Engine::initMidiDevice(AppConfig& config)
+    void Engine::deleteCurrentPorts()
     {
+        // Free memory.
+        delete midiIn;
+        delete midiOut;
+        // Prevent any dangling pointers.
+        midiIn = nullptr;
+        midiOut = nullptr;
+    }
+
+    void Engine::initDevice(const char* name /* = "none"*/)
+    {
+        deleteCurrentPorts();
         int deviceId = -1;
+        AppConfig& config = loadConfig();
+
+        // Try first with the possible given name.
+        if (strcmp(name, "none") != 0) {
+            for (unsigned int i = 0; i < apis.size(); i++) {
+                if (strcmp(apiMap[apis[i]].c_str(), name) == 0) {
+                    deviceId = i;
+                    break;
+                }
+            }
+        }
 
         // Check for default device in the config.
-        for (unsigned int i = 0; i < apis.size(); i++) {
-            if (apiMap[apis[i]] == config.midi.device) {
-                deviceId = i;
-                break;
-            }
+        if (deviceId == -1) {
+            for (unsigned int i = 0; i < apis.size(); i++) {
+                // If no device is set by default and Jack is available, use it.
+                if (config.midi.device == "" && apiMap[apis[i]] == "Jack Client") {
+                    deviceId = i;
+                    break;
+                }
 
-            // If no device is set by default, use Jack.
-            if (config.midi.device == "" && apiMap[apis[i]] == "Jack Client") {
-                deviceId = i;
-                break;
-            }
-        }  
+                // Set the default device, if any.
+                if (apiMap[apis[i]] == config.midi.device) {
+                    deviceId = i;
+                    break;
+                }
+            }  
+        }
 
         // Jack is not available and no default device has been set. 
         // Use the first device on the list.
@@ -49,48 +74,75 @@ namespace Midi {
             config.midi.device = apiMap[apis[deviceId]];
             saveConfig();
 
-            std::cout << "API: " << apiMap[apis[deviceId]] << std::endl;
+            std::cout << "RtMidi API: " << apiMap[apis[deviceId]] << std::endl;
         }
         else {
             throw std::runtime_error("No MIDI device available on the system.");
         }
     }
 
-    void Engine::initMidiPorts(AppConfig& config)
+    void Engine::initInputPort(const char* name /*= "none"*/)
     {
         int portId = -1;
+        AppConfig& config = loadConfig();
 
-        // Check for default input port in the config.
-        for (unsigned int i = 0; i < midiIn->getPortCount(); i++) {
-            if (midiIn->getPortName(i) == config.midi.inputPort) {
-                portId = i;
+        // Try first with the possible given name.
+        if (strcmp(name, "none") != 0) {
+            for (unsigned int i = 0; i < midiIn->getPortCount(); i++) {
+                if (strcmp(midiIn->getPortName(i).c_str(), name) == 0) {
+                    portId = i;
+                    break;
+                }
             }
-            std::cout << "Input port: " << midiIn->getPortName(i) << std::endl;
         }
 
-        // In case no port is set as default, open the first available port.
+        // Check for default input port in the config.
+        if (portId == -1) {
+            for (unsigned int i = 0; i < midiIn->getPortCount(); i++) {
+                if (midiIn->getPortName(i) == config.midi.inputPort) {
+                    portId = i;
+                }
+            }
+        }
+
+        // In case no port has been set as default so far, open the first available port.
         portId = (portId == -1 && midiIn->getPortCount()) ? 0 : portId;
 
         if (portId > -1) {
             midiIn->openPort(portId);
-            // Update the midi config.
+            // Set or update the midi config.
             config.midi.inputPort = midiIn->getPortName(portId);
             saveConfig();
         }
         else {
             throw std::runtime_error("No MIDI input port available on the system.");
         }
+    }
 
-        // Same for output port.
+    void Engine::initOutputPort(const char* name /*= "none"*/)
+    {
+        int portId = -1;
+        AppConfig& config = loadConfig();
 
-        portId = -1;
-
-        for (unsigned int i = 0; i < midiOut->getPortCount(); i++) {
-            if (midiOut->getPortName(i) == config.midi.outputPort) {
-                portId = i;
+        // Try first with the possible given name.
+        if (strcmp(name, "none") != 0) {
+            for (unsigned int i = 0; i < midiOut->getPortCount(); i++) {
+                if (strcmp(midiOut->getPortName(i).c_str(), name) == 0) {
+                    portId = i;
+                    break;
+                }
             }
         }
 
+        if (portId == -1) {
+            for (unsigned int i = 0; i < midiOut->getPortCount(); i++) {
+                if (midiOut->getPortName(i) == config.midi.outputPort) {
+                    portId = i;
+                }
+            }
+        }
+
+        // In case no port has been set as default so far, open the first available port.
         portId = (portId == -1 && midiOut->getPortCount()) ? 0 : portId;
 
         if (portId > -1) {
