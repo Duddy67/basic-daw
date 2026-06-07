@@ -33,8 +33,8 @@ namespace Project {
           void removeObserver(Observer* observer);
 
           void onAddTrack(TrackType type);
-          void onMuteTrack(int id, TrackType type, State state);
-          void onSoloTrack(int id, TrackType type, State state);
+          void onToggleMute(int trackId, TrackType type);
+          void onToggleSolo(int trackId, TrackType type);
           void onTrackSelected(int id);
     };
 }

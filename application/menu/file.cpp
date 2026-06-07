@@ -10,6 +10,10 @@ void Application::onNew()
     if (newDlg->runModal() == DIALOG_OK) {
         // Add new file logic here...
         createProject();
+
+        // The user can now add and remove tracks.
+        activateMenuItem(MenuItemID::TRACK_ADD);
+        activateMenuItem(MenuItemID::TRACK_REMOVE);
     }
 }
 

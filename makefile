@@ -32,6 +32,7 @@ LOCAL_SRC = \
 	widgets/strip.cpp \
 	application/init_engines.cpp \
 	midi/engine.cpp \
+	midi/track.cpp \
 	config/config.cpp  \
         dialogs/audio_settings.cpp \
         dialogs/midi_settings.cpp

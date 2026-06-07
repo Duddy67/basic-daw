@@ -101,12 +101,14 @@ class Application : public Fl_Double_Window
 
         void openFile(const char* filename);
         void createProject();
-        Project::Model& getProject() { return *projectModel; }
+        Project::Model* getProject() { return projectModel; }
         Audio::Engine& getAudioEngine() { return *audioEngine; }
         void initAudioSystem();
         Midi::Engine& getMidiEngine() { return *midiEngine; }
         void initMidiSystem();
         std::string escapeMenuText(const std::string& input);
+        void activateMenuItem(MenuItemID menuId);
+        void deactivateMenuItem(MenuItemID menuId);
 
         // Call back functions.
         static void noEscapeKey_cb(Fl_Widget* w, void* data);

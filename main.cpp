@@ -52,6 +52,12 @@ Application::Application(int w, int h, const char *l, int argc, char *argv[]) : 
     // Sets the default filename for the chooser.
     fileChooser->preset_file(untitledDefault());
 
+    // There is no track for now.
+    if (projectModel == nullptr) {
+        deactivateMenuItem(MenuItemID::TRACK_ADD);
+        deactivateMenuItem(MenuItemID::TRACK_REMOVE);
+    }
+
     //size_range(w, h, w, h);
     show();
 

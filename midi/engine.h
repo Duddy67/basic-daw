@@ -9,6 +9,10 @@
 
 class Application;
 
+namespace Project {
+    class Model;
+}
+
 namespace Midi {
 
     class Engine {
@@ -19,6 +23,7 @@ namespace Midi {
         std::vector<RtMidi::Api> apis;
 
         void deleteCurrentPorts();
+        static void data_callback(double deltaTime, std::vector<unsigned char>* messages, void* userData);
 
         public:
 
@@ -36,6 +41,7 @@ namespace Midi {
             std::vector<std::string> getDevices();
             std::vector<std::string> getInputPorts();
             std::vector<std::string> getOutputPorts();
+            Project::Model* getProject();
     };
 }
 

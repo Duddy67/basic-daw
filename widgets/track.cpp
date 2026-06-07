@@ -37,14 +37,12 @@ namespace Widget {
                 if (Fl::event_button() == FL_LEFT_MOUSE) {
                     // Check buttons.
                     if (Fl::event_inside(mute)) {
-                        // Check for the button new state.
-                        State state = !mute->value() ? State::ON: State::OFF;
-                        // Tell the controller the mute button state has changed.
-                        projectCtrl.onMuteTrack(getId(), getType(), state);
+                        // Tell the controller the mute button has toggled.
+                        projectCtrl.onToggleMute(getId(), getType());
                     }
                     else if (Fl::event_inside(solo)) {
-                        State state = !solo->value() ? State::ON: State::OFF;
-                        projectCtrl.onSoloTrack(getId(), getType(), state);
+                        // Tell the controller the solo button has toggled.
+                        projectCtrl.onToggleSolo(getId(), getType());
                     }
                     else if (Fl::event_inside(record)) {
                         std::cout << "Track => Record FL_PUSH " << getId() << std::endl;

@@ -75,3 +75,21 @@ std::string Application::escapeMenuText(const std::string& input) {
     return result;
 }
 
+void Application::activateMenuItem(MenuItemID menuId)
+{
+    Fl_Menu_Item *item = nullptr;
+
+    if ((item = (Fl_Menu_Item*)menu->find_item(MenuLabels[menuId].c_str())) != nullptr) {
+        item->activate();
+    }
+}
+
+void Application::deactivateMenuItem(MenuItemID menuId)
+{
+    Fl_Menu_Item *item = nullptr;
+
+    if ((item = (Fl_Menu_Item*)menu->find_item(MenuLabels[menuId].c_str())) != nullptr) {
+        item->deactivate();
+    }
+}
+

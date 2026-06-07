@@ -3,6 +3,10 @@
 
 #include <FL/Fl_Group.H>
 #include <FL/Fl_Box.H>
+#include <FL/Fl_Choice.H>
+#include <FL/Fl_Check_Button.H>
+#include <sstream>
+#include <string.h>
 #include "../constants.h"
 
 
@@ -15,6 +19,10 @@ class Strip : public Fl_Group
     int id;
     TrackType type;
     Project::Controller& projectCtrl;
+    Fl_Choice* channel = nullptr;
+    Fl_Check_Button* omni = nullptr;
+    void buildMidi();
+    void buildAudio();
 
     public:
 

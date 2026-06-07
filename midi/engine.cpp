@@ -1,4 +1,5 @@
 #include "engine.h"
+#include "../project/model.h"
 #include "RtMidi.h"
 
 
@@ -17,6 +18,11 @@ namespace Midi {
     Engine::~Engine()
     {
         deleteCurrentPorts();
+    }
+
+    Project::Model* Engine::getProject()
+    {
+        return application.getProject();
     }
 
     void Engine::deleteCurrentPorts()
@@ -110,6 +116,9 @@ namespace Midi {
 
         if (portId > -1) {
             midiIn->openPort(portId);
+            // Set the callback function immediately to avoid 
+            // having incoming messages written to the queue.
+            midiIn->setCallback(&data_callback, this);
             // Set or update the midi config.
             config.midi.inputPort = midiIn->getPortName(portId);
             saveConfig();
@@ -186,6 +195,19 @@ namespace Midi {
         }
 
         return outputs;
+    }
+
+    void Engine::data_callback(double deltaTime, std::vector<unsigned char>* message, void* userData)
+    {
+        Midi::Engine* engine = (Midi::Engine*) userData;
+
+        // Make sure a project does exist.
+        if (engine->application.getProject() != nullptr) {
+            // Send the incoming message to the existing tracks.
+            for (auto& track : engine->application.getProject()->getMidiTracks()) {
+                track->processMessage(*message, deltaTime);
+            }
+        }
     }
 }
 

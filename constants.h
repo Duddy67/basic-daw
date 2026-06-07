@@ -18,6 +18,7 @@ constexpr unsigned int TEXT_SIZE = 13;
 constexpr unsigned int SCROLLBAR_HEIGHT = 15;
 constexpr unsigned int SCROLLBAR_MARGIN = 10;
 constexpr unsigned int TAB_BORDER_THICKNESS = 10;
+constexpr unsigned int MAX_MIDI_CHANNELS = 16;
 constexpr const char* CONFIG_FILENAME = "config.json";
 
 // --- Custom types ---

@@ -8,6 +8,11 @@ namespace Project {
 
     }
 
+    Controller::~Controller()
+    {
+        // ...
+    }
+
     /*
      * Unregister an observer (important to prevent crashes when views are deleted).
      */
@@ -33,28 +38,28 @@ namespace Project {
         int trackId = type == TrackType::MIDI ? model.addMidiTrack() : model.addAudioTrack();
 
         std::cout << "Controller => onAddTrack() " << std::endl;
+
         notify(event, trackId);
     }
 
-    void Controller::onMuteTrack(int id, TrackType type, State state)
+    void Controller::onToggleMute(int trackId, TrackType type)
     {
-        // logic here...
+        if (type == TrackType::MIDI) {
+            model.midiToggleMute(trackId);
+        }
+        // TrackType::AUDIO
+        else {
+            model.audioToggleMute(trackId);
+        }
     }
 
-    void Controller::onSoloTrack(int id, TrackType type, State state)
+    void Controller::onToggleSolo(int trackId, TrackType type)
     {
-        CtrlEvent event = state == State::ON ? CtrlEvent::SOLOED_TRACK : CtrlEvent::UNSOLOED_TRACK; 
-
-        notify(event, id);
+        //notify(event, trackId);
     }
 
     void Controller::onTrackSelected(int id)
     {
         notify(CtrlEvent::TRACK_SELECTED, id);
-    }
-
-    Controller::~Controller()
-    {
-        // ...
     }
 }
