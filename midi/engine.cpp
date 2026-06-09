@@ -1,6 +1,7 @@
 #include "engine.h"
 #include "../project/model.h"
 #include "RtMidi.h"
+#include "track.h"
 
 
 namespace Midi {
@@ -204,8 +205,12 @@ namespace Midi {
         // Make sure a project does exist.
         if (engine->application.getProject() != nullptr) {
             // Send the incoming message to the existing tracks.
-            for (auto& track : engine->application.getProject()->getMidiTracks()) {
-                track->processMessage(*message, deltaTime);
+            for (auto& track : engine->application.getProject()->getTracks()) {
+                // Only MIDI tracks process MIDI messages.
+                if (track->getType() == TrackType::MIDI) {
+                    auto* midiTrack = static_cast<Midi::Track*>(track.get());
+                    midiTrack->processMessage(*message, deltaTime);
+                }
             }
         }
     }

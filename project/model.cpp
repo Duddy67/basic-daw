@@ -1,4 +1,6 @@
 #include "model.h"
+#include "../audio/track.h"
+#include "../midi/track.h"
 
 
 namespace Project {
@@ -22,17 +24,40 @@ namespace Project {
         return trackIds.back();
     }
 
+    /*
+     * Removes the given id from the track id list.
+     */
     void Model::deleteTrackId(int id)
     {
-
+        trackIds.erase(std::remove(trackIds.begin(), trackIds.end(), id), trackIds.end());
     }
 
-    Midi::Track* Model::getMidiTrack(int id)
+    int Model::addAudioTrack()
     {
-        for (size_t i = 0; i < midiTracks.size(); i++) {
-            if (midiTracks[i]->getId() == id) {
+        int newId = getNewTrackId();
+        auto track = std::make_unique<Audio::Track>(application.getAudioEngine(), newId);
+        tracks.push_back(std::move(track));
+        // ....
+        return newId;
+    }
+
+    int Model::addMidiTrack()
+    {
+        int newId = getNewTrackId();
+        auto track = std::make_unique<Midi::Track>(application.getMidiEngine(), newId);
+        tracks.push_back(std::move(track));
+
+        // ...
+
+        return newId;
+    }
+    
+    Core::Track* Model::getTrack(int id)
+    {
+        for (size_t i = 0; i < tracks.size(); i++) {
+            if (tracks[i]->getId() == id) {
                 // Return raw pointer.
-                return midiTracks[i].get();
+                return tracks[i].get();
             }
         }
 
@@ -40,55 +65,29 @@ namespace Project {
         return nullptr;
     }
 
-    int Model::addAudioTrack()
+    void Model::toggleMute(int trackId)
     {
-        int newId = getNewTrackId();
-        auto track = std::make_unique<Audio::Track>(application.getAudioEngine(), newId);
-        audioTracks.push_back(std::move(track));
-        // ....
-        //std::cout << "Model => addTrack(): " << track->getId() << std::endl;
-        return newId;
-
-        
-    }
-
-    int Model::addMidiTrack()
-    {
-        int newId = getNewTrackId();
-        auto track = std::make_unique<Midi::Track>(application.getMidiEngine(), newId);
-        midiTracks.push_back(std::move(track));
-
-        // ...
-
-        return newId;
-    }
-    
-    void Model::midiToggleMute(int trackId)
-    {
-        for (size_t i = 0; i < midiTracks.size(); i++) {
-            if (midiTracks[i]->getId() == trackId) {
-                midiTracks[i]->toggleMute();
-            }
+        if (auto track = getTrack(trackId)) {
+            track->toggleMute();
+        std::cout << "Model => toggleMute() " << std::endl;
         }
     }
-    
-    void Model::audioToggleMute(int trackId)
-    {
-        // ...
-    }
 
-    void Model::midiToggleSolo(int trackId)
+    void Model::toggleSolo(int trackId)
     {
-        for (size_t i = 0; i < midiTracks.size(); i++) {
-            if (midiTracks[i]->getId() == trackId) {
-                midiTracks[i]->toggleSolo();
+        if (auto track = getTrack(trackId)) {
+            track->toggleSolo();
 
-                if (midiTracks[i]->isSoloed()) {
-                    soloTracks.push_back(midiTracks[i]->getId());
-                }
-                else {
-                    soloTracks.erase(soloTracks.begin() + i);
-                }
+            // Check the button state (activated/deactivated) and set 
+            // the solo list accordingly.
+
+            if (track->isSoloed()) {
+                // Add the given track id to the solo list.
+                soloTracks.push_back(track->getId());
+            }
+            else {
+                // Remove the given track id from the solo list.
+                soloTracks.erase(std::remove(soloTracks.begin(), soloTracks.end(), trackId), soloTracks.end());
             }
         }
     }

@@ -44,17 +44,12 @@ namespace Project {
 
     void Controller::onToggleMute(int trackId, TrackType type)
     {
-        if (type == TrackType::MIDI) {
-            model.midiToggleMute(trackId);
-        }
-        // TrackType::AUDIO
-        else {
-            model.audioToggleMute(trackId);
-        }
+        model.toggleMute(trackId);
     }
 
     void Controller::onToggleSolo(int trackId, TrackType type)
     {
+        model.toggleSolo(trackId);
         //notify(event, trackId);
     }
 

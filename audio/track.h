@@ -2,22 +2,23 @@
 #define AUDIO_TRACK_H
 
 #include "engine.h"
+#include "../core/track.h"
 
 
 namespace Audio {
 
     class Engine;
 
-    class Track {
+    class Track : public Core::Track {
         Engine& engine;
-        int id = 0;
 
         public:
 
             Track(Engine& e, int id);
-            ~Track();
+            ~Track() override;
 
-            int getId() { return id; }
+            // Override virtual functions.
+            TrackType getType() const override { return TrackType::AUDIO; }
     };
 }
 

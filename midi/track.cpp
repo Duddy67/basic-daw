@@ -3,9 +3,9 @@
 
 namespace Midi {
 
-    Track::Track(Engine& e, int id) : engine(e)
+    Track::Track(Engine& e, int id) : Core::Track(id), engine(e)
     {
-        this->id = id;
+        // ...
     }
 
     Track::~Track()
@@ -17,6 +17,8 @@ namespace Midi {
     {
         // First, check for solo tracks.
         if (engine.getProject()->soloTrackCount() && !isSoloed()) {
+            // This track is not part of the currently soloed tracks.
+            // Don't play.
             return;
         }
 
@@ -27,8 +29,10 @@ namespace Midi {
             }
 
             if (nBytes > 0) {
-                std::cout << "stamp = " << deltaTime << std::endl;
+                std::cout << "stamp = " << deltaTime << ", ";
             }
+
+            std::cout << "track id = " << getId() << std::endl;
         }
     }
 }
