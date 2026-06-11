@@ -21,11 +21,14 @@
 #include "project/view.h"
 #include "audio/engine.h"
 #include "midi/engine.h"
+#include "application/transport.h"
+#include "widgets/transport_bar.h"
 #include "json.hpp"
 
 using json = nlohmann::json;
 
 // Forward class declarations.
+
 namespace Project {
     class Controller;
     class View;
@@ -38,6 +41,9 @@ namespace Audio {
 namespace Midi {
     class Engine;
 }
+
+class Transport;
+
 
 class Application : public Fl_Double_Window 
 {
@@ -62,6 +68,8 @@ class Application : public Fl_Double_Window
     Project::View* projectView = nullptr;
     Audio::Engine* audioEngine = nullptr;
     Midi::Engine* midiEngine = nullptr;
+    Transport* transport = nullptr;
+    TransportBar* transportBar = nullptr;
 
     void initAudioBackend();
     void initAudioDevices();
@@ -105,6 +113,7 @@ class Application : public Fl_Double_Window
         Audio::Engine& getAudioEngine() { return *audioEngine; }
         void initAudioSystem();
         Midi::Engine& getMidiEngine() { return *midiEngine; }
+        Transport& getTransport() { return *transport; }
         void initMidiSystem();
         std::string escapeMenuText(const std::string& input);
         void activateMenuItem(MenuItemID menuId);

@@ -48,7 +48,7 @@ void Application::createProject()
     if (projectModel == nullptr) {
         projectModel = new Project::Model(*this);
         projectCtrl = new Project::Controller(*this, *projectModel);
-        projectView = new Project::View(0, SMALL_SPACE * 2, Fl::w(), Fl::h() - (SMALL_SPACE * 2), *projectCtrl);
+        projectView = new Project::View(0, (SMALL_SPACE * 2) + (TINY_SPACE * 2), Fl::w(), Fl::h() - (SMALL_SPACE * 2), *projectCtrl);
 
         // Make projectView child of Application.
         add(projectView);

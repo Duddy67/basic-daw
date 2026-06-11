@@ -19,10 +19,11 @@ Application::Application(int w, int h, const char *l, int argc, char *argv[]) : 
     redoMenuItem = (Fl_Menu_Item *)menu->find_item(MenuLabels[MenuItemID::EDIT_REDO].c_str());
     redoMenuItem->deactivate();
 
-    toolbar = new Fl_Group(0, SMALL_SPACE, w, SMALL_SPACE);
+    toolbar = new Fl_Group(0, SMALL_SPACE, w, SMALL_SPACE + (TINY_SPACE * 2));
     toolbar->box(FL_FLAT_BOX);
 
         // Other widgets go here...
+        transportBar = new TransportBar(MICRO_SPACE, SMALL_SPACE + MICRO_SPACE, XLARGE_SPACE + SMALL_SPACE, SMALL_SPACE + TINY_SPACE, *this);
 
     toolbar->end();
 
@@ -30,7 +31,7 @@ Application::Application(int w, int h, const char *l, int argc, char *argv[]) : 
     // It must be placed over the remaining space
 
     // Matches group size (ie: toolbar).
-    container = new Fl_Box(0, SMALL_SPACE * 2, w, h - (SMALL_SPACE * 2)); 
+    container = new Fl_Box(0, (SMALL_SPACE * 2) + (TINY_SPACE * 2), w, h - (SMALL_SPACE * 2) + (TINY_SPACE * 2)); 
     // Make it invisible.
     container->hide(); 
     // Set this box as the resizable area.
@@ -64,11 +65,14 @@ Application::Application(int w, int h, const char *l, int argc, char *argv[]) : 
     // Start application in maximized state.
     //maximize();
 
+    transport = new Transport(*this);
+
     this->callback(noEscapeKey_cb, this);
 }
 
 Application::~Application() 
 {
+    delete transport;
     delete projectModel;
     delete projectCtrl;
     delete audioEngine;
@@ -78,7 +82,7 @@ Application::~Application()
     delete audioSettingsDlg;
     delete midiSettingsDlg;
     delete addTrackDlg;
-    // Don't delete menu, toolbar, container - FLTK manages these
+    // Don't delete menu, toolbar, container... - FLTK manages these
 }
 
 int main(int argc, char *argv[])

@@ -13,6 +13,7 @@ LOCAL_SRC = \
 	application/menu.cpp \
 	application/application.cpp \
 	application/callbacks.cpp \
+	application/transport.cpp \
 	dialogs/dialog.cpp \
 	dialogs/new.cpp \
 	application/menu/edit.cpp \
@@ -30,6 +31,7 @@ LOCAL_SRC = \
 	dialogs/add_track.cpp \
 	project/controller.cpp \
 	widgets/strip.cpp \
+	widgets/transport_bar.cpp \
 	application/init_engines.cpp \
 	midi/engine.cpp \
 	midi/track.cpp \

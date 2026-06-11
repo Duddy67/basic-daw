@@ -94,12 +94,12 @@ namespace Audio {
     void Engine::initializeDuplexDevice()
     {
         ma_device_config config = ma_device_config_init(ma_device_type_duplex);
-        config.sampleRate       = 44100;
+        config.sampleRate       = SAMPLE_RATE;
         config.playback.format  = ma_format_f32;
-        config.playback.channels= 2;
+        config.playback.channels= 2; // always stereo
         config.playback.pDeviceID = &duplexDeviceID;
         config.capture.format   = ma_format_f32;
-        config.capture.channels = 2;
+        config.capture.channels = 2; // always stereo
         config.capture.pDeviceID  = &duplexDeviceID;
         config.dataCallback     = data_callback;
         config.pUserData        = this;
@@ -535,7 +535,12 @@ namespace Audio {
      */
     void Engine::data_callback(ma_device* pDevice, void* output, const void* input, ma_uint32 frameCount)
     {
+        Engine* engine = static_cast<Engine*>(pDevice->pUserData);
+        auto& transport = engine->application.getTransport();
 
+        if (transport.isPlaying()) {
+            transport.setPlayheadSample(frameCount);
+        }
     }
 
     void Engine::createTrack()
