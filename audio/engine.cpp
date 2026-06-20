@@ -537,9 +537,15 @@ namespace Audio {
     {
         Engine* engine = static_cast<Engine*>(pDevice->pUserData);
         auto& transport = engine->application.getTransport();
+        auto& midiScheduler = engine->application.getMidiScheduler();
 
-        if (transport.isPlaying()) {
-            transport.setPlayheadSample(frameCount);
+        if (transport.isPlaying() || transport.isRecording()) {
+            // Get the current sample at the START of this buffer
+            uint64_t currentSample = transport.getPlayheadSample();
+            // For the sake of accuracy, call the midi scheduler straight from the master clock.
+            midiScheduler.process(currentSample);
+            // Then update the playhead sample position.
+            transport.advancePlayhead(frameCount);
         }
     }
 

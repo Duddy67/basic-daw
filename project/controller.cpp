@@ -53,6 +53,12 @@ namespace Project {
         //notify(event, trackId);
     }
 
+    void Controller::onToggleArm(int trackId)
+    {
+        model.toggleArm(trackId);
+        //notify(event, trackId);
+    }
+
     void Controller::onTrackSelected(int id)
     {
         notify(CtrlEvent::TRACK_SELECTED, id);

@@ -3,6 +3,8 @@
 
 #include <map>
 #include <string>
+#include <vector>
+#include <cstdint>
 
 constexpr unsigned int MODAL_WND_POS = 20;
 constexpr unsigned int BUTTON_WIDTH = 80;
@@ -67,6 +69,11 @@ enum class MenuItemID {
 
 struct Selection {
     int start, end;
+};
+
+struct MidiEvent {
+    uint64_t samplePosition;
+    std::vector<unsigned char> message;
 };
 
 inline std::map<EditID, std::string> EditLabels {

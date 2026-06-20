@@ -66,6 +66,7 @@ Application::Application(int w, int h, const char *l, int argc, char *argv[]) : 
     //maximize();
 
     transport = new Transport(*this);
+    midiScheduler = new MidiScheduler(*this);
 
     this->callback(noEscapeKey_cb, this);
 }
@@ -82,6 +83,7 @@ Application::~Application()
     delete audioSettingsDlg;
     delete midiSettingsDlg;
     delete addTrackDlg;
+    delete midiScheduler;
     // Don't delete menu, toolbar, container... - FLTK manages these
 }
 

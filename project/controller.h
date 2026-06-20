@@ -35,6 +35,7 @@ namespace Project {
           void onAddTrack(TrackType type);
           void onToggleMute(int trackId, TrackType type);
           void onToggleSolo(int trackId, TrackType type);
+          void onToggleArm(int trackId);
           void onTrackSelected(int id);
     };
 }

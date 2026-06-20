@@ -91,4 +91,11 @@ namespace Project {
             }
         }
     }
+
+    void Model::toggleArm(int trackId)
+    {
+        if (auto track = getTrack(trackId)) {
+            track->toggleArm();
+        }
+    }
 }

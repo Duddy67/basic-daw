@@ -46,6 +46,7 @@ namespace Widget {
                     }
                     else if (Fl::event_inside(record)) {
                         std::cout << "Track => Record FL_PUSH " << getId() << std::endl;
+                        projectCtrl.onToggleArm(getId());
                     }
                     // The user has clicked on the track itself (ie: the Fl_Group widget) to select it.
                     else {

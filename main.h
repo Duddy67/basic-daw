@@ -21,7 +21,8 @@
 #include "project/view.h"
 #include "audio/engine.h"
 #include "midi/engine.h"
-#include "application/transport.h"
+#include "core/transport.h"
+#include "core/midi_scheduler.h"
 #include "widgets/transport_bar.h"
 #include "json.hpp"
 
@@ -43,6 +44,7 @@ namespace Midi {
 }
 
 class Transport;
+class MidiScheduler;
 
 
 class Application : public Fl_Double_Window 
@@ -70,6 +72,7 @@ class Application : public Fl_Double_Window
     Midi::Engine* midiEngine = nullptr;
     Transport* transport = nullptr;
     TransportBar* transportBar = nullptr;
+    MidiScheduler* midiScheduler = nullptr;
 
     void initAudioBackend();
     void initAudioDevices();
@@ -114,6 +117,7 @@ class Application : public Fl_Double_Window
         void initAudioSystem();
         Midi::Engine& getMidiEngine() { return *midiEngine; }
         Transport& getTransport() { return *transport; }
+        MidiScheduler& getMidiScheduler() { return *midiScheduler; }
         void initMidiSystem();
         std::string escapeMenuText(const std::string& input);
         void activateMenuItem(MenuItemID menuId);

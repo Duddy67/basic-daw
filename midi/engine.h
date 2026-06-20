@@ -30,6 +30,7 @@ namespace Midi {
             Engine(Application& app);
             ~Engine();
 
+            Application& getApplication() const { return application; }
             size_t getDeviceCount() { return apis.size(); }
             void initDevice(const char* name = "none");
             void initInputPort(const char* name = "none");

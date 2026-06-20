@@ -40,6 +40,7 @@ namespace Project {
           std::vector<int> getTrackIds() { return trackIds; }
           void toggleMute(int trackId);
           void toggleSolo(int trackId);
+          void toggleArm(int trackId);
           size_t trackCount() const { return tracks.size(); }
           size_t soloTrackCount() const { return soloTracks.size(); }
 

@@ -7,13 +7,17 @@ EXE = basicDAW
 # Object directory
 OBJDIR = obj
 
+# Dependency directory
+DEPDIR = $(OBJDIR)/.deps
+
 # Source files
 LOCAL_SRC = \
 	main.cpp \
 	application/menu.cpp \
 	application/application.cpp \
 	application/callbacks.cpp \
-	application/transport.cpp \
+	core/transport.cpp \
+	core/midi_scheduler.cpp \
 	dialogs/dialog.cpp \
 	dialogs/new.cpp \
 	application/menu/edit.cpp \
@@ -48,12 +52,19 @@ EXT_OBJ = $(addprefix $(OBJDIR)/libraries/,$(notdir $(EXT_SRC:.cpp=.o)))
 
 OBJS = $(LOCAL_OBJ) $(EXT_OBJ)
 
+# Dependency files
+LOCAL_DEP = $(addprefix $(DEPDIR)/,$(LOCAL_SRC:.cpp=.d))
+EXT_DEP = $(addprefix $(DEPDIR)/libraries/,$(notdir $(EXT_SRC:.cpp=.d)))
+DEPS = $(LOCAL_DEP) $(EXT_DEP)
+
 # Compiler flags
 CXXFLAGS = \
 	-Wall \
 	-I../libraries \
         -g -O0 \
-	$(shell fltk-config --cxxflags) -fsanitize=address
+	$(shell fltk-config --cxxflags) \
+        -fsanitize=address \
+        -MMD -MP -MF $(DEPDIR)/$*.d
 
 # Linker flags
 LFLAGS = \
@@ -79,12 +90,15 @@ $(EXE): $(OBJS)
 
 # Compile source files
 $(OBJDIR)/%.o: %.cpp
-	@mkdir -p $(dir $@)
+	@mkdir -p $(dir $@) $(DEPDIR)/$(dir $*)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 $(OBJDIR)/libraries/%.o: ../libraries/%.cpp
-	@mkdir -p $(dir $@)
+	@mkdir -p $(dir $@) $(DEPDIR)/libraries
 	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+# Include dependency files
+-include $(DEPS)
 
 # Clean
 clean:

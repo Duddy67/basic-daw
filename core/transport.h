@@ -16,13 +16,13 @@ class Transport {
         Transport(Application& app);
         ~Transport();
 
-        void play() { playing.store(true); }
+        void play();
         void stop();
         void record();
         bool isPlaying() const { return playing.load(); }
         bool isRecording() const { return recording.load(); }
-        uint64_t getPlayheadSample() const { return playheadSample; }
-        void setPlayheadSample(uint64_t frameCount) { playheadSample.fetch_add(frameCount, std::memory_order_relaxed); }
+        uint64_t getPlayheadSample() const { return playheadSample.load(); }
+        void advancePlayhead(uint64_t frameCount) { playheadSample.fetch_add(frameCount, std::memory_order_relaxed); }
 
 };
 
