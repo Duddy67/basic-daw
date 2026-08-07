@@ -32,22 +32,22 @@ namespace Project {
         }
     }
 
-    void Controller::onAddTrack(TrackType type)
+    void Controller::onAddTrack(DataType type)
     {
-        CtrlEvent event = type == TrackType::MIDI ? CtrlEvent::ADD_MIDI_TRACK : CtrlEvent::ADD_AUDIO_TRACK;
-        int trackId = type == TrackType::MIDI ? model.addMidiTrack() : model.addAudioTrack();
+        CtrlEvent event = type == DataType::MIDI ? CtrlEvent::ADD_MIDI_TRACK : CtrlEvent::ADD_AUDIO_TRACK;
+        int trackId = type == DataType::MIDI ? model.addMidiTrack() : model.addAudioTrack();
 
         std::cout << "Controller => onAddTrack() " << std::endl;
 
         notify(event, trackId);
     }
 
-    void Controller::onToggleMute(int trackId, TrackType type)
+    void Controller::onToggleMute(int trackId, DataType type)
     {
         model.toggleMute(trackId);
     }
 
-    void Controller::onToggleSolo(int trackId, TrackType type)
+    void Controller::onToggleSolo(int trackId, DataType type)
     {
         model.toggleSolo(trackId);
         //notify(event, trackId);

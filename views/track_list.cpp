@@ -13,11 +13,11 @@ void TrackList::onCtrlEvent(CtrlEvent event, int index)
 {
     switch (event) {
         case CtrlEvent::ADD_MIDI_TRACK:
-          addTrack(index, TrackType::MIDI);
+          addTrack(index, DataType::MIDI);
           break;
 
         case CtrlEvent::ADD_AUDIO_TRACK:
-          addTrack(index, TrackType::AUDIO);
+          addTrack(index, DataType::AUDIO);
           break;
 
         case CtrlEvent::REMOVE_TRACK:
@@ -45,7 +45,7 @@ void TrackList::onCtrlEvent(CtrlEvent event, int index)
     }
 }
 
-void TrackList::addTrack(int id, TrackType type)
+void TrackList::addTrack(int id, DataType type)
 {
     int x, y;
 

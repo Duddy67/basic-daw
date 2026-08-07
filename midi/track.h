@@ -29,7 +29,7 @@ namespace Midi {
             bool isOmni() const { return omni; }
             const std::vector<MidiEvent>& getEvents() const { return events; }
             // Override virtual functions.
-            TrackType getType() const override { return TrackType::MIDI; }
+            DataType getType() const override { return DataType::MIDI; }
             size_t playbackCursor = 0;
            
             void fillEventList(); // FOR TEST PURPOSE ONLY

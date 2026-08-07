@@ -27,9 +27,13 @@ constexpr const char* CONFIG_FILENAME = "config.json";
 
 // --- Custom types ---
 
-enum class Direction { LEFT, RIGHT, UP, DOWN, NONE };
+enum class Direction {
+    LEFT, RIGHT, UP, DOWN, NONE, INPUT, OUTPUT
+};
 
-enum class TimeFormat { HH_MM_SS_SSS, MM_SS_SSS, SS_SSS };
+enum class TimeFormat {
+    HH_MM_SS_SSS, MM_SS_SSS, SS_SSS
+};
 
 enum class EditID {
     COPY, PASTE, CUT, DELETE, 
@@ -45,11 +49,7 @@ enum class TrackID {
     ADD, REMOVE
 };
 
-enum class SettingsID {
-    AUDIO, MIDI
-};
-
-enum class TrackType {
+enum class DataType {
     MIDI, AUDIO
 };
 
@@ -59,6 +59,10 @@ enum class Action {ACTIVATE, DEACTIVATE};
 
 enum class State {
     ON, OFF
+};
+
+enum class PortType {
+    INPUT, INPUT_EXCLUDE_CLIENT, OUTPUT, OUTPUT_EXCLUDE_CLIENT
 };
 
 enum class MenuItemID {

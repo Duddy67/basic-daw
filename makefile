@@ -17,6 +17,7 @@ LOCAL_SRC = \
 	application/application.cpp \
 	application/callbacks.cpp \
 	core/transport.cpp \
+	core/engine.cpp \
 	core/midi_scheduler.cpp \
 	dialogs/dialog.cpp \
 	dialogs/new.cpp \

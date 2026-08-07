@@ -17,7 +17,7 @@ namespace Widget {
     class Track : public Fl_Group
     {
         int id;
-        TrackType type;
+        DataType type;
         Project::Controller& projectCtrl;
         Fl_Output* name = nullptr;
         Fl_Light_Button* solo = nullptr;
@@ -31,11 +31,11 @@ namespace Widget {
 
         public:
 
-            Track(int x, int y, int w, int h, int i, TrackType t, Project::Controller& ctrl);
+            Track(int x, int y, int w, int h, int i, DataType t, Project::Controller& ctrl);
             ~Track();
 
             int getId() { return id; }
-            TrackType getType() { return type; }
+            DataType getType() { return type; }
             bool isSelected() { return selected; }
             void select() { selected = true; }
             void unselect() { selected = false; }

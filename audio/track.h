@@ -18,7 +18,7 @@ namespace Audio {
             ~Track() override;
 
             // Override virtual functions.
-            TrackType getType() const override { return TrackType::AUDIO; }
+            DataType getType() const override { return DataType::AUDIO; }
     };
 }
 

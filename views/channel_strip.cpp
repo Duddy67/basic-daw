@@ -13,12 +13,12 @@ void ChannelStrip::onCtrlEvent(CtrlEvent event, int index)
 {
     switch (event) {
         case CtrlEvent::ADD_MIDI_TRACK:
-          addStrip(index, TrackType::MIDI);
+          addStrip(index, DataType::MIDI);
           std::cout << "ChannelStrip => ADD_MIDI_TRACK" << std::endl;
           break;
 
         case CtrlEvent::ADD_AUDIO_TRACK:
-          addStrip(index, TrackType::AUDIO);
+          addStrip(index, DataType::AUDIO);
           std::cout << "ChannelStrip => ADD_AUDIO_TRACK" << std::endl;
           break;
 
@@ -39,7 +39,7 @@ void ChannelStrip::onCtrlEvent(CtrlEvent event, int index)
     }
 }
 
-void ChannelStrip::addStrip(int id, TrackType type)
+void ChannelStrip::addStrip(int id, DataType type)
 {
     int x = this->x() + BORDER_INTERSTICE;
     int y = this->y() + BORDER_INTERSTICE;

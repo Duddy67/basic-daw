@@ -28,7 +28,7 @@ class TrackList : public Fl_Group, public Project::Observer
       ~TrackList() {}
 
       void onCtrlEvent(CtrlEvent event, int index);
-      void addTrack(int id, TrackType type);
+      void addTrack(int id, DataType type);
 };
 
 #endif // TRACK_LIST_H

@@ -18,7 +18,7 @@ void Transport::play() {
     auto& tracks = application.getProject()->getTracks();
 
     for (auto& track : tracks) {
-        if (track->getType() == TrackType::MIDI) {
+        if (track->getType() == DataType::MIDI) {
             auto* midiTrack = static_cast<Midi::Track*>(track.get());
             midiTrack->playbackCursor = 0;
         }

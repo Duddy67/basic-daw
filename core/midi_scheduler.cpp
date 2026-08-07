@@ -16,7 +16,7 @@ void MidiScheduler::process(uint64_t sample)
     auto& tracks = application.getProject()->getTracks();
 
     for (auto& track : tracks) {
-        if (track->getType() == TrackType::MIDI) {
+        if (track->getType() == DataType::MIDI) {
             auto* midiTrack = static_cast<Midi::Track*>(track.get());
 
             auto& events = midiTrack->getEvents();
@@ -43,7 +43,7 @@ void MidiScheduler::relocate(uint64_t sample)
     auto& tracks = application.getProject()->getTracks();
 
     for (auto& track : tracks) {
-        if (track->getType() == TrackType::MIDI) {
+        if (track->getType() == DataType::MIDI) {
             auto* midiTrack = static_cast<Midi::Track*>(track.get());
             auto& events = midiTrack->getEvents();
 

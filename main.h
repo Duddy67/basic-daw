@@ -19,6 +19,7 @@
 #include "project/model.h"
 #include "project/controller.h"
 #include "project/view.h"
+#include "core/engine.h"
 #include "audio/engine.h"
 #include "midi/engine.h"
 #include "core/transport.h"
@@ -33,6 +34,10 @@ using json = nlohmann::json;
 namespace Project {
     class Controller;
     class View;
+}
+
+namespace Core {
+    class Engine;
 }
 
 namespace Audio {
@@ -68,6 +73,7 @@ class Application : public Fl_Double_Window
     Project::Model* projectModel = nullptr;
     Project::Controller* projectCtrl = nullptr;
     Project::View* projectView = nullptr;
+    Core::Engine* coreEngine = nullptr;
     Audio::Engine* audioEngine = nullptr;
     Midi::Engine* midiEngine = nullptr;
     Transport* transport = nullptr;
@@ -106,13 +112,14 @@ class Application : public Fl_Double_Window
         void onMenuTrack(TrackID id);
         void onAdd();
         void onRemove();
-        void onMenuSettings(SettingsID id);
+        void onMenuSettings(DataType dataType);
         void onAudioSettings();
         void onMidiSettings();
 
         void openFile(const char* filename);
         void createProject();
         Project::Model* getProject() { return projectModel; }
+        Core::Engine& getCoreEngine() { return *coreEngine; }
         Audio::Engine& getAudioEngine() { return *audioEngine; }
         void initAudioSystem();
         Midi::Engine& getMidiEngine() { return *midiEngine; }

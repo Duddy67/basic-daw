@@ -2,7 +2,7 @@
 #include "../project/controller.h"
 
 namespace Widget {
-    Track::Track(int x, int y, int w, int h, int i, TrackType t, Project::Controller& ctrl) :
+    Track::Track(int x, int y, int w, int h, int i, DataType t, Project::Controller& ctrl) :
       Fl_Group(x, y, w, h), id(i), type(t), projectCtrl(ctrl)
     {
         box(FL_UP_BOX);

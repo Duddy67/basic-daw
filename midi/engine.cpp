@@ -207,7 +207,7 @@ namespace Midi {
             // Send the incoming message to the existing tracks.
             for (auto& track : engine->application.getProject()->getTracks()) {
                 // Only MIDI tracks process MIDI messages.
-                if (track->getType() == TrackType::MIDI) {
+                if (track->getType() == DataType::MIDI) {
                     auto* midiTrack = static_cast<Midi::Track*>(track.get());
                     midiTrack->processMessage(*message, deltaTime);
                 }

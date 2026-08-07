@@ -32,9 +32,9 @@ namespace Project {
           void addObserver(Observer* observer) { observers.push_back(observer); }
           void removeObserver(Observer* observer);
 
-          void onAddTrack(TrackType type);
-          void onToggleMute(int trackId, TrackType type);
-          void onToggleSolo(int trackId, TrackType type);
+          void onAddTrack(DataType type);
+          void onToggleMute(int trackId, DataType type);
+          void onToggleSolo(int trackId, DataType type);
           void onToggleArm(int trackId);
           void onTrackSelected(int id);
     };

@@ -53,11 +53,11 @@ void Application::createMenu()
     menu->add(MenuLabels[MenuItemID::SETTINGS_SUB].c_str(), 0, 0, 0, FL_SUBMENU);
     menu->add(MenuLabels[MenuItemID::SETTINGS_AUDIO].c_str(), 0, [](Fl_Widget* w, void* userData) { 
                                       Application* app = static_cast<Application*>(userData);
-                                      app->onMenuSettings(SettingsID::AUDIO);
+                                      app->onMenuSettings(DataType::AUDIO);
                                   }, (void*) this);
     menu->add(MenuLabels[MenuItemID::SETTINGS_MIDI].c_str(), 0, [](Fl_Widget* w, void* userData) { 
                                       Application* app = static_cast<Application*>(userData);
-                                      app->onMenuSettings(SettingsID::MIDI);
+                                      app->onMenuSettings(DataType::MIDI);
                                   }, (void*) this);
     menu->add("Help", 0, 0, 0, FL_SUBMENU);
     menu->add("Help/Index", 0, 0, 0, 0);
@@ -153,14 +153,14 @@ void Application::onMenuTrack(TrackID id)
 /*
  * Maps the track menu item clicked to the according functions.
  */
-void Application::onMenuSettings(SettingsID id)
+void Application::onMenuSettings(DataType dataType)
 {
-    switch (id) {
-        case SettingsID::AUDIO:
+    switch (dataType) {
+        case DataType::AUDIO:
             onAudioSettings();
             break;
 
-        case SettingsID::MIDI:
+        case DataType::MIDI:
             onMidiSettings();
             break;
     }

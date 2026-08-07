@@ -18,6 +18,10 @@ struct AppConfig {
         std::string backend = "";
         std::string outputDevice = "";
         std::string inputDevice = "";
+        std::string outputLeft = "";
+        std::string outputRight = "";
+        std::string inputLeft = "";
+        std::string inputRight = "";
     } audio;
 
     struct Midi {

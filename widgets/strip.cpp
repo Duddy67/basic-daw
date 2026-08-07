@@ -1,7 +1,7 @@
 #include "strip.h"
 #include <iostream>
 
-Strip::Strip(int x, int y, int w, int h, int i, TrackType t, Project::Controller& ctrl) :
+Strip::Strip(int x, int y, int w, int h, int i, DataType t, Project::Controller& ctrl) :
   Fl_Group(x, y, w, h), id(i), type(t), projectCtrl(ctrl)
 {
     box(FL_UP_BOX);
@@ -9,7 +9,7 @@ Strip::Strip(int x, int y, int w, int h, int i, TrackType t, Project::Controller
     // Stop adding children (Important!).
     end();
 
-    if (type == TrackType::MIDI) {
+    if (type == DataType::MIDI) {
         buildMidi();
     }
     else {

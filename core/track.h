@@ -32,7 +32,7 @@ namespace Core {
             bool isArmed() const { return arm; }
 
             // Pure virtual. Must be implemented by derived classes.
-            virtual TrackType getType() const = 0;
+            virtual DataType getType() const = 0;
     };
 }
 

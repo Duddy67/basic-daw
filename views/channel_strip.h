@@ -27,7 +27,7 @@ class ChannelStrip : public Fl_Group, public Project::Observer
         ~ChannelStrip() {}
 
         void onCtrlEvent(CtrlEvent event, int index);
-        void addStrip(int id, TrackType type);
+        void addStrip(int id, DataType type);
 };
 
 #endif // CHANNEL_STRIP_H

@@ -9,7 +9,7 @@ void Application::onAdd()
 
     if (addTrackDlg->runModal() == DIALOG_OK) {
         auto options = addTrackDlg->getOptions();
-        TrackType type = options.midi ? TrackType::MIDI : TrackType::AUDIO;
+        DataType type = options.midi ? DataType::MIDI : DataType::AUDIO;
 
         // Make sure the project pointer is valid.
         if (projectCtrl != nullptr) {
