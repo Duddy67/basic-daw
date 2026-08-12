@@ -4,11 +4,8 @@
 
 namespace Core {
 
-    /*
-     * Destructor: Uninitializes all of the audio parameters before closing the app.
-     */
     Engine::~Engine() {
-        // Clears all audio ressources currently used by the application. 
+        // Clears all audio ressources currently used by JACK. 
         shutdownJack();
     }
 
@@ -74,7 +71,35 @@ namespace Core {
      */
     int Engine::jack_process_callback(jack_nframes_t nframes, void* arg)
     {
-        //Engine* engine = static_cast<Engine*>(arg);
+        Engine* self = static_cast<Engine*>(arg);
+        
+        // --- Get audio buffers ---
+        float* outL = (float*)jack_port_get_buffer(self->audioOutputs[0], nframes);
+        float* outR = (float*)jack_port_get_buffer(self->audioOutputs[1], nframes);
+        float* inL  = (float*)jack_port_get_buffer(self->audioInputs[0], nframes);
+        float* inR  = (float*)jack_port_get_buffer(self->audioInputs[1], nframes);
+
+        // --- Get MIDI buffers ---
+        void* midiInBuffer  = jack_port_get_buffer(self->midiInput, nframes);
+        void* midiOutBuffer = jack_port_get_buffer(self->midiOutput, nframes);
+
+        // Clear MIDI output.
+        jack_midi_clear_buffer(midiOutBuffer);
+
+        // Get current sample position.
+        uint64_t currentSample = self->application.getTransport().getPlayheadSample();
+
+        // --- Process MIDI ---
+        // Write events to midi out buffer with sample offset.
+        self->application.getMidiScheduler().processOutput(nframes, midiOutBuffer, currentSample);
+        // 
+        self->application.getMidiScheduler().processInput(midiInBuffer, currentSample);
+
+        // --- Process audio (playback and capture) ---
+        self->application.getAudioEngine().process(nframes, outL, outR, inL, inR);
+
+        // Advance playhead for next cycle.
+        self->application.getTransport().advancePlayhead(nframes);
 
         // JACK expects zero on success.
         return 0;
@@ -323,7 +348,7 @@ namespace Core {
         }
     }
 
-    std::vector<std::string> Engine::getPorts(DataType type, Direction direction)
+    std::vector<std::string> Engine::getPorts(DataType dataType, ConnectionType connectionType)
     {
         std::vector<std::string> portList;
 
@@ -335,8 +360,8 @@ namespace Core {
         // Set the flags parameter according to the type of port names to return.
         // Note: System playback ports appear as input ports from a JACK's perspective.
         //       System capture ports appear as output ports from a JACK's perspective.
-        unsigned long flags = (direction == Direction::INPUT) ? JackPortIsOutput : JackPortIsInput;
-        const char* portNamePattern = (type == DataType::AUDIO) ? JACK_DEFAULT_AUDIO_TYPE : JACK_DEFAULT_MIDI_TYPE;
+        unsigned long flags = (connectionType == ConnectionType::INPUT) ? JackPortIsOutput : JackPortIsInput;
+        const char* portNamePattern = (dataType == DataType::AUDIO) ? JACK_DEFAULT_AUDIO_TYPE : JACK_DEFAULT_MIDI_TYPE;
 
         const char** ports = jack_get_ports(client, NULL, portNamePattern, JackPortIsPhysical | flags);
 
@@ -356,14 +381,14 @@ namespace Core {
         return portList;
     }
 
-    std::vector<std::string> Engine::getOutputPorts(DataType type)
+    std::vector<std::string> Engine::getOutputPorts(DataType dataType)
     {
-        return getPorts(type, Direction::OUTPUT);
+        return getPorts(dataType, ConnectionType::OUTPUT);
     }
 
-    std::vector<std::string> Engine::getInputPorts(DataType type)
+    std::vector<std::string> Engine::getInputPorts(DataType dataType)
     {
-        return getPorts(type, Direction::INPUT);
+        return getPorts(dataType, ConnectionType::INPUT);
     }
 
     /*
@@ -380,6 +405,24 @@ namespace Core {
     const char* Engine::getInputPortName(Direction direction)
     {
         return direction == Direction::LEFT ? jack_port_name(audioInputs[0]) : jack_port_name(audioInputs[1]);
+    }
+
+    const char* Engine::getAudioPortName(ConnectionType connectionType, Direction direction)
+    {
+        if (connectionType == ConnectionType::OUTPUT) {
+            return direction == Direction::LEFT ? jack_port_name(audioOutputs[0]) : jack_port_name(audioOutputs[1]);
+        }
+        else {
+            return direction == Direction::LEFT ? jack_port_name(audioInputs[0]) : jack_port_name(audioInputs[1]);
+        }
+    }
+
+    /*
+     * Returns the application's MIDI port name according to the given direction.
+     */
+    const char* Engine::getMidiPortName(ConnectionType connectionType)
+    {
+        return connectionType == ConnectionType::INPUT ? jack_port_name(midiInput) : jack_port_name(midiOutput);
     }
 
     /*

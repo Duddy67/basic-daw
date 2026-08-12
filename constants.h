@@ -28,7 +28,7 @@ constexpr const char* CONFIG_FILENAME = "config.json";
 // --- Custom types ---
 
 enum class Direction {
-    LEFT, RIGHT, UP, DOWN, NONE, INPUT, OUTPUT
+    LEFT, RIGHT, UP, DOWN, NONE
 };
 
 enum class TimeFormat {
@@ -59,6 +59,10 @@ enum class Action {ACTIVATE, DEACTIVATE};
 
 enum class State {
     ON, OFF
+};
+
+enum class ConnectionType {
+    INPUT, INPUT_EXCLUDE_CLIENT, OUTPUT, OUTPUT_EXCLUDE_CLIENT
 };
 
 enum class PortType {

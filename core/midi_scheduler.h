@@ -16,7 +16,8 @@ class MidiScheduler {
         MidiScheduler(Application& app);
         ~MidiScheduler();
 
-        void process(uint64_t sample);
+        void processOutput(jack_nframes_t nframes, void* midiOutBuffer, uint64_t currentSample);
+        void processInput(void* midiInBuffer, uint64_t currentSample);
         void relocate(uint64_t sample);
 };
 

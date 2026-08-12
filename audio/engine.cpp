@@ -13,14 +13,14 @@ namespace Audio {
     Engine::~Engine()
     {
         // Clears all audio ressources currently used by the application. 
-        uninitOutput();
-        uninitContext();
+        //uninitOutput();
+        //uninitContext();
     }
 
     /*
      * Checks the given backend is available.
      */
-    bool Engine::isBackendAvailable(ma_backend backend) {
+    /*bool Engine::isBackendAvailable(ma_backend backend) {
         ma_context context;
         ma_context_config config = ma_context_config_init();
 
@@ -30,12 +30,12 @@ namespace Audio {
         }
 
         return false;
-    }
+    }*/
 
     /*
      * Returns the name of the given backend handled by MiniAudio.
      */
-    std::string Engine::backendToString(ma_backend backend)
+    /*std::string Engine::backendToString(ma_backend backend)
     {
         switch (backend) {
             case ma_backend_pulseaudio:
@@ -49,12 +49,12 @@ namespace Audio {
             default:
                 return "Unknown";
         }
-    }
+    }*/
 
     /*
      * Initializes the output device.
      */
-    void Engine::initializeOutputDevice() {
+    /*void Engine::initializeOutputDevice() {
         ma_device_config config = ma_device_config_init(ma_device_type_playback);
         config.playback.pDeviceID = &outputDeviceID;
         config.playback.format = defaultOutputFormat;
@@ -70,9 +70,9 @@ namespace Audio {
 
         std::cout << "Output device initialized." << std::endl;
         outputDeviceInitialized = true;
-    }
+    }*/
 
-    void Engine::initializeInputDevice()
+    /*void Engine::initializeInputDevice()
     {
         ma_device_config config = ma_device_config_init(ma_device_type_capture);
         config.capture.pDeviceID = &inputDeviceID;
@@ -128,12 +128,12 @@ namespace Audio {
         }
 
         return false;
-    }
+    }*/
 
     /*
      * Sets the given (or default) backend.
      */
-    void Engine::setBackend(const char *name)
+    /*void Engine::setBackend(const char *name)
     {
         auto backends = getBackends();
 
@@ -178,12 +178,12 @@ namespace Audio {
         else {
             throw std::runtime_error("Failed to initialize backend");
         }
-    }
+    }*/
 
     /*
      * Sets the given (or default) duplex device.
      */
-    void Engine::setDuplexDevice(const char *name)
+    /*void Engine::setDuplexDevice(const char *name)
     {
         auto duplexDevices = getDuplexDevices();
 
@@ -223,12 +223,12 @@ namespace Audio {
 
         // Let initializeDuplexDevice throw if it fails.
         initializeDuplexDevice();
-    }
+    }*/
 
     /*
      * Sets the given (or default) output device.
      */
-    void Engine::setOutputDevice(const char *name)
+    /*void Engine::setOutputDevice(const char *name)
     {
         auto outputDevices = getOutputDevices();
 
@@ -267,12 +267,12 @@ namespace Audio {
 
         // Let initializeOutputDevice throw if it fails.
         initializeOutputDevice();
-    }
+    }*/
 
     /*
      * Sets the input to the given device.
      */
-    void Engine::setInputDevice(const char *name)
+    /*void Engine::setInputDevice(const char *name)
     {
         auto inputDevices = getInputDevices();
 
@@ -311,55 +311,55 @@ namespace Audio {
 
         // Let initializeInputDevice throw if it fails.
         initializeInputDevice();
-    }
+    }*/
 
     /*
      * Uninitializes current context.
      */
-    void Engine::uninitContext() {
+    /*void Engine::uninitContext() {
         if (contextInitialized) {
             ma_context_uninit(&context);
             contextInitialized = false;
         }
-    }
+    }*/
 
     /*
      * Uninitializes current output device.
      */
-    void Engine::uninitOutput() {
+    /*void Engine::uninitOutput() {
         if (outputDeviceInitialized) {
             stopPlayback();
             ma_device_uninit(&outputDevice);
             outputDeviceInitialized = false;
         }
-    }
+    }*/
 
     /*
      * Uninitializes current input device.
      */
-    void Engine::uninitInput() {
+    /*void Engine::uninitInput() {
         if (inputDeviceInitialized) {
             stopCapture();
             ma_device_uninit(&inputDevice);
             inputDeviceInitialized = false;
         }
-    }
+    }*/
 
     /*
      * Uninitializes current input device.
      */
-    void Engine::uninitDuplex() {
+    /*void Engine::uninitDuplex() {
         if (duplexDeviceInitialized) {
             stopDuplex();
             ma_device_uninit(&duplexDevice);
             duplexDeviceInitialized = false;
         }
-    }
+    }*/
 
     /*
      * Collects and returns all the available backends on the system.
      */
-    std::vector<Engine::BackendInfo> Engine::getBackends()
+    /*std::vector<Engine::BackendInfo> Engine::getBackends()
     {
         std::vector<BackendInfo> backends;
         std::vector<ma_backend> candidates = {
@@ -378,12 +378,12 @@ namespace Audio {
         }
 
         return backends;
-    }
+    }*/
 
     /*
      * Gathers all the capture and playback device info into an array.
      */
-    std::vector<Engine::DeviceInfo> Engine::getDevices(ma_device_type deviceType)
+    /*std::vector<Engine::DeviceInfo> Engine::getDevices(ma_device_type deviceType)
     {
         // Create a device array.
         std::vector<DeviceInfo> devices;
@@ -450,11 +450,11 @@ namespace Audio {
         }
 
         return devices;
-    }
+    }*/
 
     /* Device getters. */
 
-    std::vector<Engine::DeviceInfo> Engine::getOutputDevices() {
+    /*std::vector<Engine::DeviceInfo> Engine::getOutputDevices() {
         return getDevices(ma_device_type_playback);
     }
 
@@ -464,12 +464,12 @@ namespace Audio {
 
     std::vector<Engine::DeviceInfo> Engine::getDuplexDevices() {
         return getDevices(ma_device_type_duplex);
-    }
+    }*/
 
     /*
      * Returns the name of the current backend.
      */
-    std::string Engine::currentBackend()
+    /*std::string Engine::currentBackend()
     {
         if (!contextInitialized) {
             return backendToString(ma_backend_null);
@@ -483,13 +483,13 @@ namespace Audio {
     std::string Engine::currentOutput()
     {
         return outputDevice.playback.name;
-    }
+    }*/
 
     /*
      * Displays both the input and output audio devices in the console.
      * Function used for debugging purpose.
      */
-    void Engine::printAllDevices()
+    /*void Engine::printAllDevices()
     {
         if (!contextInitialized) {
             std::cerr << "Audio context not initialized." << std::endl;
@@ -528,12 +528,12 @@ namespace Audio {
             }
             std::cout << std::endl;
         }
-    }
+    }*/
 
     /*
      * Callback function used by MiniAudio to feed audio data to devices.
      */
-    void Engine::data_callback(ma_device* pDevice, void* output, const void* input, ma_uint32 frameCount)
+    /*void Engine::data_callback(ma_device* pDevice, void* output, const void* input, ma_uint32 frameCount)
     {
         Engine* engine = static_cast<Engine*>(pDevice->pUserData);
         auto& transport = engine->application.getTransport();
@@ -547,6 +547,11 @@ namespace Audio {
             // Then update the playhead sample position.
             transport.advancePlayhead(frameCount);
         }
+    }*/
+
+    void Engine::process(jack_nframes_t nframes, float* outLeft, float* outRight, const float* inLeft, const float* inRight)
+    {
+
     }
 
     void Engine::createTrack()

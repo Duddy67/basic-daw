@@ -12,8 +12,9 @@ namespace Audio {
 
     class Engine {
 
+        Application& application;
         // Structure that holds the backend data.
-        struct BackendInfo {
+        /*struct BackendInfo {
             std::string name;
             ma_backend backend;
             bool isDefault;
@@ -26,7 +27,6 @@ namespace Audio {
             bool isDefault;
         };
 
-        Application& application;
         ma_context context;
         ma_device outputDevice;
         ma_device inputDevice;
@@ -48,14 +48,18 @@ namespace Audio {
         std::string backendToString(ma_backend backend);
         std::vector<DeviceInfo> getDevices(ma_device_type deviceType);
         bool isBackendAvailable(ma_backend backend);
-        static void data_callback(ma_device* device, void* output, const void* input, ma_uint32 frameCount);
+        static void data_callback(ma_device* device, void* output, const void* input,
+        ma_uint32 frameCount);*/
 
       public:
 
           Engine(Application& app);
           ~Engine();
 
-          void startPlayback() { ma_device_start(&outputDevice); }
+          // Called from Jack callback
+          void process(jack_nframes_t nframes, float* outLeft, float* outRight, const float* inLeft, const float* inRight);
+
+          /*void startPlayback() { ma_device_start(&outputDevice); }
           void stopPlayback()  { ma_device_stop(&outputDevice); }
           void startCapture() { ma_device_start(&inputDevice); }
           void stopCapture()  { ma_device_stop(&inputDevice); }
@@ -83,7 +87,7 @@ namespace Audio {
           void setBackend(const char *name);
           void setOutputDevice(const char *name = nullptr);
           void setInputDevice(const char *name = nullptr);
-          void setDuplexDevice(const char *name = nullptr);
+          void setDuplexDevice(const char *name = nullptr);*/
 
           void createTrack();
           void removeTrack();

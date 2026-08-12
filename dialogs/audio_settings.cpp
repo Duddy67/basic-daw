@@ -8,194 +8,175 @@ AudioSettingsDialog::AudioSettingsDialog(int x, int y, int width, int height, co
 }
 
 /*
- * Create the setting's backend and device drop down lists.
+ * Create the setting's backend and port drop down lists.
  */
 void AudioSettingsDialog::buildDialog()
 {
     // Drop down list height.
     int height = (TINY_SPACE * 2) + MICRO_SPACE;
 
-    backend = new Fl_Choice(SMALL_SPACE, TINY_SPACE * 3, XLARGE_SPACE, height, "Backend");
-    output = new Fl_Choice(SMALL_SPACE, (TINY_SPACE * 2) * 4, XLARGE_SPACE, height, "Output");
-    input = new Fl_Choice(SMALL_SPACE, (TINY_SPACE * 2) * 6 + TINY_SPACE, XLARGE_SPACE, height, "Input");
+    outputLeft = new Fl_Choice(SMALL_SPACE * 3, TINY_SPACE * 3, MEDIUM_SPACE * 3, height, "Out left => ");
+    outputRight = new Fl_Choice(SMALL_SPACE * 3, (TINY_SPACE * 6), MEDIUM_SPACE * 3, height, "Out right => ");
+    inputLeft = new Fl_Choice(SMALL_SPACE * 3, (TINY_SPACE * 2) * 5 + TINY_SPACE, MEDIUM_SPACE * 3, height, "In left => ");
+    inputRight = new Fl_Choice(SMALL_SPACE * 3, (TINY_SPACE * 2) * 6 + (TINY_SPACE * 2), MEDIUM_SPACE * 3, height, "Out left => ");
+
     // Align labels.
-    backend->align(FL_ALIGN_TOP | FL_ALIGN_LEFT);
-    output->align(FL_ALIGN_TOP | FL_ALIGN_LEFT);
-    input->align(FL_ALIGN_TOP | FL_ALIGN_LEFT);
+    outputLeft->align(FL_ALIGN_LEFT);
+    outputRight->align(FL_ALIGN_LEFT);
+    inputLeft->align(FL_ALIGN_LEFT);
+    inputRight->align(FL_ALIGN_LEFT);
 
-    backend->callback([](Fl_Widget*, void* userdata) {
-        static_cast<AudioSettingsDialog*>(userdata)->onChangeBackend();
+    outputLeft->callback([](Fl_Widget*, void* userdata) {
+        static_cast<AudioSettingsDialog*>(userdata)->onChangeOutput(Direction::LEFT);
     }, this);
 
-    output->callback([](Fl_Widget*, void* userdata) {
-        static_cast<AudioSettingsDialog*>(userdata)->onChangeOutput();
+    outputRight->callback([](Fl_Widget*, void* userdata) {
+        static_cast<AudioSettingsDialog*>(userdata)->onChangeOutput(Direction::RIGHT);
     }, this);
 
-    if (!application.getAudioEngine().isContextInitialized()) {
-        std::cerr << "Failed to initialize audio system." << std::endl;
+    inputLeft->callback([](Fl_Widget*, void* userdata) {
+        static_cast<AudioSettingsDialog*>(userdata)->onChangeInput(Direction::LEFT);
+    }, this);
+
+    inputRight->callback([](Fl_Widget*, void* userdata) {
+        static_cast<AudioSettingsDialog*>(userdata)->onChangeInput(Direction::RIGHT);
+    }, this);
+
+    if (!application.getCoreEngine().isClientActivated()) {
+        std::cerr << "Audio system not initialized." << std::endl;
     }
     else {
-        buildBackends();
-        buildDevices();
+        buildPorts();
     }
 
-    // Add the Ok/Cancel buttons.
+    // Add the Ok/Cancel default buttons.
     addDefaultButtons();
 }
 
-void AudioSettingsDialog::onButtonsCreated() 
+void AudioSettingsDialog::onButtonsCreated()
 {
-    // Change the OK button's label.
-    okButton->label("Save");   
-}
-
-void AudioSettingsDialog::onOk()
-{
-    save();
-    Dialog::onOk();
-}
-
-void AudioSettingsDialog::onCancel()
-{
-    cancel();
-    Dialog::onCancel();
-}
-
-void AudioSettingsDialog::buildBackends()
-{
-    // Get the required variables.
-    auto backends = application.getAudioEngine().getBackends();
-    AppConfig& config = loadConfig();
-
-    for (size_t i = 0; i < backends.size(); ++i) {
-        backend->add(backends[i].name.c_str());
-
-        if (config.audio.backend.compare(backends[i].name.c_str()) == 0) {
-            backend->value(i);
-        }
-    }
-}
-
-void AudioSettingsDialog::buildDevices()
-{
-    AppConfig& config = loadConfig();
-
-    auto outputDevices = application.getAudioEngine().getOutputDevices();
-    int value = 100, defaultDevice = 0;
-    std::string escapedName = ""; 
-
-    for (size_t i = 0; i < outputDevices.size(); ++i) {
-        // Create an option for the device.
-        escapedName = application.escapeMenuText(outputDevices[i].name);
-        output->add(escapedName.c_str());
-
-        if (outputDevices[i].isDefault) {
-            defaultDevice = i;
-        }
-
-        if (config.audio.outputDevice.compare(outputDevices[i].name.c_str()) == 0) {
-            value = i;
-        }
-    }
-
-    value = (value != 100) ? value : defaultDevice;
-    output->value(value);
-
-    auto inputDevices = application.getAudioEngine().getInputDevices();
-    value = 100, defaultDevice = 0;
-
-    for (size_t i = 0; i < inputDevices.size(); ++i) {
-        // Create an option for the device.
-        escapedName = application.escapeMenuText(inputDevices[i].name);
-        input->add(escapedName.c_str());
-
-        if (inputDevices[i].isDefault) {
-            defaultDevice = i;
-        }
-
-        if (config.audio.inputDevice.compare(inputDevices[i].name.c_str()) == 0) {
-            value = i;
-        }
-    }
-
-    value = (value != 100) ? value : defaultDevice;
-    input->value(value);
+    // Change the Cancel button's label.
+    cancelButton->label("Close");
+    // No need Ok button.
+    okButton->hide();
 }
 
 /*
- * The backend option has been changed.
+ * Builds an option list for each port of the application.
  */
-void AudioSettingsDialog::onChangeBackend()
+void AudioSettingsDialog::buildPorts()
 {
-    //Application* pApplication = (Application*) data;
+    auto config = loadConfig();
 
-    try {
-        // Reset backend and devices.
-        application.getAudioEngine().setBackend(backend->text());
-        application.getAudioEngine().setOutputDevice(output->text());
-    }
-    catch (const std::runtime_error& e) {
-        std::cerr << "Backend choice error: " << std::string(e.what()) << std::endl;
-        return;
+    auto outputPorts = application.getCoreEngine().getOutputPorts(DataType::AUDIO);
+    int valueOutL = -1, valueOutR = -1;
+    std::string escapedName = "";
+
+    for (size_t i = 0; i < outputPorts.size(); ++i) {
+        // Create an option for the device.
+        escapedName = application.escapeMenuText(outputPorts[i]);
+        outputLeft->add(escapedName.c_str());
+        outputRight->add(escapedName.c_str());
+
+        if (config.audio.outputLeft.compare(outputPorts[i].c_str()) == 0) {
+            valueOutL = i;
+        }
+
+        if (config.audio.outputRight.compare(outputPorts[i].c_str()) == 0) {
+            valueOutR = i;
+        }
     }
 
-    // Delete the previous device options.
-    output->clear();
-    input->clear();
-    // Rebuild the device options.
-    buildDevices();
+    if (valueOutL > -1) {
+        outputLeft->value(valueOutL);
+    }
+
+    if (valueOutR > -1) {
+        outputRight->value(valueOutR);
+    }
+
+    auto inputPorts = application.getCoreEngine().getInputPorts(DataType::AUDIO);
+    int valueInL = -1, valueInR = -1;
+
+    for (size_t i = 0; i < inputPorts.size(); ++i) {
+        // Create an option for the device.
+        escapedName = application.escapeMenuText(inputPorts[i]);
+        inputLeft->add(escapedName.c_str());
+        inputRight->add(escapedName.c_str());
+
+        if (config.audio.inputLeft.compare(inputPorts[i].c_str()) == 0) {
+            valueInL = i;
+        }
+
+        if (config.audio.inputRight.compare(inputPorts[i].c_str()) == 0) {
+            valueInR = i;
+        }
+    }
+
+    if (valueInL > -1) {
+        inputLeft->value(valueInL);
+    }
+
+    if (valueInR > -1) {
+        inputRight->value(valueInR);
+    }
 }
 
 /*
- * The output option has been changed.
+ * The left or right output option has been changed.
  */
-void AudioSettingsDialog::onChangeOutput()
+void AudioSettingsDialog::onChangeOutput(Direction direction)
 {
-    try {
-        // Reset the output device.
-        application.getAudioEngine().setOutputDevice(output->text());
+    auto config = loadConfig();
+    // Get the application's output port name.
+    const char* portName = (direction == Direction::LEFT)
+                           ? application.getCoreEngine().getAudioPortName(ConnectionType::OUTPUT, Direction::LEFT)
+                           : application.getCoreEngine().getAudioPortName(ConnectionType::OUTPUT, Direction::RIGHT);
+    // Get the old selection from the config file.
+    const char* oldSelection = direction == Direction::LEFT ? config.audio.outputLeft.c_str() : config.audio.outputRight.c_str();
+    const char* newSelection = direction == Direction::LEFT ? outputLeft->text() : outputRight->text();
+    // Cancel the previous connection first.
+    application.getCoreEngine().safeDisconnect(portName, oldSelection);
+    // Set the new connection.
+    application.getCoreEngine().safeConnect(portName, newSelection);
+
+    // Store the new connection in the config file.
+    if (direction == Direction::LEFT) {
+        config.audio.outputLeft = newSelection;
     }
-    catch (const std::runtime_error& e) {
-        std::cerr << "Output choice error: " << std::string(e.what()) << std::endl;
-        return;
+    else {
+        config.audio.outputRight = newSelection;
     }
 
-    // Delete the previous output options.
-    output->clear();
-    // Rebuild the device options.
-    buildDevices();
-
-}
-
-void AudioSettingsDialog::save()
-{
-    // Save the new settings in the config file.
-    AppConfig& config = loadConfig();
-    config.audio.backend = backend->text();
-    config.audio.outputDevice = output->text();
-    config.audio.inputDevice = input->text();
     saveConfig();
 }
 
-void AudioSettingsDialog::cancel()
+/*
+ * The left or right input option has been changed.
+ */
+void AudioSettingsDialog::onChangeInput(Direction direction)
 {
-    // The backend or devices have been changed.
-    // Reset it all to the initial settings set in the config file.
-    if (backend->changed() || output->changed()) {
-        try {
-            application.getAudioEngine().setBackend(backend->text());
-            application.getAudioEngine().setOutputDevice(output->text());
-        }
-        catch (const std::runtime_error& e) {
-            std::cerr << "Backend choice error: " << std::string(e.what()) << std::endl;
-            return;
-        }
+    auto config = loadConfig();
+    // Get the application's input port name.
+    const char* portName = (direction == Direction::LEFT)
+                           ? application.getCoreEngine().getAudioPortName(ConnectionType::INPUT, Direction::LEFT)
+                           : application.getCoreEngine().getAudioPortName(ConnectionType::INPUT, Direction::RIGHT);
+    // Get the old selection from the config file.
+    const char* oldSelection = direction == Direction::LEFT ? config.audio.inputLeft.c_str() : config.audio.inputRight.c_str();
+    const char* newSelection = direction == Direction::LEFT ? inputLeft->text() : inputRight->text();
+    // Cancel the previous connection first.
+    application.getCoreEngine().safeDisconnect(oldSelection, portName);
+    // Set the new connection.
+    application.getCoreEngine().safeConnect(newSelection, portName);
 
-        // Delete the previous device options.
-        output->clear();
-        input->clear();
-        // Rebuild the device options.
-        buildDevices();
+    // Store the new connection in the config file.
+    if (direction == Direction::LEFT) {
+        config.audio.inputLeft = newSelection;
     }
+    else {
+        config.audio.inputRight = newSelection;
+    }
+
+    saveConfig();
 }
 

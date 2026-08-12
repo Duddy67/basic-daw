@@ -1,6 +1,6 @@
 #include "../main.h"
 
-void Application::initAudioBackend()
+/*void Application::initAudioBackend()
 {
     auto backends = getAudioEngine().getBackends();
     AppConfig& config = loadConfig();
@@ -89,14 +89,14 @@ void Application::initAudioDevices()
         getAudioEngine().setInputDevice(config.audio.inputDevice.c_str());
         getAudioEngine().startCapture();
     }
-}
+}*/
 
 void Application::initAudioSystem()
 {
     // Create and initialize the audio engine object.
     audioEngine = new Audio::Engine(*this);
 
-    try {
+    /*try {
         initAudioBackend();
         std::cout << "Current backend: " << audioEngine->currentBackend() << std::endl;
     }
@@ -118,16 +118,17 @@ void Application::initAudioSystem()
     //time->setSampleRate(audioEngine->getDefaultOutputSampleRate());
 
     //audioEngine->printAllDevices(); // For debug purpose.
-    std::cout << "=== Audio system initialized ===" << std::endl;
+    std::cout << "=== Audio system initialized ===" << std::endl;*/
 }
 
 void Application::initMidiSystem()
 {
     // Create and initialize the midi engine object.
     midiEngine = new Midi::Engine(*this);
+        std::cout << "initMidiSystem: "  << std::endl;
 
     // Initialize midi device.
-    try {
+    /*try {
         midiEngine->initDevice();
     }
     catch (RtMidiError& e) {
@@ -153,6 +154,6 @@ void Application::initMidiSystem()
         return;
     }
 
-    std::cout << "=== MIDI system initialized ===" << std::endl;
+    std::cout << "=== MIDI system initialized ===" << std::endl;*/
 }
 

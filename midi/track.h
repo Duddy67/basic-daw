@@ -21,7 +21,7 @@ namespace Midi {
             Track(Engine& e, int id);
             ~Track() override;
 
-            void processMessage(const std::vector<unsigned char>& message, double deltaTime);
+            //void processMessage(const std::vector<unsigned char>& message, double deltaTime);
             void addEvent(MidiEvent& event);
             void setChannel(int chan) { channel = (unsigned int)chan < MAX_MIDI_CHANNELS && chan > 0 ? chan : 0; }
             int getChannel() const { return channel; }

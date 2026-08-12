@@ -1,6 +1,6 @@
 #include "engine.h"
 #include "../project/model.h"
-#include "RtMidi.h"
+//#include "RtMidi.h"
 #include "track.h"
 
 
@@ -8,17 +8,17 @@ namespace Midi {
     Engine::Engine(Application& app) : application(app)
     {
         // Create an api map.
-        apiMap[RtMidi::UNIX_JACK] = "Jack Client";
-        apiMap[RtMidi::LINUX_ALSA] = "Linux ALSA";
-        apiMap[RtMidi::RTMIDI_DUMMY] = "RtMidi Dummy";
+        //apiMap[RtMidi::UNIX_JACK] = "Jack Client";
+        //apiMap[RtMidi::LINUX_ALSA] = "Linux ALSA";
+        //apiMap[RtMidi::RTMIDI_DUMMY] = "RtMidi Dummy";
 
         // Set the apis vector according to the available devices on the system.
-        RtMidi::getCompiledApi(apis);
+        //RtMidi::getCompiledApi(apis);
     }
 
     Engine::~Engine()
     {
-        deleteCurrentPorts();
+        //deleteCurrentPorts();
     }
 
     Project::Model* Engine::getProject()
@@ -26,7 +26,7 @@ namespace Midi {
         return application.getProject();
     }
 
-    void Engine::deleteCurrentPorts()
+    /*void Engine::deleteCurrentPorts()
     {
         // Free memory.
         delete midiIn;
@@ -36,7 +36,7 @@ namespace Midi {
         midiOut = nullptr;
     }
 
-    void Engine::initDevice(const char* name /* = "none"*/)
+    void Engine::initDevice(const char* name)
     {
         deleteCurrentPorts();
         int deviceId = -1;
@@ -88,7 +88,7 @@ namespace Midi {
         }
     }
 
-    void Engine::initInputPort(const char* name /*= "none"*/)
+    void Engine::initInputPort(const char* name)
     {
         int portId = -1;
         AppConfig& config = loadConfig();
@@ -129,7 +129,7 @@ namespace Midi {
         }
     }
 
-    void Engine::initOutputPort(const char* name /*= "none"*/)
+    void Engine::initOutputPort(const char* name)
     {
         int portId = -1;
         AppConfig& config = loadConfig();
@@ -210,6 +210,21 @@ namespace Midi {
                 if (track->getType() == DataType::MIDI) {
                     auto* midiTrack = static_cast<Midi::Track*>(track.get());
                     midiTrack->processMessage(*message, deltaTime);
+                }
+            }
+        }
+    }*/
+
+    void Engine::process(jack_nframes_t nframes, void* midiInputBuffer, void* midiOutputBuffer)
+    {
+        // Make sure a project does exist.
+        if (application.getProject() != nullptr) {
+            // Send the incoming message to the existing tracks.
+            for (auto& track : application.getProject()->getTracks()) {
+                // Only MIDI tracks process MIDI messages.
+                if (track->getType() == DataType::MIDI) {
+                    //auto* midiTrack = static_cast<Midi::Track*>(track.get());
+                    //midiTrack->processMessage(*message, deltaTime);
                 }
             }
         }

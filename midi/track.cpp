@@ -14,7 +14,7 @@ namespace Midi {
         // ...
     }
 
-    void Track::processMessage(const std::vector<unsigned char>& message, double deltaTime) 
+    /*void Track::processMessage(const std::vector<unsigned char>& message, double deltaTime) 
     {
         // First, check for solo tracks.
         if (engine.getProject()->soloTrackCount() && !isSoloed()) {
@@ -50,7 +50,7 @@ namespace Midi {
             event.message = message;
             events.push_back(event);
         }
-    }
+    }*/
 
     void Track::addEvent(MidiEvent& event)
     {

@@ -10,11 +10,11 @@ void Application::onAudioSettings()
     }
 
     if (audioSettingsDlg->runModal() == DIALOG_OK) {
-        AppConfig& config = loadConfig();
+        /*AppConfig& config = loadConfig();
         config.audio.backend = audioSettingsDlg->getBackend().text();
         config.audio.outputDevice = audioSettingsDlg->getOutput().text();
         config.audio.inputDevice = audioSettingsDlg->getInput().text();
-        saveConfig();
+        saveConfig();*/
     }
 }
 

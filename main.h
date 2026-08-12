@@ -80,9 +80,6 @@ class Application : public Fl_Double_Window
     TransportBar* transportBar = nullptr;
     MidiScheduler* midiScheduler = nullptr;
 
-    void initAudioBackend();
-    void initAudioDevices();
-
     public:
 
         Application(int w, int h, const char* l, int argc, char* argv[]);
@@ -122,6 +119,7 @@ class Application : public Fl_Double_Window
         Core::Engine& getCoreEngine() { return *coreEngine; }
         Audio::Engine& getAudioEngine() { return *audioEngine; }
         void initAudioSystem();
+        void initJackClient();
         Midi::Engine& getMidiEngine() { return *midiEngine; }
         Transport& getTransport() { return *transport; }
         MidiScheduler& getMidiScheduler() { return *midiScheduler; }

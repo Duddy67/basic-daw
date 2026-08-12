@@ -1,10 +1,13 @@
 #ifndef MIDI_ENGINE_H
 #define MIDI_ENGINE_H
 
+#include <jack/jack.h>
+#include <jack/midiport.h>
 #include <vector>
 #include <map>
 #include "../main.h"
-#include "RtMidi.h"
+//#include "concurrentqueue.h"
+//#include "RtMidi.h"
 
 
 class Application;
@@ -17,13 +20,14 @@ namespace Midi {
 
     class Engine {
         Application& application;
-        RtMidiIn* midiIn = nullptr;
+        /*RtMidiIn* midiIn = nullptr;
         RtMidiOut* midiOut = nullptr;
         std::map<int, std::string> apiMap;
         std::vector<RtMidi::Api> apis;
 
         void deleteCurrentPorts();
-        static void data_callback(double deltaTime, std::vector<unsigned char>* messages, void* userData);
+        static void data_callback(double deltaTime, std::vector<unsigned char>* messages,
+        void* userData);*/
 
         public:
 
@@ -31,7 +35,10 @@ namespace Midi {
             ~Engine();
 
             Application& getApplication() const { return application; }
-            size_t getDeviceCount() { return apis.size(); }
+            // Called from Jack callback
+            void process(jack_nframes_t nframes, void* midiInputBuffer, void* midiOutputBuffer);
+
+            /*size_t getDeviceCount() { return apis.size(); }
             void initDevice(const char* name = "none");
             void initInputPort(const char* name = "none");
             void initOutputPort(const char* name = "none");
@@ -41,7 +48,7 @@ namespace Midi {
             int getOutputPortCount() { return midiOut ? midiOut->getPortCount() : 0; }
             std::vector<std::string> getDevices();
             std::vector<std::string> getInputPorts();
-            std::vector<std::string> getOutputPorts();
+            std::vector<std::string> getOutputPorts();*/
             Project::Model* getProject();
     };
 }

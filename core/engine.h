@@ -14,7 +14,7 @@ class Application;
 namespace Core {
 
     class Engine {
-            Application* pApplication;
+            Application& application;
             jack_client_t* client = nullptr;
             jack_port_t* audioOutputs[2] = {nullptr, nullptr}; // Left, Right
             jack_port_t* audioInputs[2] = {nullptr, nullptr}; // Left, Right
@@ -26,11 +26,11 @@ namespace Core {
             const uint32_t defaultOutputSampleRate = 44100;
 
             static int jack_process_callback(jack_nframes_t nframes, void* arg);
-            std::vector<std::string> getPorts(DataType type, Direction direction);
+            std::vector<std::string> getPorts(DataType dataType, ConnectionType connectionType);
 
         public:
 
-            Engine(Application* app) : pApplication(app) {}
+            Engine(Application& app) : application(app) {}
             ~Engine();
 
             bool initializeJack();
@@ -51,9 +51,11 @@ namespace Core {
             std::vector<std::string> getInputPorts(DataType type);
             const char* getOutputPortName(Direction direction);
             const char* getInputPortName(Direction direction);
+            const char* getAudioPortName(ConnectionType connectionType, Direction direction);
+            const char* getMidiPortName(ConnectionType connectionType);
             int getDefaultOutputFormat() const { return defaultOutputFormat; }
             uint32_t getDefaultOutputSampleRate() const { return defaultOutputSampleRate; }
-            Application& getApplication() const { return *pApplication; }
+            Application& getApplication() const { return application; }
     };
 }
 

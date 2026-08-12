@@ -93,3 +93,23 @@ void Application::deactivateMenuItem(MenuItemID menuId)
     }
 }
 
+void Application::initJackClient()
+{
+    // Create and initialize the core engine object.
+    coreEngine = new Core::Engine(*this);
+
+    if (!coreEngine->initializeJack()) {
+        std::cerr << "Couldn't initialize Jack!" << std::endl;
+        return;
+    }
+
+    coreEngine->startPlayback();
+    coreEngine->startCapture();
+    coreEngine->connectAudioPorts();
+    coreEngine->connectMidiPorts();
+    // Set sample rate for time computing.
+    //time->setSampleRate(engine->getDefaultOutputSampleRate());
+
+    coreEngine->printAllPorts(); // For debug purpose.
+}
+

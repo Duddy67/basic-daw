@@ -76,6 +76,7 @@ Application::~Application()
     delete transport;
     delete projectModel;
     delete projectCtrl;
+    delete coreEngine;
     delete audioEngine;
     delete midiEngine;
     delete fileChooser;
@@ -94,6 +95,7 @@ int main(int argc, char *argv[])
     Application app(900, 600, "Basic DAW", argc, argv);
     app.initAudioSystem();
     app.initMidiSystem();
+    app.initJackClient();
     /*Application* app = new Application(900, 600, "Basic DAW", argc, argv);
     app->show();
     int result = Fl::run();
