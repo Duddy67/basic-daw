@@ -3,22 +3,18 @@
 
 #include <vector>
 #include "../core/track.h"
-#include "engine.h"
 
 
 namespace Midi {
 
-    class Engine;
-
     class Track : public Core::Track {
-        Engine& engine;
         bool omni = false;
         int channel = 0;
         std::vector<MidiEvent> events;
 
         public:
 
-            Track(Engine& e, int id);
+            Track(int id);
             ~Track() override;
 
             //void processMessage(const std::vector<unsigned char>& message, double deltaTime);

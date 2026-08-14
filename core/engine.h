@@ -2,6 +2,7 @@
 #define CORE_ENGINE_H
 
 #include <jack/jack.h>
+#include <jack/midiport.h>
 #include <iostream>
 #include <vector>
 #include <memory>
@@ -11,6 +12,9 @@
 
 class Application;
 
+/*
+ * Class in charge of setting up and initialing the JACK client.
+ */
 namespace Core {
 
     class Engine {

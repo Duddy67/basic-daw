@@ -3,7 +3,7 @@
 
 namespace Midi {
 
-    Track::Track(Engine& e, int id) : Core::Track(id), engine(e)
+    Track::Track(int id) : Core::Track(id)
     {
         // ...
         fillEventList();
@@ -13,44 +13,6 @@ namespace Midi {
     {
         // ...
     }
-
-    /*void Track::processMessage(const std::vector<unsigned char>& message, double deltaTime) 
-    {
-        // First, check for solo tracks.
-        if (engine.getProject()->soloTrackCount() && !isSoloed()) {
-            // This track is not part of the currently soloed tracks.
-            // Don't play.
-            return;
-        }
-
-        if (!engine.getMidiOut().isPortOpen()) {
-            std::cout << "MIDI output port is not open!" << std::endl;
-            return;
-        }
-
-        if (!isMuted()) {
-            unsigned int nBytes = message.size();
-            for (unsigned int i = 0; i < nBytes; i++) {
-                std::cout << "Byte " << i << " = " << (int)message.at(i) << ", ";
-            }
-
-            if (nBytes > 0) {
-                std::cout << "stamp = " << deltaTime << ", ";
-            }
-
-            engine.getMidiOut().sendMessage(&message);
-        }
-
-        auto& transport = engine.getApplication().getTransport();
-
-        // Store incoming midi events.
-        if (transport.isRecording()) {
-            MidiEvent event;
-            event.samplePosition = transport.getPlayheadSample();
-            event.message = message;
-            events.push_back(event);
-        }
-    }*/
 
     void Track::addEvent(MidiEvent& event)
     {

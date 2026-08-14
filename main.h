@@ -20,10 +20,9 @@
 #include "project/controller.h"
 #include "project/view.h"
 #include "core/engine.h"
-#include "audio/engine.h"
-#include "midi/engine.h"
+#include "audio/processor.h"
 #include "core/transport.h"
-#include "core/midi_scheduler.h"
+#include "midi/scheduler.h"
 #include "widgets/transport_bar.h"
 #include "json.hpp"
 
@@ -41,15 +40,14 @@ namespace Core {
 }
 
 namespace Audio {
-    class Engine;
+    class Processor;
 }
 
 namespace Midi {
-    class Engine;
+    class Scheduler;
 }
 
 class Transport;
-class MidiScheduler;
 
 
 class Application : public Fl_Double_Window 
@@ -74,11 +72,10 @@ class Application : public Fl_Double_Window
     Project::Controller* projectCtrl = nullptr;
     Project::View* projectView = nullptr;
     Core::Engine* coreEngine = nullptr;
-    Audio::Engine* audioEngine = nullptr;
-    Midi::Engine* midiEngine = nullptr;
+    Audio::Processor* audioProcessor = nullptr;
     Transport* transport = nullptr;
     TransportBar* transportBar = nullptr;
-    MidiScheduler* midiScheduler = nullptr;
+    Midi::Scheduler* midiScheduler = nullptr;
 
     public:
 
@@ -117,13 +114,11 @@ class Application : public Fl_Double_Window
         void createProject();
         Project::Model* getProject() { return projectModel; }
         Core::Engine& getCoreEngine() { return *coreEngine; }
-        Audio::Engine& getAudioEngine() { return *audioEngine; }
-        void initAudioSystem();
+        Audio::Processor& getAudioProcessor() { return *audioProcessor; }
+        //void initAudioSystem();
         void initJackClient();
-        Midi::Engine& getMidiEngine() { return *midiEngine; }
         Transport& getTransport() { return *transport; }
-        MidiScheduler& getMidiScheduler() { return *midiScheduler; }
-        void initMidiSystem();
+        Midi::Scheduler& getMidiScheduler() { return *midiScheduler; }
         std::string escapeMenuText(const std::string& input);
         void activateMenuItem(MenuItemID menuId);
         void deactivateMenuItem(MenuItemID menuId);

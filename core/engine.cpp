@@ -72,6 +72,13 @@ namespace Core {
     int Engine::jack_process_callback(jack_nframes_t nframes, void* arg)
     {
         Engine* self = static_cast<Engine*>(arg);
+
+        // Check first that a project exists.
+        if (!self->application.getProject()) {
+            // JACK expects zero on success.
+            return 0;
+        }
+
         
         // --- Get audio buffers ---
         float* outL = (float*)jack_port_get_buffer(self->audioOutputs[0], nframes);
@@ -96,7 +103,7 @@ namespace Core {
         self->application.getMidiScheduler().processInput(midiInBuffer, currentSample);
 
         // --- Process audio (playback and capture) ---
-        self->application.getAudioEngine().process(nframes, outL, outR, inL, inR);
+        self->application.getAudioProcessor().process(nframes, outL, outR, inL, inR);
 
         // Advance playhead for next cycle.
         self->application.getTransport().advancePlayhead(nframes);

@@ -18,7 +18,6 @@ LOCAL_SRC = \
 	application/callbacks.cpp \
 	core/transport.cpp \
 	core/engine.cpp \
-	core/midi_scheduler.cpp \
 	dialogs/dialog.cpp \
 	dialogs/new.cpp \
 	application/menu/edit.cpp \
@@ -29,7 +28,7 @@ LOCAL_SRC = \
 	views/track_list.cpp \
 	application/menu/track.cpp \
 	application/menu/settings.cpp \
-	audio/engine.cpp \
+	audio/processor.cpp \
 	audio/track.cpp \
 	views/channel_strip.cpp \
 	views/timeline.cpp \
@@ -37,14 +36,13 @@ LOCAL_SRC = \
 	project/controller.cpp \
 	widgets/strip.cpp \
 	widgets/transport_bar.cpp \
-	application/init_engines.cpp \
-	midi/engine.cpp \
+	midi/scheduler.cpp \
 	midi/track.cpp \
 	config/config.cpp  \
         dialogs/audio_settings.cpp \
         dialogs/midi_settings.cpp
 
-EXT_SRC = \
+#EXT_SRC = \
           ../libraries/RtMidi.cpp
 
 # Object files

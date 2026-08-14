@@ -35,7 +35,7 @@ namespace Project {
     int Model::addAudioTrack()
     {
         int newId = getNewTrackId();
-        auto track = std::make_unique<Audio::Track>(application.getAudioEngine(), newId);
+        auto track = std::make_unique<Audio::Track>(newId);
         tracks.push_back(std::move(track));
         // ....
         return newId;
@@ -44,7 +44,7 @@ namespace Project {
     int Model::addMidiTrack()
     {
         int newId = getNewTrackId();
-        auto track = std::make_unique<Midi::Track>(application.getMidiEngine(), newId);
+        auto track = std::make_unique<Midi::Track>(newId);
         tracks.push_back(std::move(track));
 
         // ...

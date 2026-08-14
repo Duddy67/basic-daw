@@ -66,7 +66,8 @@ Application::Application(int w, int h, const char *l, int argc, char *argv[]) : 
     //maximize();
 
     transport = new Transport(*this);
-    midiScheduler = new MidiScheduler(*this);
+    midiScheduler = new Midi::Scheduler(*this);
+    audioProcessor = new Audio::Processor(*this);
 
     this->callback(noEscapeKey_cb, this);
 }
@@ -77,8 +78,7 @@ Application::~Application()
     delete projectModel;
     delete projectCtrl;
     delete coreEngine;
-    delete audioEngine;
-    delete midiEngine;
+    delete audioProcessor;
     delete fileChooser;
     delete newDlg;
     delete audioSettingsDlg;
@@ -93,8 +93,6 @@ int main(int argc, char *argv[])
     // Set the application to screen size (ie: Fl::w() and Fl::h()).
     //Application app(Fl::w(), Fl::h(), "Basic Application", argc, argv);
     Application app(900, 600, "Basic DAW", argc, argv);
-    app.initAudioSystem();
-    app.initMidiSystem();
     app.initJackClient();
     /*Application* app = new Application(900, 600, "Basic DAW", argc, argv);
     app->show();
