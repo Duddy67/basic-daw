@@ -43,7 +43,7 @@ namespace Project {
           void toggleArm(int trackId);
           size_t trackCount() const { return tracks.size(); }
           size_t soloTrackCount() const { return soloTracks.size(); }
-
+          Application& getApplication() const { return application; }
     };
 }
 

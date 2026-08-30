@@ -13,6 +13,26 @@ namespace Project {
         // ...
     }
 
+    Transport& Controller::getTransport()
+    {
+        return application.getTransport();
+    }
+
+    TempoMap& Controller::getTempoMap()
+    {
+        return application.getTempoMap();
+    }
+
+    Core::Engine& Controller::getEngine()
+    {
+        return application.getCoreEngine();
+    }
+
+    ViewState& Controller::getViewState()
+    {
+        return application.getViewState();
+    }
+
     /*
      * Unregister an observer (important to prevent crashes when views are deleted).
      */
@@ -61,6 +81,7 @@ namespace Project {
 
     void Controller::onTrackSelected(int id)
     {
+        std::cout << "onTrackSelected(): " << id << std::endl;
         notify(CtrlEvent::TRACK_SELECTED, id);
     }
 }

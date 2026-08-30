@@ -39,10 +39,6 @@ Application::Application(int w, int h, const char *l, int argc, char *argv[]) : 
     // Prevent toolbar (and its children) from being resized.
     toolbar->resizable(nullptr);
 
-    //projectModel = new Project::Model(*this);
-    //projectCtrl = new Project::Controller(*this, *projectModel);
-    //projectView = new Project::View(0, SMALL_SPACE * 2, Fl::w(), Fl::h() - (SMALL_SPACE * 2), *projectCtrl);
-
     // Stop adding children to the main window.
     end();
 
@@ -66,6 +62,7 @@ Application::Application(int w, int h, const char *l, int argc, char *argv[]) : 
     //maximize();
 
     transport = new Transport(*this);
+    tempoMap = new TempoMap(*this);
     midiScheduler = new Midi::Scheduler(*this);
     audioProcessor = new Audio::Processor(*this);
 
@@ -75,6 +72,7 @@ Application::Application(int w, int h, const char *l, int argc, char *argv[]) : 
 Application::~Application() 
 {
     delete transport;
+    delete tempoMap;
     delete projectModel;
     delete projectCtrl;
     delete coreEngine;

@@ -8,10 +8,12 @@
 #include "../views/track_list.h"
 #include "../views/channel_strip.h"
 #include "../views/timeline.h"
+#include "../views/ruler.h"
 
 // Forward declarations (for classes outside the Project namespace)
 class TrackList;
 class ChannelStrip;
+class Timeline;
 
 namespace Project {
     // Forward declarations (for classes inside the Project namespace)
@@ -19,15 +21,22 @@ namespace Project {
 
     class View : public Fl_Group
     {
-        Controller& controller;
-        TrackList* trackList = nullptr;
-        ChannelStrip* channelStrip = nullptr;
-        Timeline* timeline = nullptr;
+            Controller& controller;
+            TrackList* trackList = nullptr;
+            ChannelStrip* channelStrip = nullptr;
+            Timeline* timeline = nullptr;
+            Ruler* ruler = nullptr;
+            bool isLiveUpdating = false;
+
+            static void liveUpdate_cb(void* userData);
 
         public:
 
             View(int x, int y, int w, int h, Controller& ctrl);
             ~View();
+
+            void startLiveUpdate();
+            void stopLiveUpdate();
     };
 }
 

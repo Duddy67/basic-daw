@@ -78,6 +78,7 @@ void TrackList::setSelectedTrack(int id)
         // Unselect all the track in the list.
         track->unselect();
         track->color(FL_GRAY);
+        std::cout << "setSelectedTrack " << id << std::endl;
 
         // Except for the given track.
         if (track->getId() == id) {

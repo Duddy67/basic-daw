@@ -22,7 +22,12 @@ constexpr unsigned int SCROLLBAR_MARGIN = 10;
 constexpr unsigned int TAB_BORDER_THICKNESS = 10;
 constexpr unsigned int MAX_MIDI_CHANNELS = 16;
 constexpr unsigned int SAMPLE_RATE = 44100;
-constexpr unsigned int PPQ = 960;
+//constexpr unsigned int PPQ = 960;
+constexpr double SECONDS_PER_MINUTE = 60.0;
+constexpr double DEFAULT_BPM = 120.0;
+constexpr int DEFAULT_NUMERATOR = 4;
+constexpr int DEFAULT_DENOMINATOR = 4;
+constexpr int DEFAULT_PPQ = 480; // in ticks
 constexpr const char* CONFIG_FILENAME = "config.json";
 
 // --- Custom types ---
@@ -75,6 +80,11 @@ enum class MenuItemID {
     TRACK_ADD, TRACK_REMOVE, SETTINGS_SUB, SETTINGS_AUDIO, SETTINGS_MIDI
 };
 
+enum class CtrlEvent {
+    ADD_MIDI_TRACK, ADD_AUDIO_TRACK, REMOVE_TRACK, MUTED_TRACK,
+    UNMUTED_TRACK, SOLOED_TRACK, UNSOLOED_TRACK, TRACK_SELECTED
+};
+
 struct Selection {
     int start, end;
 };
@@ -84,15 +94,34 @@ struct MidiEvent {
     std::vector<unsigned char> message;
 };
 
+struct TempoChange {
+    // Beat position where this tempo takes effect.
+    double beat; 
+    double bpm;
+};
+
+struct TimeSignatureChange {
+    // Beat position where this signature takes effect.
+    double beat;     
+    // Beats per bar (eg: 4 for 4/4).
+    int numerator;   
+    // Note value per beat (usually 4, meaning quarter note).
+    int denominator; 
+};
+
+struct ViewState {
+    // Pixel per beat (eg: 100.0 = 1 beat = 100 pixels).
+    double zoom = 100.0;
+    // How many pixels the view is scrolled to the right.
+    int horizontalOffset = 0;
+    // How many pixels the view is scrolled down.
+    int verticalOffset = 0;
+};
+
 inline std::map<EditID, std::string> EditLabels {
     {EditID::CUT, "Cut"},
     {EditID::PASTE, "Paste"},
     {EditID::NONE, ""}
-};
-
-enum class CtrlEvent {
-    ADD_MIDI_TRACK, ADD_AUDIO_TRACK, REMOVE_TRACK, MUTED_TRACK,
-    UNMUTED_TRACK, SOLOED_TRACK, UNSOLOED_TRACK, TRACK_SELECTED
 };
 
 inline std::map<MenuItemID, std::string> MenuLabels {

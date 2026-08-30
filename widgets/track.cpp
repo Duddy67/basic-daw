@@ -2,6 +2,7 @@
 #include "../project/controller.h"
 
 namespace Widget {
+
     Track::Track(int x, int y, int w, int h, int i, DataType t, Project::Controller& ctrl) :
       Fl_Group(x, y, w, h), id(i), type(t), projectCtrl(ctrl)
     {
@@ -45,7 +46,6 @@ namespace Widget {
                         projectCtrl.onToggleSolo(getId(), getType());
                     }
                     else if (Fl::event_inside(record)) {
-                        std::cout << "Track => Record FL_PUSH " << getId() << std::endl;
                         projectCtrl.onToggleArm(getId());
                     }
                     // The user has clicked on the track itself (ie: the Fl_Group widget) to select it.

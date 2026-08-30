@@ -8,6 +8,11 @@
 #include "observer.h"
 
 class Application;
+class Transport;
+class TempoMap;
+namespace Core {
+    class Engine;
+}
 
 namespace Project {
 
@@ -37,6 +42,11 @@ namespace Project {
           void onToggleSolo(int trackId, DataType type);
           void onToggleArm(int trackId);
           void onTrackSelected(int id);
+          Transport& getTransport();
+          TempoMap& getTempoMap();
+          Core::Engine& getEngine();
+          ViewState& getViewState();
+          //Application& getApplication() const { return application; }
     };
 }
 

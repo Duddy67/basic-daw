@@ -27,7 +27,7 @@ namespace Core {
             std::atomic<bool> playbackActive{false};
             std::atomic<bool> captureActive{false};
             int defaultOutputFormat = SF_FORMAT_FLOAT;
-            const uint32_t defaultOutputSampleRate = 44100;
+            const uint32_t sampleRate = 44100;
 
             static int jack_process_callback(jack_nframes_t nframes, void* arg);
             std::vector<std::string> getPorts(DataType dataType, ConnectionType connectionType);
@@ -58,7 +58,7 @@ namespace Core {
             const char* getAudioPortName(ConnectionType connectionType, Direction direction);
             const char* getMidiPortName(ConnectionType connectionType);
             int getDefaultOutputFormat() const { return defaultOutputFormat; }
-            uint32_t getDefaultOutputSampleRate() const { return defaultOutputSampleRate; }
+            uint32_t getSampleRate() const { return sampleRate; }
             Application& getApplication() const { return application; }
     };
 }

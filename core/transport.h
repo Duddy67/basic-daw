@@ -21,9 +21,14 @@ class Transport {
         void record();
         bool isPlaying() const { return playing.load(); }
         bool isRecording() const { return recording.load(); }
+        // Returns the current playhead position in samples.
         uint64_t getPlayheadSample() const { return playheadSample.load(); }
+        // Advances the playhead by the number of frames just processed.
+        // This is called every audio callback.
         void advancePlayhead(uint64_t frameCount) { playheadSample.fetch_add(frameCount, std::memory_order_relaxed); }
-
+        // Jumps the playhead to an absolute sample position.
+        // Called when the user clicks the timeline or relocates the song.
+        void locateToSample(uint64_t sample) { playheadSample.store(sample, std::memory_order_release); }
 };
 
 #endif // TRANSPORT_H

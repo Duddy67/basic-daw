@@ -22,6 +22,7 @@
 #include "core/engine.h"
 #include "audio/processor.h"
 #include "core/transport.h"
+#include "core/tempo_map.h"
 #include "midi/scheduler.h"
 #include "widgets/transport_bar.h"
 #include "json.hpp"
@@ -48,6 +49,7 @@ namespace Midi {
 }
 
 class Transport;
+class TempoMap;
 
 
 class Application : public Fl_Double_Window 
@@ -74,8 +76,11 @@ class Application : public Fl_Double_Window
     Core::Engine* coreEngine = nullptr;
     Audio::Processor* audioProcessor = nullptr;
     Transport* transport = nullptr;
+    TempoMap* tempoMap = nullptr;
     TransportBar* transportBar = nullptr;
     Midi::Scheduler* midiScheduler = nullptr;
+    // The single GUI source of truth. Shared with GUI widgets Ruler, Timeline...
+    ViewState viewState;
 
     public:
 
@@ -118,7 +123,10 @@ class Application : public Fl_Double_Window
         //void initAudioSystem();
         void initJackClient();
         Transport& getTransport() { return *transport; }
+        TempoMap& getTempoMap() { return *tempoMap; }
         Midi::Scheduler& getMidiScheduler() { return *midiScheduler; }
+        ViewState& getViewState() { return viewState; }
+        Project::View& getProjectView() { return *projectView; }
         std::string escapeMenuText(const std::string& input);
         void activateMenuItem(MenuItemID menuId);
         void deactivateMenuItem(MenuItemID menuId);

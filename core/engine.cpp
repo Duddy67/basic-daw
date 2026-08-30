@@ -20,10 +20,10 @@ namespace Core {
             return false;
         }
 
-        jack_nframes_t sampleRate = jack_get_sample_rate(client);
+        jack_nframes_t jackSampleRate = jack_get_sample_rate(client);
 
-        if (sampleRate != defaultOutputSampleRate) {
-            std::cout << "JACK sample rate is " << sampleRate << " Hz. Adjusting internally.\n";
+        if (jackSampleRate != getSampleRate()) {
+            std::cout << "JACK sample rate is " << jackSampleRate << " Hz. Adjusting internally.\n";
         }
 
         // Register application's audio ports.
