@@ -28,6 +28,11 @@ namespace Project {
         return application.getCoreEngine();
     }
 
+    View& Controller::getView()
+    {
+        return application.getProjectView();
+    }
+
     ViewState& Controller::getViewState()
     {
         return application.getViewState();

@@ -34,6 +34,7 @@ LOCAL_SRC = \
 	audio/track.cpp \
 	views/channel_strip.cpp \
 	views/timeline.cpp \
+	views/ruler.cpp \
 	dialogs/add_track.cpp \
 	project/controller.cpp \
 	widgets/strip.cpp \

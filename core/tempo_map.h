@@ -17,6 +17,9 @@ class TempoMap
         std::vector<TimeSignatureChange> timeSignatures;
         int ppq = DEFAULT_PPQ;
 
+        // Helper - Find the index of the time signature that applies at the given beat.
+        int getTimeSignatureIndex(double beat) const;
+
     public:
 
         TempoMap(Application& app);
@@ -39,6 +42,7 @@ class TempoMap
         double beatToSeconds(double beat) const;
         std::pair<int, double> getBarBeat(double beat) const;
         double getBarStart(double beat) const;
+        int getBarNumber(double beat) const;
         std::vector<double> getBarLines(double startBeat, double endBeat) const;
 };
 

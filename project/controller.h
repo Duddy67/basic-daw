@@ -6,6 +6,7 @@
 #include "../main.h"
 #include "model.h"
 #include "observer.h"
+#include "view.h"
 
 class Application;
 class Transport;
@@ -18,6 +19,7 @@ namespace Project {
 
     class Model;
     class Observer;
+    class View;
 
     class Controller {
 
@@ -45,6 +47,7 @@ namespace Project {
           Transport& getTransport();
           TempoMap& getTempoMap();
           Core::Engine& getEngine();
+          View& getView();
           ViewState& getViewState();
           //Application& getApplication() const { return application; }
     };

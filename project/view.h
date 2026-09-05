@@ -9,11 +9,13 @@
 #include "../views/channel_strip.h"
 #include "../views/timeline.h"
 #include "../views/ruler.h"
+#include "../core/time_converter.h"
 
 // Forward declarations (for classes outside the Project namespace)
 class TrackList;
 class ChannelStrip;
 class Timeline;
+class Ruler;
 
 namespace Project {
     // Forward declarations (for classes inside the Project namespace)
@@ -27,6 +29,8 @@ namespace Project {
             Timeline* timeline = nullptr;
             Ruler* ruler = nullptr;
             bool isLiveUpdating = false;
+            // Pointer to share state with other GUI elements.
+            ViewState* viewState;
 
             static void liveUpdate_cb(void* userData);
 
@@ -37,6 +41,8 @@ namespace Project {
 
             void startLiveUpdate();
             void stopLiveUpdate();
+            void drawCursor(int x, int y, int w, int h);
+            void drawGrid(int x, int y, int w, int h, bool isRuler = false);
     };
 }
 
