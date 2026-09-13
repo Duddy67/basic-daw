@@ -15,13 +15,30 @@ namespace Project {
 
         channelStrip = new ChannelStrip(x, y, screenFourth / 2, h, controller);
 
+        // Shortcuts for timeline coordinates.
+        int timelineX = x + screenFourth + BORDER_INTERSTICE;
+        int timelineY = y + RULER_HEIGHT + BORDER_INTERSTICE;
+        int timelineW = (screenFourth * 3) - (BORDER_INTERSTICE * 2) - SCROLLBAR_HEIGHT;
+        int timelineH = h - (BORDER_INTERSTICE * 2) - (RULER_HEIGHT + SCROLLBAR_HEIGHT);
+
         Fl_Group* workspace = new Fl_Group(x + screenFourth / 2, y, Fl::w() - (screenFourth / 2), h);
-            ruler = new Ruler(x + screenFourth + BORDER_INTERSTICE, y, (screenFourth * 3) - (BORDER_INTERSTICE * 2), SMALL_SPACE, controller);
-            trackList = new TrackList(x + screenFourth / 2, y + SMALL_SPACE, screenFourth / 2, h, controller);
-            timeline = new Timeline(x + screenFourth + BORDER_INTERSTICE, y + SMALL_SPACE + BORDER_INTERSTICE,
-                                    (screenFourth * 3) - (BORDER_INTERSTICE * 2), h - (BORDER_INTERSTICE * 2) - SMALL_SPACE, controller);
+            ruler = new Ruler(x + screenFourth + BORDER_INTERSTICE, y, (screenFourth * 3) - (BORDER_INTERSTICE * 2), RULER_HEIGHT, controller);
+            trackList = new TrackList(x + screenFourth / 2, y + RULER_HEIGHT, screenFourth / 2, h - RULER_HEIGHT, controller);
+            timeline = new Timeline(timelineX, timelineY, timelineW, timelineH, controller);
+
+            hScrollbar = new Fl_Scrollbar(timelineX, timelineY + timelineH, timelineW, SCROLLBAR_HEIGHT);
+            hScrollbar->type(FL_HORIZONTAL);
+            hScrollbar->callback(hScrollbar_cb, this);
+
+            vScrollbar = new Fl_Scrollbar(timelineX + timelineW, timelineY, SCROLLBAR_HEIGHT, timelineH);
+            vScrollbar->type(FL_VERTICAL);
+            vScrollbar->callback(vScrollbar_cb, this);
+
             workspace->add(trackList);
+            workspace->add(ruler);
             workspace->add(timeline);
+            workspace->add(hScrollbar);
+            workspace->add(vScrollbar);
         workspace->end();
 
         add(channelStrip);
@@ -36,6 +53,11 @@ namespace Project {
     {
        // Destructor implementation (can be empty).
        // Prevent errors such as: undefined reference to `vtable for ProjectView'
+    }
+
+    Timeline& View::getTimeline()
+    {
+        return *timeline;
     }
 
     void View::startLiveUpdate()
@@ -71,7 +93,7 @@ namespace Project {
 
     }
 
-    // Function common to the Ruler and Timeline widgets.
+    // Functions common to the Ruler and Timeline widgets.
 
     void View::drawCursor(int x, int y, int w, int h)
     {
@@ -118,8 +140,6 @@ namespace Project {
 
         auto bars = tempoMap.getBarLines(startBeat, endBeat);
 
-        int barNum = tempoMap.getBarNumber(startBeat);
-
         // Draw the bar lines.
         for (double beat : bars) {
             int pixel = (int)(beat * viewState->zoom) - viewState->horizontalOffset;
@@ -127,8 +147,9 @@ namespace Project {
             fl_line(x + pixel, y, x + pixel, y + h);
 
             if (isRuler) {
+                int barNum = tempoMap.getBarNumber(beat);
                 // Draw bar numbers beside the bar lines on the left.
-                fl_draw(std::to_string(barNum++).c_str(), x + pixel + 2, y + 12);
+                fl_draw(std::to_string(barNum).c_str(), x + pixel + 2, y + 12);
             }
         }
 
@@ -179,5 +200,135 @@ namespace Project {
 
             beat += gridStep;
         }
+    }
+
+    void View::vScrollbar_cb(Fl_Widget* w, void* data)
+    {
+        View* self = static_cast<View*>(data);
+        self->viewState->verticalOffset = (int)self->vScrollbar->value();
+        self->ruler->redraw();
+        self->timeline->redraw();
+    }
+
+    void View::hScrollbar_cb(Fl_Widget* w, void* data)
+    {
+        View* self = static_cast<View*>(data);
+        self->viewState->horizontalOffset = (int)self->hScrollbar->value();
+        self->ruler->redraw();
+        self->timeline->redraw();
+    }
+
+    void View::updateScrollbars()
+    {
+        double maxBeats = 10000.0;
+        int totalPixels = (int)(maxBeats * viewState->zoom);
+        int visiblePixels = timeline->h();
+
+        if (totalPixels > visiblePixels) {
+            hScrollbar->range(0, totalPixels - visiblePixels);
+            hScrollbar->slider_size((double)visiblePixels / totalPixels);
+            hScrollbar->activate();
+        }
+        else {
+            hScrollbar->range(0, 0);
+            hScrollbar->slider_size(1.0);
+            hScrollbar->deactivate();
+        }
+
+    }
+
+    void View::setZoom(double newZoom, int anchorScreenX)
+    {
+        // Clamp zoom to reasonable limits.
+        if (newZoom < MIN_ZOOM) {
+            newZoom = MIN_ZOOM;
+        }
+
+        if (newZoom > MAX_ZOOM) {
+            newZoom = MAX_ZOOM;
+        }
+
+        // Find the beat under the anchor point (before zoom).
+        double anchorBeat = (viewState->horizontalOffset + anchorScreenX) / viewState->zoom;
+
+        // Apply the new zoom.
+        viewState->zoom = newZoom;
+
+        // Recompute the offset so the anchor beat stays at the same screen x.
+        viewState->horizontalOffset = (int)((anchorBeat * viewState->zoom) - anchorScreenX);
+
+        if (viewState->horizontalOffset < 0) {
+            viewState->horizontalOffset = 0;
+        }
+
+        // Update the horizontal scrollbar range and value.
+        updateScrollbars();
+        // Recompute range based on new zoom.
+        hScrollbar->value(viewState->horizontalOffset);
+
+        // Redraw all affected widgets.
+        ruler->redraw();
+        timeline->redraw();
+    }
+
+    /*
+     * Handles the events happening into the track widget.
+     */
+    int View::handle(int event)
+    {
+        switch (event) {
+            case FL_SHORTCUT: {
+
+                // Check for minus sign key.
+                if (Fl::event_key() == 54) {
+                    zoomOut();
+                }
+
+                // Check for plus sign key.
+                if (Fl::event_key() == 61) {
+                    zoomIn();
+                }
+
+                // Event handled - Stop propagation.
+                return 1;
+            }
+
+            // Right click or other buttons not handled. Let parent widgets see it too.
+            return 0;
+        }
+
+        // Default - Let Fl_Group handle any not processed events.
+        return Fl_Group::handle(event);
+    }
+
+    void View::zoomIn()
+    {
+        // Anchor at the playhead if visible, otherwise at the center.
+        int anchorX = getAnchorScreenX();
+        setZoom(viewState->zoom * 1.25, anchorX);
+    }
+
+    void View::zoomOut()
+    {
+        int anchorX = getAnchorScreenX();
+        setZoom(viewState->zoom / 1.25, anchorX);
+    }
+
+    /*
+     * Returns a good anchor point: playhead if visible, the widget's center otherwise.
+     */
+    int View::getAnchorScreenX()
+    {
+        double playheadBeat = TimeConverter::getCurrentBeat(controller.getTransport(),
+                                                            controller.getTempoMap(),
+                                                            controller.getEngine().getSampleRate());
+
+        int playheadX = (int)((playheadBeat * viewState->zoom) - viewState->horizontalOffset);
+
+        if (playheadX >= 0 && playheadX < timeline->w()) {
+            return playheadX;
+        }
+
+        return timeline->w() / 2;
     }
 }

@@ -1,6 +1,7 @@
 #ifndef RULER_H
 #define RULER_H
 
+#include <FL/Fl.H>
 #include <FL/Fl_Group.H>
 #include <FL/Fl_Box.H>
 #include "../project/controller.h"
@@ -19,6 +20,7 @@ class Ruler : public Fl_Group
 
     protected: 
         void draw() override;
+        int handle(int event) override;
 
     public:
 

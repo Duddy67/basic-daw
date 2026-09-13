@@ -14,7 +14,7 @@ Transport::~Transport()
 
 void Transport::play() {
     // TEMPORARY (starts from the top each time)
-    locateToSample(0); 
+    /*locateToSample(0); 
     auto& tracks = application.getProject()->getTracks();
 
     for (auto& track : tracks) {
@@ -22,7 +22,7 @@ void Transport::play() {
             auto* midiTrack = static_cast<Midi::Track*>(track.get());
             midiTrack->playbackCursor = 0;
         }
-    }
+    }*/
     ///// END TEMPORARY  //////
 
     application.getProjectView().startLiveUpdate();

@@ -95,18 +95,26 @@ namespace Core {
 
         // Get current sample position.
         uint64_t currentSample = self->application.getTransport().getPlayheadSample();
+        auto& transport = self->application.getTransport();
 
         // --- Process MIDI ---
-        // Write events to midi out buffer with sample offset.
-        self->application.getMidiScheduler().processOutput(nframes, midiOutBuffer, currentSample);
-        // 
-        self->application.getMidiScheduler().processInput(midiInBuffer, currentSample);
+        if (transport.isRolling()) {
+            // Write events to midi out buffer with sample offset.
+            self->application.getMidiScheduler().processOutput(nframes, midiOutBuffer, currentSample);
+        }
+
+        if (transport.isRecording()) {
+            // 
+            self->application.getMidiScheduler().processInput(midiInBuffer, currentSample);
+        }
 
         // --- Process audio (playback and capture) ---
         self->application.getAudioProcessor().process(nframes, outL, outR, inL, inR);
 
-        // Advance playhead for next cycle.
-        self->application.getTransport().advancePlayhead(nframes);
+        if (transport.isRolling()) {
+            // Advance playhead for next cycle.
+            self->application.getTransport().advancePlayhead(nframes);
+        }
 
         // JACK expects zero on success.
         return 0;

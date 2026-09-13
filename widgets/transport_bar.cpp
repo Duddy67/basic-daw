@@ -72,7 +72,6 @@ void TransportBar::onPlay()
 {
     // Make sure there is at least one track before playing.
     if (application.getProject()->trackCount()) {
-        //std::cout << "onPlay()." << std::endl;
         application.getTransport().play();
     }
 }

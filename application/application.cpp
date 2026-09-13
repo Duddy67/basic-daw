@@ -48,11 +48,26 @@ void Application::createProject()
     if (projectModel == nullptr) {
         projectModel = new Project::Model(*this);
         projectCtrl = new Project::Controller(*this, *projectModel);
-        projectView = new Project::View(0, (SMALL_SPACE * 2) + (TINY_SPACE * 2), Fl::w(), Fl::h() - (SMALL_SPACE * 2), *projectCtrl);
 
-        // Make projectView child of Application.
+        // Calculate the standard side/bottom border thickness.
+        int sideBorder = (decorated_w() - w()) / 2;
+        // Calculate the combined top + bottom border thickness.
+        int totalVerticalBorders = decorated_h() - h();
+        // 3. Subtract the bottom border (which equals the side border) to isolate the top border
+        //int topBorderThickness = totalVerticalBorders - sideBorder;
+
+        int viewX = sideBorder;
+        int viewY = (SMALL_SPACE * 2) + (TINY_SPACE * 2);
+        int viewW = Fl::w() - (sideBorder * 2);
+        int viewH = Fl::h() - totalVerticalBorders - ((SMALL_SPACE * 2) + (TINY_SPACE * 2));
+
+        projectView = new Project::View(viewX, viewY, viewW, viewH, *projectCtrl);
+
+        // Make projectView child of Application (ie: the main window).
         add(projectView);
         redraw();
+
+        projectView->updateScrollbars();
     }
 }
 

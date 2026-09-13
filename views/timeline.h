@@ -24,6 +24,7 @@ class Timeline : public Fl_Group, public Project::Observer
 
   protected: 
       void draw() override;
+      int handle(int event) override;
 
   public:
 

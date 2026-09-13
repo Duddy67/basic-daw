@@ -3,6 +3,7 @@
 
 #include <FL/Fl_Group.H>
 #include <FL/Fl_Box.H>
+#include <FL/Fl_Scrollbar.H>
 #include "../main.h"
 #include "controller.h"
 #include "../views/track_list.h"
@@ -28,21 +29,34 @@ namespace Project {
             ChannelStrip* channelStrip = nullptr;
             Timeline* timeline = nullptr;
             Ruler* ruler = nullptr;
+            Fl_Scrollbar* hScrollbar = nullptr;
+            Fl_Scrollbar* vScrollbar = nullptr;
             bool isLiveUpdating = false;
             // Pointer to share state with other GUI elements.
             ViewState* viewState;
 
             static void liveUpdate_cb(void* userData);
 
+        protected: 
+            int handle(int event) override;
+
         public:
 
             View(int x, int y, int w, int h, Controller& ctrl);
             ~View();
 
+            Timeline& getTimeline();
             void startLiveUpdate();
             void stopLiveUpdate();
             void drawCursor(int x, int y, int w, int h);
             void drawGrid(int x, int y, int w, int h, bool isRuler = false);
+            void updateScrollbars();
+            void zoomIn();
+            void zoomOut();
+            void setZoom(double newZoom, int anchorScreenX);
+            int getAnchorScreenX();
+            static void vScrollbar_cb(Fl_Widget* w, void* data);
+            static void hScrollbar_cb(Fl_Widget* w, void* data);
     };
 }
 

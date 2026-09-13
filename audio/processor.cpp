@@ -16,7 +16,7 @@ namespace Audio {
 
     void Processor::process(jack_nframes_t nframes, float* outLeft, float* outRight, const float* inLeft, const float* inRight)
     {
-        if (!application.getTransport().isPlaying() && !application.getTransport().isRecording()) {
+        if (!application.getTransport().isRolling()) {
             std::fill(outLeft, outLeft + nframes, 0.0f);
             std::fill(outRight, outRight + nframes, 0.0f);
             return;

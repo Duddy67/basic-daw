@@ -7,6 +7,10 @@
 #include <cstdint>
 
 constexpr unsigned int MODAL_WND_POS = 20;
+constexpr unsigned int MENU_BAR_HEIGHT = 40;
+constexpr unsigned int TOOL_BAR_HEIGHT = 60;
+constexpr unsigned int TRANSPORT_BAR_HEIGHT = 50;
+constexpr unsigned int RULER_HEIGHT = 40;
 constexpr unsigned int BUTTON_WIDTH = 80;
 constexpr unsigned int BUTTON_HEIGHT = 40;
 constexpr unsigned int MICRO_SPACE = 5;
@@ -17,7 +21,7 @@ constexpr unsigned int MEDIUM_SPACE = 80;
 constexpr unsigned int LARGE_SPACE = 160;
 constexpr unsigned int XLARGE_SPACE = 320;
 constexpr unsigned int TEXT_SIZE = 13;
-constexpr unsigned int SCROLLBAR_HEIGHT = 15;
+constexpr unsigned int SCROLLBAR_HEIGHT = 16;
 constexpr unsigned int SCROLLBAR_MARGIN = 10;
 constexpr unsigned int TAB_BORDER_THICKNESS = 10;
 constexpr unsigned int MAX_MIDI_CHANNELS = 16;
@@ -28,6 +32,8 @@ constexpr double DEFAULT_BPM = 120.0;
 constexpr int DEFAULT_NUMERATOR = 4;
 constexpr int DEFAULT_DENOMINATOR = 4;
 constexpr int DEFAULT_PPQ = 480; // in ticks
+constexpr double MIN_ZOOM = 5.0; // 5 pixels per beat (zoomed way out)
+constexpr double MAX_ZOOM = 2000.0; // 2000 pixels per beat (zoomed way in)
 constexpr const char* CONFIG_FILENAME = "config.json";
 
 // --- Custom types ---

@@ -7,7 +7,7 @@ Application::Application(int w, int h, const char *l, int argc, char *argv[]) : 
     color((Fl_Color) FL_INACTIVE_COLOR);
 
     // Create and build the menu.
-    menu = new Fl_Menu_Bar(0, 0, w, SMALL_SPACE);
+    menu = new Fl_Menu_Bar(0, 0, w, MENU_BAR_HEIGHT);
     menu->box(FL_THIN_UP_BOX);
     createMenu();
     menu->textsize(TEXT_SIZE);
@@ -19,11 +19,12 @@ Application::Application(int w, int h, const char *l, int argc, char *argv[]) : 
     redoMenuItem = (Fl_Menu_Item *)menu->find_item(MenuLabels[MenuItemID::EDIT_REDO].c_str());
     redoMenuItem->deactivate();
 
-    toolbar = new Fl_Group(0, SMALL_SPACE, w, SMALL_SPACE + (TINY_SPACE * 2));
+    toolbar = new Fl_Group(0, MENU_BAR_HEIGHT, w, TOOL_BAR_HEIGHT);
     toolbar->box(FL_FLAT_BOX);
 
+        transportBar = new TransportBar(MICRO_SPACE, MENU_BAR_HEIGHT + MICRO_SPACE, XLARGE_SPACE + SMALL_SPACE, TRANSPORT_BAR_HEIGHT, *this);
+
         // Other widgets go here...
-        transportBar = new TransportBar(MICRO_SPACE, SMALL_SPACE + MICRO_SPACE, XLARGE_SPACE + SMALL_SPACE, SMALL_SPACE + TINY_SPACE, *this);
 
     toolbar->end();
 

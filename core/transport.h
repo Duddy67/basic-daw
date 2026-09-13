@@ -21,6 +21,7 @@ class Transport {
         void record();
         bool isPlaying() const { return playing.load(); }
         bool isRecording() const { return recording.load(); }
+        bool isRolling() const { return playing.load() || recording.load(); }
         // Returns the current playhead position in samples.
         uint64_t getPlayheadSample() const { return playheadSample.load(); }
         // Advances the playhead by the number of frames just processed.
