@@ -44,6 +44,7 @@ namespace Project {
           void onToggleSolo(int trackId, DataType type);
           void onToggleArm(int trackId);
           void onTrackSelected(int id);
+          bool isSnapToGrid();
           Transport& getTransport();
           TempoMap& getTempoMap();
           Core::Engine& getEngine();

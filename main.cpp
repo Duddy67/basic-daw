@@ -23,6 +23,7 @@ Application::Application(int w, int h, const char *l, int argc, char *argv[]) : 
     toolbar->box(FL_FLAT_BOX);
 
         transportBar = new TransportBar(MICRO_SPACE, MENU_BAR_HEIGHT + MICRO_SPACE, XLARGE_SPACE + SMALL_SPACE, TRANSPORT_BAR_HEIGHT, *this);
+        gridBar = new GridBar(XLARGE_SPACE + SMALL_SPACE + (MICRO_SPACE * 2), MENU_BAR_HEIGHT + MICRO_SPACE, LARGE_SPACE, TRANSPORT_BAR_HEIGHT, *this);
 
         // Other widgets go here...
 

@@ -39,6 +39,7 @@ LOCAL_SRC = \
 	project/controller.cpp \
 	widgets/strip.cpp \
 	widgets/transport_bar.cpp \
+	widgets/grid_bar.cpp \
 	midi/scheduler.cpp \
 	midi/track.cpp \
 	config/config.cpp  \

@@ -25,6 +25,7 @@
 #include "core/tempo_map.h"
 #include "midi/scheduler.h"
 #include "widgets/transport_bar.h"
+#include "widgets/grid_bar.h"
 #include "json.hpp"
 
 using json = nlohmann::json;
@@ -78,6 +79,7 @@ class Application : public Fl_Double_Window
     Transport* transport = nullptr;
     TempoMap* tempoMap = nullptr;
     TransportBar* transportBar = nullptr;
+    GridBar* gridBar = nullptr;
     Midi::Scheduler* midiScheduler = nullptr;
     // The single GUI source of truth. Shared with GUI widgets Ruler, Timeline...
     ViewState viewState;
@@ -126,6 +128,7 @@ class Application : public Fl_Double_Window
         TempoMap& getTempoMap() { return *tempoMap; }
         Midi::Scheduler& getMidiScheduler() { return *midiScheduler; }
         ViewState& getViewState() { return viewState; }
+        GridBar& getGridBar() { return *gridBar; }
         Project::View& getProjectView() { return *projectView; }
         std::string escapeMenuText(const std::string& input);
         void activateMenuItem(MenuItemID menuId);

@@ -44,6 +44,11 @@ int Ruler::handle(int event)
                 // Adding mouseX / zoom gives the beat at the cursor.
                 double beat = (mouseX + viewState->horizontalOffset) / viewState->zoom;
 
+                if (projectCtrl.isSnapToGrid()) {
+                    double gridStep = projectCtrl.getView().getGridStep();
+                    beat = std::round(beat / gridStep) * gridStep;
+                }
+
                 if (beat < 0.0) {
                     beat = 0.0;
                 }

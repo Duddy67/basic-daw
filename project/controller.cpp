@@ -38,6 +38,11 @@ namespace Project {
         return application.getViewState();
     }
 
+    bool Controller::isSnapToGrid()
+    {
+        return application.getGridBar().isSnapToGrid();
+    }
+
     /*
      * Unregister an observer (important to prevent crashes when views are deleted).
      */

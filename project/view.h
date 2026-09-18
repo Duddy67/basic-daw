@@ -55,6 +55,7 @@ namespace Project {
             void zoomOut();
             void setZoom(double newZoom, int anchorScreenX);
             int getAnchorScreenX();
+            double getGridStep();
             static void vScrollbar_cb(Fl_Widget* w, void* data);
             static void hScrollbar_cb(Fl_Widget* w, void* data);
     };

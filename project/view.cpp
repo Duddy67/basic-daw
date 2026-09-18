@@ -83,9 +83,30 @@ namespace Project {
     {
         View* self = static_cast<View*>(userData);
 
+        // Only auto scroll (page scroll) while the transport is rolling.
+        if (self->controller.getTransport().isRolling()) {
+            // Compute playhead position.
+            double playheadBeat = TimeConverter::getCurrentBeat(self->controller.getTransport(),
+                                                                self->controller.getTempoMap(),
+                                                                 self->controller.getEngine().getSampleRate());
+
+            int playheadPixel = (int)(playheadBeat * self->viewState->zoom) - self->viewState->horizontalOffset;
+            int w = self->timeline->w();
+            int margin = 50;
+
+            if (playheadPixel > w - margin) {
+                int newOffset = self->viewState->horizontalOffset + (w - margin * 2);
+                newOffset = std::min(newOffset, (int)self->hScrollbar->maximum());
+
+                self->viewState->horizontalOffset = newOffset;
+                self->hScrollbar->value(newOffset);
+            }
+        }
+
         self->timeline->redraw();
         self->ruler->redraw();
 
+        // Schedule next tick.
         if (self->isLiveUpdating) {
             // Keep the timer running.
             Fl::repeat_timeout(0.01, liveUpdate_cb, userData); // 10 ms refresh
@@ -119,25 +140,7 @@ namespace Project {
         double endBeat = (viewState->horizontalOffset + w) / viewState->zoom;
         auto tempoMap = controller.getTempoMap();
 
-        // Choose grid step (smallest subdivision)
-        double gridStep;
-
-        if (viewState->zoom < 20.0) {
-            gridStep = 4.0;
-        }      
-        else if (viewState->zoom < 50.0) {
-            gridStep = 2.0;
-        } 
-        else if (viewState->zoom < 100.0) {
-            gridStep = 1.0;
-        }
-        else if (viewState->zoom < 200.0) {
-            gridStep = 0.5;
-        }
-        else {
-            gridStep = 0.25;
-        }
-
+        double gridStep = getGridStep();
         auto bars = tempoMap.getBarLines(startBeat, endBeat);
 
         // Draw the bar lines.
@@ -173,12 +176,15 @@ namespace Project {
             bool isStrongBeat = (std::fabs(std::round(beatsInBar) - beatsInBar) < eps) && !isDownbeat;
             bool isHalfBeat = (std::fabs(std::round(beatsInBar * 2.0) / 2.0 - beatsInBar) < eps) && !isDownbeat && !isStrongBeat;
 
+            // The signature's bottom number value. eg: quarter note in 3/4.
             if (isStrongBeat) {
                 fl_color(FL_DARK2);
             }
+            // eg: 8th note
             else if (isHalfBeat) {
                 fl_color(FL_DARK1);
             }
+            // eg: 16th note
             else {
                 fl_color(FL_WHITE);
             }
@@ -330,5 +336,32 @@ namespace Project {
         }
 
         return timeline->w() / 2;
+    }
+
+    double View::getGridStep()
+    {
+        // Choose grid step (smallest subdivision)
+        double gridStep;
+
+        if (viewState->zoom < 10.0) {
+            gridStep = 4.0; // quadruple beat. eg: whole note
+        }      
+        else if (viewState->zoom < 25.0) {
+            gridStep = 2.0; // double beat. eg: half note
+        } 
+        else if (viewState->zoom < 60.0) {
+            gridStep = 1.0; // beat. eg: quarter note
+        }
+        else if (viewState->zoom < 150.0) {
+            gridStep = 0.5; // half beat. eg: 8th note
+        }
+        else if (viewState->zoom < 400.0) {
+            gridStep = 0.25; // quarter beat. eg: 16th note
+        }
+        else {
+            gridStep = 0.125; // eighth beat. eg: 32th note
+        }
+
+        return gridStep;
     }
 }
