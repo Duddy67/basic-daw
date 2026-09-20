@@ -94,4 +94,14 @@ namespace Project {
         std::cout << "onTrackSelected(): " << id << std::endl;
         notify(CtrlEvent::TRACK_SELECTED, id);
     }
+
+    void Controller::onPlay()
+    {
+        application.getTransportBar().onPlay();
+    }
+
+    void Controller::onStop()
+    {
+        application.getTransportBar().onStop();
+    }
 }

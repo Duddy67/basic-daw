@@ -44,10 +44,13 @@ void Strip::buildMidi()
 
     // Align labels.
     channel->align(FL_ALIGN_TOP | FL_ALIGN_LEFT);
+    // Disable keyboard focus.
+    channel->clear_visible_focus();
     add(channel);
 
     omni = new Fl_Check_Button(x() + MICRO_SPACE + LARGE_SPACE, y() + (SMALL_SPACE / 2), TINY_SPACE, TINY_SPACE, "Omni");
     omni->align(FL_ALIGN_TOP | FL_ALIGN_LEFT);
+    omni->clear_visible_focus();
     add(omni);
 }
 

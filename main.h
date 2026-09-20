@@ -125,6 +125,7 @@ class Application : public Fl_Double_Window
         //void initAudioSystem();
         void initJackClient();
         Transport& getTransport() { return *transport; }
+        TransportBar& getTransportBar() { return *transportBar; }
         TempoMap& getTempoMap() { return *tempoMap; }
         Midi::Scheduler& getMidiScheduler() { return *midiScheduler; }
         ViewState& getViewState() { return viewState; }

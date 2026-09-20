@@ -24,40 +24,41 @@ namespace Project {
 
     class View : public Fl_Group
     {
-            Controller& controller;
-            TrackList* trackList = nullptr;
-            ChannelStrip* channelStrip = nullptr;
-            Timeline* timeline = nullptr;
-            Ruler* ruler = nullptr;
-            Fl_Scrollbar* hScrollbar = nullptr;
-            Fl_Scrollbar* vScrollbar = nullptr;
-            bool isLiveUpdating = false;
-            // Pointer to share state with other GUI elements.
-            ViewState* viewState;
+        Controller& controller;
+        TrackList* trackList = nullptr;
+        ChannelStrip* channelStrip = nullptr;
+        Timeline* timeline = nullptr;
+        Ruler* ruler = nullptr;
+        Fl_Scrollbar* hScrollbar = nullptr;
+        Fl_Scrollbar* vScrollbar = nullptr;
+        bool isLiveUpdating = false;
+        // Pointer to share state with other GUI elements.
+        ViewState* viewState;
 
-            static void liveUpdate_cb(void* userData);
+        static void liveUpdate_cb(void* userData);
 
-        protected: 
-            int handle(int event) override;
+      protected: 
 
-        public:
+        int handle(int event) override;
 
-            View(int x, int y, int w, int h, Controller& ctrl);
-            ~View();
+      public:
 
-            Timeline& getTimeline();
-            void startLiveUpdate();
-            void stopLiveUpdate();
-            void drawCursor(int x, int y, int w, int h);
-            void drawGrid(int x, int y, int w, int h, bool isRuler = false);
-            void updateScrollbars();
-            void zoomIn();
-            void zoomOut();
-            void setZoom(double newZoom, int anchorScreenX);
-            int getAnchorScreenX();
-            double getGridStep();
-            static void vScrollbar_cb(Fl_Widget* w, void* data);
-            static void hScrollbar_cb(Fl_Widget* w, void* data);
+        View(int x, int y, int w, int h, Controller& ctrl);
+        ~View();
+
+        Timeline& getTimeline();
+        void startLiveUpdate();
+        void stopLiveUpdate();
+        void drawCursor(int x, int y, int w, int h);
+        void drawGrid(int x, int y, int w, int h, bool isRuler = false);
+        void updateScrollbars();
+        void zoomIn();
+        void zoomOut();
+        void setZoom(double newZoom, int anchorScreenX);
+        int getAnchorScreenX();
+        double getGridStep();
+        static void vScrollbar_cb(Fl_Widget* w, void* data);
+        static void hScrollbar_cb(Fl_Widget* w, void* data);
     };
 }
 

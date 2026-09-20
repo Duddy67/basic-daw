@@ -283,24 +283,44 @@ namespace Project {
     int View::handle(int event)
     {
         switch (event) {
-            case FL_SHORTCUT: {
+            case FL_FOCUS:
+            case FL_UNFOCUS:
+                // IMPORTANT: Tell FLTK the widget wants keyboard focus
+                return 1;
+
+            case FL_KEYDOWN: {
+                int key = Fl::event_key();
 
                 // Check for minus sign key.
-                if (Fl::event_key() == 54) {
+                if (key == 54) {
                     zoomOut();
+                    // Event handled - Stop propagation.
+                    return 1;
                 }
 
                 // Check for plus sign key.
-                if (Fl::event_key() == 61) {
+                if (key == 61) {
                     zoomIn();
+                    return 1;
                 }
 
-                // Event handled - Stop propagation.
-                return 1;
-            }
+                // Spacebar: ' ' => ASCII code 32.
+                if (key == ' ') {
+                    auto& transport = controller.getTransport();
+                    // Toggle start/stop.
+                    if (transport.isRolling()) {
+                        controller.onStop();
+                    }
+                    else {
+                        controller.onPlay();
+                    }
 
-            // Right click or other buttons not handled. Let parent widgets see it too.
-            return 0;
+                    return 1;
+                }
+
+                // Other keys not handled. Let parent widgets see it too.
+                return 0;
+            }
         }
 
         // Default - Let Fl_Group handle any not processed events.
