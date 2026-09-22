@@ -1,5 +1,5 @@
-#ifndef TIMELINE_H
-#define TIMELINE_H
+#ifndef PIANO_ROLL_H
+#define PIANO_ROLL_H
 
 #include <FL/Fl_Group.H>
 #include <FL/Fl_Box.H>
@@ -13,7 +13,7 @@ namespace Project {
 }
 
 
-class Timeline : public Fl_Group, public Project::Observer
+class PianoRoll : public Fl_Group, public Project::Observer
 {
     Project::Controller& projectCtrl;
     // Pointer to share state with other GUI elements.
@@ -25,13 +25,13 @@ class Timeline : public Fl_Group, public Project::Observer
 
   public:
 
-      Timeline(int x, int y, int w, int h, Project::Controller& ctrl);
-      ~Timeline() {}
+      PianoRoll(int x, int y, int w, int h, Project::Controller& ctrl);
+      ~PianoRoll() {}
 
       void onCtrlEvent(CtrlEvent event, int index);
 };
 
-#endif // TIMELINE_H
+#endif // PIANO_ROLL_H
 
 
 

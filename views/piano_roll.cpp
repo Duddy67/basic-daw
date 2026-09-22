@@ -1,8 +1,8 @@
-#include "timeline.h"
+#include "piano_roll.h"
 #include "../core/engine.h"
 #include <FL/fl_draw.H>
 
-Timeline::Timeline(int x, int y, int w, int h, Project::Controller& ctrl) : Fl_Group(x, y, w, h), projectCtrl(ctrl)
+PianoRoll::PianoRoll(int x, int y, int w, int h, Project::Controller& ctrl) : Fl_Group(x, y, w, h), projectCtrl(ctrl)
 {
     box(FL_FLAT_BOX);
     projectCtrl.addObserver(this);
@@ -10,7 +10,7 @@ Timeline::Timeline(int x, int y, int w, int h, Project::Controller& ctrl) : Fl_G
     end();
 }
 
-void Timeline::onCtrlEvent(CtrlEvent event, int index)
+void PianoRoll::onCtrlEvent(CtrlEvent event, int index)
 {
     switch (event) {
         // Cases that are not managed.
@@ -20,7 +20,7 @@ void Timeline::onCtrlEvent(CtrlEvent event, int index)
     }
 }
 
-void Timeline::draw()
+void PianoRoll::draw()
 {
     // Prevents drawing outside the widget boundaries.
     fl_push_clip(x(), y(), w(), h());
@@ -29,8 +29,9 @@ void Timeline::draw()
     fl_color((Fl_Color)  FL_LIGHT1);
     fl_rectf(x(), y(), w(), h());
 
-    projectCtrl.getView().drawGrid(x(), y(), w(), h());
-    projectCtrl.getView().drawCursor(x(), y(), w(), h());
+    // Save room for the keyboard on the left edge.
+    projectCtrl.getView().drawGrid(x() + KEY_LENGHT, y(), w() - KEY_LENGHT, h());
+    projectCtrl.getView().drawCursor(x() + KEY_LENGHT, y(), w() - KEY_LENGHT, h());
 
     fl_pop_clip();
 }
@@ -38,7 +39,7 @@ void Timeline::draw()
 /*
  * Handles the events happening into the track widget.
  */
-int Timeline::handle(int event)
+int PianoRoll::handle(int event)
 {
     switch (event) {
         case FL_PUSH: {

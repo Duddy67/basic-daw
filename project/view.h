@@ -9,6 +9,7 @@
 #include "../views/track_list.h"
 #include "../views/channel_strip.h"
 #include "../views/timeline.h"
+#include "../views/piano_roll.h"
 #include "../views/ruler.h"
 #include "../core/time_converter.h"
 
@@ -16,6 +17,7 @@
 class TrackList;
 class ChannelStrip;
 class Timeline;
+class PianoRoll;
 class Ruler;
 
 namespace Project {
@@ -28,12 +30,14 @@ namespace Project {
         TrackList* trackList = nullptr;
         ChannelStrip* channelStrip = nullptr;
         Timeline* timeline = nullptr;
+        PianoRoll* pianoRoll = nullptr;
         Ruler* ruler = nullptr;
         Fl_Scrollbar* hScrollbar = nullptr;
         Fl_Scrollbar* vScrollbar = nullptr;
         bool isLiveUpdating = false;
         // Pointer to share state with other GUI elements.
         ViewState* viewState;
+        ViewType currentView = ViewType::TIMELINE;
 
         static void liveUpdate_cb(void* userData);
 
@@ -47,16 +51,21 @@ namespace Project {
         ~View();
 
         Timeline& getTimeline();
+        PianoRoll& getPianoRoll();
         void startLiveUpdate();
         void stopLiveUpdate();
         void drawCursor(int x, int y, int w, int h);
         void drawGrid(int x, int y, int w, int h, bool isRuler = false);
+        void drawPitchGrid(int x, int y, int w, int h);
         void updateScrollbars();
         void zoomIn();
         void zoomOut();
         void setZoom(double newZoom, int anchorScreenX);
         int getAnchorScreenX();
         double getGridStep();
+        ViewType getCurrentView() const { return currentView; }
+        void switchView(ViewType view);
+        void redrawCurrentView();
         static void vScrollbar_cb(Fl_Widget* w, void* data);
         static void hScrollbar_cb(Fl_Widget* w, void* data);
     };

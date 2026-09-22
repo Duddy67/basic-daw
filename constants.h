@@ -18,6 +18,7 @@ constexpr unsigned int BORDER_INTERSTICE = 2;
 constexpr unsigned int TINY_SPACE = 10;
 constexpr unsigned int SMALL_SPACE = 40;
 constexpr unsigned int MEDIUM_SPACE = 80;
+constexpr unsigned int KEY_LENGHT = 80;
 constexpr unsigned int LARGE_SPACE = 160;
 constexpr unsigned int XLARGE_SPACE = 320;
 constexpr unsigned int TEXT_SIZE = 13;
@@ -64,9 +65,13 @@ enum class DataType {
     MIDI, AUDIO
 };
 
-enum class TransportID { PLAY, STOP, PAUSE, RECORD, LOOP };
+enum class TransportID {
+    PLAY, STOP, PAUSE, RECORD, LOOP
+};
 
-enum class Action {ACTIVATE, DEACTIVATE};
+enum class Action {
+    ACTIVATE, DEACTIVATE
+};
 
 enum class State {
     ON, OFF
@@ -78,6 +83,10 @@ enum class ConnectionType {
 
 enum class PortType {
     INPUT, INPUT_EXCLUDE_CLIENT, OUTPUT, OUTPUT_EXCLUDE_CLIENT
+};
+
+enum class ViewType {
+    TIMELINE, PIANO_ROLL, EVENT, MIXER
 };
 
 enum class MenuItemID {

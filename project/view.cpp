@@ -15,28 +15,31 @@ namespace Project {
 
         channelStrip = new ChannelStrip(x, y, screenFourth / 2, h, controller);
 
-        // Shortcuts for timeline coordinates.
-        int timelineX = x + screenFourth + BORDER_INTERSTICE;
-        int timelineY = y + RULER_HEIGHT + BORDER_INTERSTICE;
-        int timelineW = (screenFourth * 3) - (BORDER_INTERSTICE * 2) - SCROLLBAR_HEIGHT;
-        int timelineH = h - (BORDER_INTERSTICE * 2) - (RULER_HEIGHT + SCROLLBAR_HEIGHT);
+        // Shortcuts for the edit area coordinates.
+        int editAreaX = x + screenFourth + BORDER_INTERSTICE;
+        int editAreaY = y + RULER_HEIGHT + BORDER_INTERSTICE;
+        int editAreaW = (screenFourth * 3) - (BORDER_INTERSTICE * 2) - SCROLLBAR_HEIGHT;
+        int editAreaH = h - (BORDER_INTERSTICE * 2) - (RULER_HEIGHT + SCROLLBAR_HEIGHT);
 
         Fl_Group* workspace = new Fl_Group(x + screenFourth / 2, y, Fl::w() - (screenFourth / 2), h);
             ruler = new Ruler(x + screenFourth + BORDER_INTERSTICE, y, (screenFourth * 3) - (BORDER_INTERSTICE * 2), RULER_HEIGHT, controller);
             trackList = new TrackList(x + screenFourth / 2, y + RULER_HEIGHT, screenFourth / 2, h - RULER_HEIGHT, controller);
-            timeline = new Timeline(timelineX, timelineY, timelineW, timelineH, controller);
+            // Views have the same size and shift from one to the other.
+            timeline = new Timeline(editAreaX, editAreaY, editAreaW, editAreaH, controller);
+            pianoRoll = new PianoRoll(editAreaX, editAreaY, editAreaW, editAreaH, controller);
 
-            hScrollbar = new Fl_Scrollbar(timelineX, timelineY + timelineH, timelineW, SCROLLBAR_HEIGHT);
+            hScrollbar = new Fl_Scrollbar(editAreaX, editAreaY + editAreaH, editAreaW, SCROLLBAR_HEIGHT);
             hScrollbar->type(FL_HORIZONTAL);
             hScrollbar->callback(hScrollbar_cb, this);
 
-            vScrollbar = new Fl_Scrollbar(timelineX + timelineW, timelineY, SCROLLBAR_HEIGHT, timelineH);
+            vScrollbar = new Fl_Scrollbar(editAreaX + editAreaW, editAreaY, SCROLLBAR_HEIGHT, editAreaH);
             vScrollbar->type(FL_VERTICAL);
             vScrollbar->callback(vScrollbar_cb, this);
 
             workspace->add(trackList);
             workspace->add(ruler);
             workspace->add(timeline);
+            workspace->add(pianoRoll);
             workspace->add(hScrollbar);
             workspace->add(vScrollbar);
         workspace->end();
@@ -44,6 +47,10 @@ namespace Project {
         add(channelStrip);
         add(workspace);
         end();
+
+        // Switch to the timeline view by default.
+        switchView(ViewType::TIMELINE);
+        currentView = ViewType::TIMELINE;
 
         // Elements shouldn't be resizable.
         resizable(nullptr);
@@ -58,6 +65,11 @@ namespace Project {
     Timeline& View::getTimeline()
     {
         return *timeline;
+    }
+
+    PianoRoll& View::getPianoRoll()
+    {
+        return *pianoRoll;
     }
 
     void View::startLiveUpdate()
@@ -103,8 +115,9 @@ namespace Project {
             }
         }
 
-        self->timeline->redraw();
+        // The ruler is always visible.
         self->ruler->redraw();
+        self->redrawCurrentView();
 
         // Schedule next tick.
         if (self->isLiveUpdating) {
@@ -208,12 +221,17 @@ namespace Project {
         }
     }
 
+    void View::drawPitchGrid(int x, int y, int w, int h)
+    {
+
+    }
+
     void View::vScrollbar_cb(Fl_Widget* w, void* data)
     {
         View* self = static_cast<View*>(data);
         self->viewState->verticalOffset = (int)self->vScrollbar->value();
         self->ruler->redraw();
-        self->timeline->redraw();
+        self->redrawCurrentView();
     }
 
     void View::hScrollbar_cb(Fl_Widget* w, void* data)
@@ -221,7 +239,7 @@ namespace Project {
         View* self = static_cast<View*>(data);
         self->viewState->horizontalOffset = (int)self->hScrollbar->value();
         self->ruler->redraw();
-        self->timeline->redraw();
+        self->redrawCurrentView();
     }
 
     void View::updateScrollbars()
@@ -274,7 +292,7 @@ namespace Project {
 
         // Redraw all affected widgets.
         ruler->redraw();
-        timeline->redraw();
+        redrawCurrentView();
     }
 
     /*
@@ -318,6 +336,20 @@ namespace Project {
                     return 1;
                 }
 
+                if (key == 'p') {
+                    switchView(ViewType::PIANO_ROLL);
+                    pianoRoll->redraw();
+
+                    return 1;
+                }
+
+                if (key == 't') {
+                    switchView(ViewType::TIMELINE);
+                    timeline->redraw();
+
+                    return 1;
+                }
+
                 // Other keys not handled. Let parent widgets see it too.
                 return 0;
             }
@@ -355,6 +387,7 @@ namespace Project {
             return playheadX;
         }
 
+        // All views have the same width.
         return timeline->w() / 2;
     }
 
@@ -383,5 +416,55 @@ namespace Project {
         }
 
         return gridStep;
+    }
+
+    void View::switchView(ViewType view)
+    {
+        // First, hide all the views
+        timeline->hide();
+        pianoRoll->hide();
+        // ...
+
+        // then show the given view.
+        switch (view) {
+            case ViewType::TIMELINE: 
+                timeline->show();
+                break;
+
+            case ViewType::PIANO_ROLL: 
+                pianoRoll->show();
+                break;
+
+            case ViewType::EVENT: 
+                // ...
+                break;
+
+            case ViewType::MIXER: 
+                // ...
+                break;
+        }
+
+        currentView = view;
+    }
+
+    void View::redrawCurrentView()
+    {
+        switch (currentView) {
+            case ViewType::TIMELINE: 
+                timeline->redraw();
+                break;
+
+            case ViewType::PIANO_ROLL: 
+                pianoRoll->redraw();
+                break;
+
+            case ViewType::EVENT: 
+                // ...
+                break;
+
+            case ViewType::MIXER: 
+                // ...
+                break;
+        }
     }
 }

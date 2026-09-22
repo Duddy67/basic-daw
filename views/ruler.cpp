@@ -18,8 +18,17 @@ void Ruler::draw()
     fl_color((Fl_Color)  FL_LIGHT1);
     fl_rectf(x(), y(), w(), h());
 
-    projectCtrl.getView().drawGrid(x(), y(), w(), h(), true);
-    projectCtrl.getView().drawCursor(x(), y(), w(), h());
+    auto& view = projectCtrl.getView();
+    int offset = 0;
+
+    // Check for piano roll view.
+    if (view.getCurrentView() == ViewType::PIANO_ROLL) {
+        // Save room for the keyboard on the left edge.
+        offset = KEY_LENGHT;
+    }
+
+    view.drawGrid(x() + offset, y(), w() - offset, h(), true);
+    view.drawCursor(x() + offset, y(), w() - offset, h());
 
     fl_pop_clip();
 }
@@ -38,6 +47,11 @@ int Ruler::handle(int event)
 
                 // Mouse x relative to the widget.
                 int mouseX = Fl::event_x() - x();
+                auto& view = projectCtrl.getView();
+
+                if (view.getCurrentView() == ViewType::PIANO_ROLL) {
+                    mouseX = mouseX - KEY_LENGHT;
+                }
 
                 // Convert pixel to beat.
                 // The viewport's left edge corresponds to beat: startBeat = horizontalOffset / zoom
@@ -45,7 +59,7 @@ int Ruler::handle(int event)
                 double beat = (mouseX + viewState->horizontalOffset) / viewState->zoom;
 
                 if (projectCtrl.isSnapToGrid()) {
-                    double gridStep = projectCtrl.getView().getGridStep();
+                    double gridStep = view.getGridStep();
                     beat = std::round(beat / gridStep) * gridStep;
                 }
 
@@ -62,9 +76,15 @@ int Ruler::handle(int event)
                 // Relocate the transport.
                 projectCtrl.getTransport().locateToSample(sample);
 
-                // Redraw all widgets that show the playheader.
+                // Redraw the ruler and the all widgets that show the playheader.
                 redraw();
-                projectCtrl.getView().getTimeline().redraw();
+
+                if (view.getCurrentView() == ViewType::TIMELINE) {
+                    view.getTimeline().redraw();
+                }
+                else if (view.getCurrentView() == ViewType::PIANO_ROLL) {
+                    view.getPianoRoll().redraw();
+                }
 
                 // Event handled - Stop propagation.
                 return 1;
