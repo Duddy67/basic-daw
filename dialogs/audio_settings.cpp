@@ -148,7 +148,7 @@ void AudioSettingsDialog::onChangeOutput(Direction direction)
         config.audio.outputRight = newSelection;
     }
 
-    saveConfig();
+    saveConfig(config);
 }
 
 /*
@@ -177,6 +177,6 @@ void AudioSettingsDialog::onChangeInput(Direction direction)
         config.audio.inputRight = newSelection;
     }
 
-    saveConfig();
+    saveConfig(config);
 }
 

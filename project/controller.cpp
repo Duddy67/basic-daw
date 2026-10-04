@@ -43,6 +43,11 @@ namespace Project {
         return application.getGridBar().isSnapToGrid();
     }
 
+    size_t Controller::getTrackCount() const
+    {
+        return model.trackCount();
+    }
+
     /*
      * Unregister an observer (important to prevent crashes when views are deleted).
      */
@@ -103,5 +108,27 @@ namespace Project {
     void Controller::onStop()
     {
         application.getTransportBar().onStop();
+    }
+
+    void Controller::onPreviewNoteOn(int pitch, int velocity)
+    {
+        QueuedMidiEvent event;
+        event.size = 3;
+        event.bytes[0] = 0x90 | (0 & 0x0F);
+        event.bytes[1] = (uint8_t)pitch;
+        event.bytes[2] = (uint8_t)velocity;
+
+        getEngine().pushUiMidiEvent(event);
+    }
+
+    void Controller::onPreviewNoteOff(int pitch)
+    {
+        QueuedMidiEvent event;
+        event.size = 3;
+        event.bytes[0] = 0x80 | (0 & 0x0F);
+        event.bytes[1] = (uint8_t)pitch;
+        event.bytes[2] = 0;
+
+        getEngine().pushUiMidiEvent(event);
     }
 }

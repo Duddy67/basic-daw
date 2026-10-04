@@ -61,7 +61,7 @@ void TrackList::addTrack(int id, DataType type)
         y = lastTrack->y() + MEDIUM_SPACE + BORDER_INTERSTICE;
     }
 
-    Widget::Track* track = new Widget::Track(x, y, w() - (BORDER_INTERSTICE * 2), MEDIUM_SPACE, id, type, projectCtrl);
+    Widget::Track* track = new Widget::Track(x, y, w() - (BORDER_INTERSTICE * 2), TRACK_HEIGHT, id, type, projectCtrl);
     // Add the new track as TrackList's child.
     add(track);
     // Add the new track to the list.
@@ -87,3 +87,15 @@ void TrackList::setSelectedTrack(int id)
         }
     }
 }
+
+Widget::Track& TrackList::getSelectedTrack()
+{
+    for (auto* track : tracks) {
+        if (track->isSelected()) {
+            return *track;
+        }
+    }
+
+    throw std::runtime_error("No selected track found on the list.");
+}
+

@@ -32,6 +32,9 @@ void Timeline::draw()
     projectCtrl.getView().drawGrid(x(), y(), w(), h());
     projectCtrl.getView().drawCursor(x(), y(), w(), h());
 
+    // Paints Timeline's children.
+    draw_children();
+
     fl_pop_clip();
 }
 

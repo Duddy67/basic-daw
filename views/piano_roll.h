@@ -5,6 +5,7 @@
 #include <FL/Fl_Box.H>
 #include "../project/observer.h"
 #include "../project/controller.h"
+#include "../widgets/keyboard.h"
 #include "../core/time_converter.h"
 
 namespace Project {
@@ -12,12 +13,14 @@ namespace Project {
     class Observer;
 }
 
+class Keyboard;
 
 class PianoRoll : public Fl_Group, public Project::Observer
 {
     Project::Controller& projectCtrl;
     // Pointer to share state with other GUI elements.
     ViewState* viewState;
+    Keyboard* keyboard = nullptr;
 
   protected: 
       void draw() override;
@@ -29,6 +32,7 @@ class PianoRoll : public Fl_Group, public Project::Observer
       ~PianoRoll() {}
 
       void onCtrlEvent(CtrlEvent event, int index);
+      void centerOnPitch(int pitch);
 };
 
 #endif // PIANO_ROLL_H

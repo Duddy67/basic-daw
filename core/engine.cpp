@@ -78,7 +78,6 @@ namespace Core {
             // JACK expects zero on success.
             return 0;
         }
-
         
         // --- Get audio buffers ---
         float* outL = (float*)jack_port_get_buffer(self->audioOutputs[0], nframes);
@@ -93,18 +92,26 @@ namespace Core {
         // Clear MIDI output.
         jack_midi_clear_buffer(midiOutBuffer);
 
+        // UI preview notes (always offset 0).
+        self->drainUiMidiQueue(midiOutBuffer);
+
         // Get current sample position.
         uint64_t currentSample = self->application.getTransport().getPlayheadSample();
         auto& transport = self->application.getTransport();
 
         // --- Process MIDI ---
+
+        // Sequencer playback
         if (transport.isRolling()) {
             // Write events to midi out buffer with sample offset.
             self->application.getMidiScheduler().processOutput(nframes, midiOutBuffer, currentSample);
         }
 
+        // External MIDI input echo.
+        self->processMidiInput(midiInBuffer, midiOutBuffer, nframes);
+
+        // Record external MIDI input into the scheduler.
         if (transport.isRecording()) {
-            // 
             self->application.getMidiScheduler().processInput(midiInBuffer, currentSample);
         }
 
@@ -118,6 +125,54 @@ namespace Core {
 
         // JACK expects zero on success.
         return 0;
+    }
+
+    /*
+     * Handles events in the MIDI in buffer.
+     */
+    void Engine::processMidiInput(void* midiInBuffer, void* midiOutBuffer, jack_nframes_t nframes)
+    {
+        // Get the number of events stored in the buffer.
+        uint32_t count = jack_midi_get_event_count(midiInBuffer);
+
+        for (uint32_t i = 0; i < count; ++i) {
+            jack_midi_event_t event;
+            jack_midi_event_get(&event, midiInBuffer, i);
+
+            // event.time     — sample offset within this cycle (0..nframes-1)
+            // event.size     — number of bytes (2 or 3 for channel messages)
+            // event.buffer   — the bytes themselves
+
+            // JACK uses zero-length events for things like transport sync.
+            if (event.size == 0) {
+                // Skip it.
+                continue;
+            }
+
+            // Copy through to the output at the same sample offset.
+            jack_midi_event_write(midiOutBuffer, event.time, event.buffer, event.size);
+        }
+    }
+
+    /*
+     * Copies to the output the events stored into the queue.
+     */
+    void Engine::drainUiMidiQueue(void* midiOutBuffer)
+    {
+        QueuedMidiEvent event;
+
+        // Loop through the queue event.
+        while (uiToAudioQueue.pop(event)) {
+
+            int rc = jack_midi_event_write(midiOutBuffer, 0, event.bytes, event.size);
+
+            if (rc != 0) {
+                std::cout << "jack_midi_event_write failed: ch=" << (event.bytes[0] & 0x0F)
+                    << " pitch=" << (int)event.bytes[1]
+                    << " vel=" << (int)event.bytes[2]
+                    << " size=" << (int)event.size << std::endl;
+            }
+        }
     }
 
     /*
@@ -240,7 +295,7 @@ namespace Core {
             std::cerr << "No physical capture ports found (Output flag)." << std::endl;
         }
 
-        saveConfig();
+        saveConfig(config);
     }
 
     /*
@@ -332,7 +387,7 @@ namespace Core {
             std::cerr << "No physical capture MIDI port found (Output flag)." << std::endl;
         }
 
-        saveConfig();
+        saveConfig(config);
     }
 
     void Engine::safeConnect(const char* src, const char* dest)

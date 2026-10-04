@@ -8,6 +8,7 @@
 #include <memory>
 #include <atomic>
 #include "sndfile.h"
+#include "midi_event_queue.h"
 #include "../constants.h"
 
 class Application;
@@ -28,8 +29,10 @@ namespace Core {
             std::atomic<bool> captureActive{false};
             int defaultOutputFormat = SF_FORMAT_FLOAT;
             const uint32_t sampleRate = 44100;
+            MidiEventQueue uiToAudioQueue;
 
             static int jack_process_callback(jack_nframes_t nframes, void* arg);
+            void processMidiInput(void* midiInBuffer, void* midiOutBuffer, jack_nframes_t nframes);
             std::vector<std::string> getPorts(DataType dataType, ConnectionType connectionType);
 
         public:
@@ -60,6 +63,8 @@ namespace Core {
             int getDefaultOutputFormat() const { return defaultOutputFormat; }
             uint32_t getSampleRate() const { return sampleRate; }
             Application& getApplication() const { return application; }
+            bool pushUiMidiEvent(const QueuedMidiEvent& event) { return uiToAudioQueue.push(event); }
+            void drainUiMidiQueue(void* midiOutBuffer);
     };
 }
 

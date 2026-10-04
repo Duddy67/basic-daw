@@ -21,3 +21,23 @@ void TimeConverter::locateToTick(Transport& transport, const TempoMap& tempoMap,
     uint64_t samples = tempoMap.ticksToSamples(tick, sampleRate);
     transport.locateToSample(samples);
 }
+
+int TimeConverter::xOfBeat(double beat, const ViewState& viewState)
+{
+    return (int)std::round(beat * viewState.zoom) - viewState.horizontalOffset;
+}
+
+double TimeConverter::beatAtX(int x, const ViewState& viewState)
+{
+    return (x + viewState.horizontalOffset) / viewState.zoom; 
+}
+
+int TimeConverter::xOfTick(int64_t tick, const TempoMap& tempoMap, const ViewState& viewState)
+{
+    return xOfBeat(tempoMap.ticksToBeats(tick), viewState);
+}
+
+int64_t TimeConverter::tickAtX(int x, const TempoMap& tempoMap, const ViewState& viewState)
+{
+    return tempoMap.beatsToTick(beatAtX(x, viewState));
+}

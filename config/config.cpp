@@ -63,9 +63,9 @@ AppConfig& loadConfig()
     return config;
 }
 
-void saveConfig()
+void saveConfig(AppConfig& config)
 {
-    AppConfig& config = loadConfig();
+    //AppConfig& config = loadConfig();
     json jsonData;
     to_json(jsonData, config);
 

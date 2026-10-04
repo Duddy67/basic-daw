@@ -6,6 +6,7 @@
 #include <FL/Fl_Box.H>
 #include "../project/controller.h"
 #include "../core/time_converter.h"
+#include "../constants.h"
 
 namespace Project {
     class Controller;

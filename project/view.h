@@ -37,7 +37,6 @@ namespace Project {
         bool isLiveUpdating = false;
         // Pointer to share state with other GUI elements.
         ViewState* viewState;
-        ViewType currentView = ViewType::TIMELINE;
 
         static void liveUpdate_cb(void* userData);
 
@@ -57,17 +56,18 @@ namespace Project {
         void drawCursor(int x, int y, int w, int h);
         void drawGrid(int x, int y, int w, int h, bool isRuler = false);
         void drawPitchGrid(int x, int y, int w, int h);
-        void updateScrollbars();
+        void updateHorizontalScrollbar();
+        void syncVerticalScrollbar();
         void zoomIn();
         void zoomOut();
         void setZoom(double newZoom, int anchorScreenX);
         int getAnchorScreenX();
         double getGridStep();
-        ViewType getCurrentView() const { return currentView; }
         void switchView(ViewType view);
         void redrawCurrentView();
         static void vScrollbar_cb(Fl_Widget* w, void* data);
         static void hScrollbar_cb(Fl_Widget* w, void* data);
+        TrackList& getTrackList() { return *trackList; }
     };
 }
 

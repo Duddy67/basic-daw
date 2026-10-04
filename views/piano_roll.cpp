@@ -7,6 +7,9 @@ PianoRoll::PianoRoll(int x, int y, int w, int h, Project::Controller& ctrl) : Fl
     box(FL_FLAT_BOX);
     projectCtrl.addObserver(this);
     viewState = &projectCtrl.getViewState();
+    // Create the virtual keyboard on the left edge.
+    keyboard = new Keyboard(x, y, KEY_LENGHT, h, ctrl);
+    add(keyboard);
     end();
 }
 
@@ -29,9 +32,14 @@ void PianoRoll::draw()
     fl_color((Fl_Color)  FL_LIGHT1);
     fl_rectf(x(), y(), w(), h());
 
+    // Start with the pitch grid, so grid's vertical lines will be drawn over.
     // Save room for the keyboard on the left edge.
+    projectCtrl.getView().drawPitchGrid(x() + KEY_LENGHT, y(), w() - KEY_LENGHT, h());
     projectCtrl.getView().drawGrid(x() + KEY_LENGHT, y(), w() - KEY_LENGHT, h());
     projectCtrl.getView().drawCursor(x() + KEY_LENGHT, y(), w() - KEY_LENGHT, h());
+
+    // Paints PianoRoll's children.
+    draw_children();
 
     fl_pop_clip();
 }
@@ -41,18 +49,19 @@ void PianoRoll::draw()
  */
 int PianoRoll::handle(int event)
 {
-    switch (event) {
-        case FL_PUSH: {
-
-            if (Fl::event_button() == FL_LEFT_MOUSE) {
-
-            }
-        }
-
-        // Right click or other buttons not handled. Let parent widgets see it too.
-        return 0;
-    }
 
     // Default - Let Fl_Group handle any not processed events.
     return Fl_Group::handle(event);
+}
+
+void PianoRoll::centerOnPitch(int pitch)
+{
+    int rowsShown = h() / viewState->keyHeight;
+    int lowest = pitch - rowsShown / 2;
+
+    if (lowest < 0) {
+        lowest = 0;
+    }
+
+    viewState->pitchVerticalOffset = lowest * viewState->keyHeight;
 }

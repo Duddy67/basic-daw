@@ -13,12 +13,13 @@ constexpr unsigned int TRANSPORT_BAR_HEIGHT = 50;
 constexpr unsigned int RULER_HEIGHT = 40;
 constexpr unsigned int BUTTON_WIDTH = 80;
 constexpr unsigned int BUTTON_HEIGHT = 40;
+constexpr unsigned int TRACK_HEIGHT = 80;
 constexpr unsigned int MICRO_SPACE = 5;
 constexpr unsigned int BORDER_INTERSTICE = 2;
 constexpr unsigned int TINY_SPACE = 10;
 constexpr unsigned int SMALL_SPACE = 40;
 constexpr unsigned int MEDIUM_SPACE = 80;
-constexpr unsigned int KEY_LENGHT = 80;
+constexpr unsigned int KEY_LENGHT = 60;
 constexpr unsigned int LARGE_SPACE = 160;
 constexpr unsigned int XLARGE_SPACE = 320;
 constexpr unsigned int TEXT_SIZE = 13;
@@ -109,6 +110,25 @@ struct MidiEvent {
     std::vector<unsigned char> message;
 };
 
+struct QueuedMidiEvent {
+    // system-time or transport sample at push.
+    uint64_t samplePosition;
+    // Number of bytes (0 - 3).
+    uint8_t size;
+    // Fixed-size buffer for short messages.
+    uint8_t bytes[3];
+};
+
+struct Note {
+    int pitch = 60;
+    int64_t startTick = 0;
+    int64_t lengthTick = 0;
+    int velocity = 100;
+    bool selected = false;
+
+    int64_t endTick() const { return startTick + lengthTick; } 
+};
+
 struct TempoChange {
     // Beat position where this tempo takes effect.
     double beat; 
@@ -129,8 +149,13 @@ struct ViewState {
     double zoom = 100.0;
     // How many pixels the view is scrolled to the right.
     int horizontalOffset = 0;
-    // How many pixels the view is scrolled down.
-    int verticalOffset = 0;
+    // How many pixels the timeline view is scrolled down.
+    int trackVerticalOffset = 0;
+    // How many pixels the piano roll view is scrolled down.
+    int pitchVerticalOffset = 0;
+    // Pixel per semitone.
+    int keyHeight = 24; 
+    ViewType currentView = ViewType::TIMELINE;
 };
 
 inline std::map<EditID, std::string> EditLabels {

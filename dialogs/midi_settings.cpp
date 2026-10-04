@@ -113,7 +113,7 @@ void MidiSettingsDialog::onChangeOutput()
     // Store the new connection in the config file.
     config.midi.outputPort = newSelection;
 
-    saveConfig();
+    saveConfig(config);
 }
 
 /*
@@ -136,6 +136,6 @@ void MidiSettingsDialog::onChangeInput()
     // Store the new connection in the config file.
     config.midi.inputPort = newSelection;
 
-    saveConfig();
+    saveConfig(config);
 }
 

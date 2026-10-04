@@ -67,7 +67,7 @@ void Application::createProject()
         add(projectView);
         redraw();
 
-        projectView->updateScrollbars();
+        projectView->updateHorizontalScrollbar();
     }
 }
 

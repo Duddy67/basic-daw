@@ -22,7 +22,7 @@ void Ruler::draw()
     int offset = 0;
 
     // Check for piano roll view.
-    if (view.getCurrentView() == ViewType::PIANO_ROLL) {
+    if (viewState->currentView == ViewType::PIANO_ROLL) {
         // Save room for the keyboard on the left edge.
         offset = KEY_LENGHT;
     }
@@ -49,7 +49,7 @@ int Ruler::handle(int event)
                 int mouseX = Fl::event_x() - x();
                 auto& view = projectCtrl.getView();
 
-                if (view.getCurrentView() == ViewType::PIANO_ROLL) {
+                if (viewState->currentView == ViewType::PIANO_ROLL) {
                     mouseX = mouseX - KEY_LENGHT;
                 }
 
@@ -79,10 +79,10 @@ int Ruler::handle(int event)
                 // Redraw the ruler and the all widgets that show the playheader.
                 redraw();
 
-                if (view.getCurrentView() == ViewType::TIMELINE) {
+                if (viewState->currentView == ViewType::TIMELINE) {
                     view.getTimeline().redraw();
                 }
-                else if (view.getCurrentView() == ViewType::PIANO_ROLL) {
+                else if (viewState->currentView == ViewType::PIANO_ROLL) {
                     view.getPianoRoll().redraw();
                 }
 

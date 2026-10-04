@@ -50,7 +50,8 @@ namespace Project {
 
         // Switch to the timeline view by default.
         switchView(ViewType::TIMELINE);
-        currentView = ViewType::TIMELINE;
+        // Set the piano roll scrolling to C3 region.
+        pianoRoll->centerOnPitch(64);
 
         // Elements shouldn't be resizable.
         resizable(nullptr);
@@ -127,8 +128,9 @@ namespace Project {
 
     }
 
-    // Functions common to the Ruler and Timeline widgets.
-
+    /*
+     * Drawing function shared by views.
+     */
     void View::drawCursor(int x, int y, int w, int h)
     {
         double playhead = TimeConverter::getCurrentBeat(controller.getTransport(),
@@ -146,6 +148,9 @@ namespace Project {
         }
     }
 
+    /*
+     * Drawing function shared by views.
+     */
     void View::drawGrid(int x, int y, int w, int h, bool isRuler/* = false*/)
     {
         // Compute start and end beats according to the view state.
@@ -221,17 +226,52 @@ namespace Project {
         }
     }
 
+    /*
+     * Drawing function used by piano roll view.
+     */
     void View::drawPitchGrid(int x, int y, int w, int h)
     {
+        int top = PitchConverter::pitchAtY(y, y, h, *viewState);
+        int bottom = PitchConverter::pitchAtY(y + h - 1, y, h, *viewState);
 
+        for (int pitch = bottom; pitch <= top; ++pitch) {
+            if (pitch < 0 || pitch > 127) {
+                continue;
+            }
+
+            int pitchY = PitchConverter::yOfPitch(pitch, y, h, *viewState);
+
+            if (PitchConverter::isBlackKey(pitch)) {
+                fl_color((Fl_Color)FL_DARK2);
+                fl_rectf(x, pitchY, w, viewState->keyHeight);
+            }
+
+            fl_color(FL_GRAY0);
+            fl_line(x, pitchY, x + w, pitchY);
+        }
     }
 
     void View::vScrollbar_cb(Fl_Widget* w, void* data)
     {
         View* self = static_cast<View*>(data);
-        self->viewState->verticalOffset = (int)self->vScrollbar->value();
-        self->ruler->redraw();
-        self->redrawCurrentView();
+        Fl_Scrollbar* sb = static_cast<Fl_Scrollbar*>(w);
+
+        // Get the current view.
+        bool isPianoRoll = self->viewState->currentView == ViewType::PIANO_ROLL;
+        // Compute offset.
+        int maxOffset = (int)sb->maximum();
+        int offset = maxOffset - (int)sb->value();
+
+        // Update the scrollbar according to the view.
+        if (isPianoRoll) {
+            self->viewState->pitchVerticalOffset = offset;
+            self->pianoRoll->redraw();
+        }
+        // Timeline view.
+        else {
+            self->viewState->trackVerticalOffset = offset;
+            self->timeline->redraw();
+        }
     }
 
     void View::hScrollbar_cb(Fl_Widget* w, void* data)
@@ -242,7 +282,7 @@ namespace Project {
         self->redrawCurrentView();
     }
 
-    void View::updateScrollbars()
+    void View::updateHorizontalScrollbar()
     {
         double maxBeats = 10000.0;
         int totalPixels = (int)(maxBeats * viewState->zoom);
@@ -259,6 +299,37 @@ namespace Project {
             hScrollbar->deactivate();
         }
 
+    }
+
+    void View::syncVerticalScrollbar() 
+    {
+        bool isPianoRoll = viewState->currentView == ViewType::PIANO_ROLL;
+        int totalHeight, visibleHeight, offset, lineStep;
+
+        if (isPianoRoll) {
+            totalHeight = 128 * viewState->keyHeight;
+            visibleHeight = pianoRoll->h();
+            offset = viewState->pitchVerticalOffset;
+            lineStep = viewState->keyHeight;
+        }
+        // Timeline view.
+        else {
+            totalHeight = (int)controller.getTrackCount() * TRACK_HEIGHT;
+            visibleHeight = timeline->h();
+            offset = viewState->trackVerticalOffset;
+            lineStep = TRACK_HEIGHT;
+        }
+
+        if (totalHeight < visibleHeight) {
+            totalHeight = visibleHeight;
+        }
+
+        int maxOffset = totalHeight - visibleHeight;
+        int position = maxOffset - offset;
+        vScrollbar->range(0, maxOffset);
+
+        vScrollbar->value(position, visibleHeight, 0, totalHeight);
+        vScrollbar->linesize(lineStep);
     }
 
     void View::setZoom(double newZoom, int anchorScreenX)
@@ -286,7 +357,7 @@ namespace Project {
         }
 
         // Update the horizontal scrollbar range and value.
-        updateScrollbars();
+        updateHorizontalScrollbar();
         // Recompute range based on new zoom.
         hScrollbar->value(viewState->horizontalOffset);
 
@@ -425,13 +496,18 @@ namespace Project {
         pianoRoll->hide();
         // ...
 
+        // set the new current view
+        viewState->currentView = view;
+
         // then show the given view.
         switch (view) {
             case ViewType::TIMELINE: 
+                syncVerticalScrollbar();
                 timeline->show();
                 break;
 
             case ViewType::PIANO_ROLL: 
+                syncVerticalScrollbar();
                 pianoRoll->show();
                 break;
 
@@ -443,13 +519,11 @@ namespace Project {
                 // ...
                 break;
         }
-
-        currentView = view;
     }
 
     void View::redrawCurrentView()
     {
-        switch (currentView) {
+        switch (viewState->currentView) {
             case ViewType::TIMELINE: 
                 timeline->redraw();
                 break;

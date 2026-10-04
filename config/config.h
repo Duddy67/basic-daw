@@ -35,6 +35,6 @@ void from_json(const json& j, AppConfig& c);
 void to_json(json& j, const AppConfig& c);
 
 AppConfig& loadConfig();
-void saveConfig();
+void saveConfig(AppConfig& config);
 
 #endif // CONFIG_H

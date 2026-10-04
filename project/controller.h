@@ -44,9 +44,12 @@ namespace Project {
         void onToggleSolo(int trackId, DataType type);
         void onToggleArm(int trackId);
         void onTrackSelected(int id);
+        void onPreviewNoteOn(int pitch, int velocity);
+        void onPreviewNoteOff(int pitch);
         void onPlay();
         void onStop();
         bool isSnapToGrid();
+        size_t getTrackCount() const;
         Transport& getTransport();
         TempoMap& getTempoMap();
         Core::Engine& getEngine();
