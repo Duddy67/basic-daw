@@ -110,9 +110,13 @@ namespace Project {
         application.getTransportBar().onStop();
     }
 
+    /*
+     * Stores the note on messages coming from UI (piano roll...) into the UI queue.
+     */
     void Controller::onPreviewNoteOn(int pitch, int velocity)
     {
         QueuedMidiEvent event;
+        // Build the event from the given pitch and velocity.
         event.size = 3;
         event.bytes[0] = 0x90 | (0 & 0x0F);
         event.bytes[1] = (uint8_t)pitch;
@@ -121,13 +125,18 @@ namespace Project {
         getEngine().pushUiMidiEvent(event);
     }
 
+    /*
+     * Stores the note off messages coming from UI (piano roll...) into the UI queue.
+     */
     void Controller::onPreviewNoteOff(int pitch)
     {
         QueuedMidiEvent event;
+        // Build the event from the given pitch.
         event.size = 3;
         event.bytes[0] = 0x80 | (0 & 0x0F);
         event.bytes[1] = (uint8_t)pitch;
-        event.bytes[2] = 0;
+        // Release velocity.
+        event.bytes[2] = 0x40;
 
         getEngine().pushUiMidiEvent(event);
     }

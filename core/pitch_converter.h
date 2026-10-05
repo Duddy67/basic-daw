@@ -12,14 +12,22 @@ class PitchConverter
 {
     public:
 
+        /*
+         * Computes the y of a given pitch.
+         */
         static int yOfPitch(int pitch, int canvasY, int canvasH, const ViewState& viewState)
         {
+            // Row 0 at the bottom corresponds to the lowest visible pitch.
+            // Compute distance in rows from the bottom.
             int lowestPitch = viewState.pitchVerticalOffset / viewState.keyHeight;
             int rowFromBottom = pitch - lowestPitch;
 
             return (canvasY + canvasH) - (rowFromBottom + 1) * viewState.keyHeight;
         }
 
+        /*
+         * Computes the pitch at a given y position.
+         */
         static int pitchAtY(int y, int canvasY, int canvasH, const ViewState& viewState)
         {
             // Scroll in rows.
