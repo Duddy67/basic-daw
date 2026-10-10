@@ -2,7 +2,7 @@
 #define MIDI_CLIP_H
 
 #include <vector>
-#include "../core/constants.h"
+#include "../constants.h"
 
 
 namespace Midi {
@@ -12,10 +12,15 @@ namespace Midi {
         int64_t lengthTick = 0;
         std::vector<Note> notes;
 
-        public:
+      public:
 
-            Clip() {}
-            ~Clip() {}
+        Clip() {}
+        ~Clip() {}
+
+        const std::vector<Note>& getNotes() const { return notes; }
+        std::vector<Note>& getNotes() { return notes; }
+        uint64_t getStartTick() const { return startTick; }
+        uint64_t getLengthTick() const { return lengthTick; }
     };
 }
 

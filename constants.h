@@ -28,12 +28,11 @@ constexpr unsigned int SCROLLBAR_MARGIN = 10;
 constexpr unsigned int TAB_BORDER_THICKNESS = 10;
 constexpr unsigned int MAX_MIDI_CHANNELS = 16;
 constexpr unsigned int SAMPLE_RATE = 44100;
-//constexpr unsigned int PPQ = 960;
 constexpr double SECONDS_PER_MINUTE = 60.0;
 constexpr double DEFAULT_BPM = 120.0;
 constexpr int DEFAULT_NUMERATOR = 4;
 constexpr int DEFAULT_DENOMINATOR = 4;
-constexpr int DEFAULT_PPQ = 480; // in ticks
+constexpr int DEFAULT_PPQ = 960; // in ticks
 constexpr double MIN_ZOOM = 5.0; // 5 pixels per beat (zoomed way out)
 constexpr double MAX_ZOOM = 2000.0; // 2000 pixels per beat (zoomed way in)
 constexpr const char* CONFIG_FILENAME = "config.json";
@@ -99,6 +98,10 @@ enum class MenuItemID {
 enum class CtrlEvent {
     ADD_MIDI_TRACK, ADD_AUDIO_TRACK, REMOVE_TRACK, MUTED_TRACK,
     UNMUTED_TRACK, SOLOED_TRACK, UNSOLOED_TRACK, TRACK_SELECTED
+};
+
+enum class DragMode {
+    NONE, CREATE, MOVE, RESIZE_L, RESIZE_R, MARQUEE
 };
 
 struct Selection {

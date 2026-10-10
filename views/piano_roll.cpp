@@ -9,6 +9,8 @@ PianoRoll::PianoRoll(int x, int y, int w, int h, Project::Controller& ctrl) : Fl
     viewState = &projectCtrl.getViewState();
     // Create the virtual keyboard on the left edge.
     keyboard = new Keyboard(x, y, KEY_LENGHT, h, ctrl);
+    // Save room for the keyboard on the left edge.
+    noteCanvas = new NoteCanvas(x + KEY_LENGHT, y, w - KEY_LENGHT, h, ctrl);
     add(keyboard);
     end();
 }
@@ -23,7 +25,7 @@ void PianoRoll::onCtrlEvent(CtrlEvent event, int index)
     }
 }
 
-void PianoRoll::draw()
+/*void PianoRoll::draw()
 {
     // Prevents drawing outside the widget boundaries.
     fl_push_clip(x(), y(), w(), h());
@@ -36,13 +38,14 @@ void PianoRoll::draw()
     // Save room for the keyboard on the left edge.
     projectCtrl.getView().drawPitchGrid(x() + KEY_LENGHT, y(), w() - KEY_LENGHT, h());
     projectCtrl.getView().drawGrid(x() + KEY_LENGHT, y(), w() - KEY_LENGHT, h());
+    // Playhead on top.
     projectCtrl.getView().drawCursor(x() + KEY_LENGHT, y(), w() - KEY_LENGHT, h());
 
     // Paints PianoRoll's children.
     draw_children();
 
     fl_pop_clip();
-}
+}*/
 
 /*
  * Handles the events happening into the track widget.

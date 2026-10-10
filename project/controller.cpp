@@ -13,41 +13,6 @@ namespace Project {
         // ...
     }
 
-    Transport& Controller::getTransport()
-    {
-        return application.getTransport();
-    }
-
-    TempoMap& Controller::getTempoMap()
-    {
-        return application.getTempoMap();
-    }
-
-    Core::Engine& Controller::getEngine()
-    {
-        return application.getCoreEngine();
-    }
-
-    View& Controller::getView()
-    {
-        return application.getProjectView();
-    }
-
-    ViewState& Controller::getViewState()
-    {
-        return application.getViewState();
-    }
-
-    bool Controller::isSnapToGrid()
-    {
-        return application.getGridBar().isSnapToGrid();
-    }
-
-    size_t Controller::getTrackCount() const
-    {
-        return model.trackCount();
-    }
-
     /*
      * Unregister an observer (important to prevent crashes when views are deleted).
      */
@@ -139,5 +104,49 @@ namespace Project {
         event.bytes[2] = 0x40;
 
         getEngine().pushUiMidiEvent(event);
+    }
+
+    // Getters
+
+    Transport& Controller::getTransport()
+    {
+        return application.getTransport();
+    }
+
+    TempoMap& Controller::getTempoMap()
+    {
+        return application.getTempoMap();
+    }
+
+    Core::Engine& Controller::getEngine()
+    {
+        return application.getCoreEngine();
+    }
+
+    View& Controller::getView()
+    {
+        return application.getProjectView();
+    }
+
+    ViewState& Controller::getViewState()
+    {
+        return application.getViewState();
+    }
+
+    bool Controller::isSnapToGrid()
+    {
+        return application.getGridBar().isSnapToGrid();
+    }
+
+    size_t Controller::getTrackCount() const
+    {
+        // Use the model's method.
+        return model.trackCount();
+    }
+
+    Core::Track* Controller::getTrack(int id)
+    {
+        // Use the model's method.
+        return model.getTrack(id);
     }
 }

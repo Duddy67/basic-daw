@@ -13,6 +13,7 @@ class Transport;
 class TempoMap;
 namespace Core {
     class Engine;
+    class Track;
 }
 
 namespace Project {
@@ -54,6 +55,7 @@ namespace Project {
         TempoMap& getTempoMap();
         Core::Engine& getEngine();
         View& getView();
+        Core::Track* getTrack(int id);
         ViewState& getViewState();
         //Application& getApplication() const { return application; }
     };

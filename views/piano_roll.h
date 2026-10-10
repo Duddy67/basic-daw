@@ -6,6 +6,7 @@
 #include "../project/observer.h"
 #include "../project/controller.h"
 #include "../widgets/keyboard.h"
+#include "../widgets/note_canvas.h"
 #include "../core/time_converter.h"
 
 namespace Project {
@@ -14,6 +15,7 @@ namespace Project {
 }
 
 class Keyboard;
+class NoteCanvas;
 
 class PianoRoll : public Fl_Group, public Project::Observer
 {
@@ -21,9 +23,10 @@ class PianoRoll : public Fl_Group, public Project::Observer
     // Pointer to share state with other GUI elements.
     ViewState* viewState;
     Keyboard* keyboard = nullptr;
+    NoteCanvas* noteCanvas = nullptr;
 
   protected: 
-      void draw() override;
+      //void draw() override;
       int handle(int event) override;
 
   public:

@@ -1,5 +1,6 @@
 #include "view.h"
 #include <FL/fl_draw.H>
+#include "../midi/clip.h"
 
 namespace Project {
 
@@ -248,6 +249,63 @@ namespace Project {
 
             fl_color(FL_GRAY0);
             fl_line(x, pitchY, x + w, pitchY);
+        }
+    }
+
+    void View::drawNotes(int x, int y, int w, int h, const Midi::Clip* clip)
+    {
+        if (!clip) {
+            return;
+        }
+
+        auto& tempoMap = controller.getTempoMap();
+        const int keyHeight = viewState->keyHeight;
+
+        const int64_t firstTick = TimeConverter::tickAtX(0, tempoMap, *viewState);
+        const int64_t lastTick = TimeConverter::tickAtX(w, tempoMap, *viewState);
+
+        for (const auto& note : clip->getNotes()) {
+            // Cull
+
+            if (note.endTick() <= firstTick) {
+                // Entirely left.
+                continue;
+            }
+
+            if (note.startTick >= lastTick) {
+                // Entirely right.
+                continue;
+            }
+
+            int noteY = PitchConverter::yOfPitch(note.pitch, y, h, *viewState);
+
+            if (noteY + keyHeight <= y) {
+                // Entirely above.
+                continue;
+            }
+
+            if (noteY >= y + h) {
+                // Entirely below.
+                continue;
+            }
+
+            // Convert.
+            int noteX1 = x + TimeConverter::xOfTick(note.startTick, tempoMap, *viewState);
+            int noteX2 = x + TimeConverter::xOfTick(note.endTick(), tempoMap, *viewState);
+
+            // Very short note would vanish.
+            if (noteX2 - noteX1 < 2) {
+                // Enforce a minimum width.
+                noteX2 = noteX1 + 2;
+            }
+
+            // Fill note.
+            fl_color(note.selected ? FL_BLUE : (Fl_Color)FL_DARK_GREEN);
+            fl_rectf(noteX1, noteY, noteX2 - noteX1, keyHeight);
+
+            // Border.
+            fl_color(FL_BLACK);
+            fl_rect(noteX1, noteY, noteX2 - noteX1, keyHeight);
         }
     }
 

@@ -12,6 +12,7 @@
 #include "../views/piano_roll.h"
 #include "../views/ruler.h"
 #include "../core/time_converter.h"
+#include "../midi/clip.h"
 
 // Forward declarations (for classes outside the Project namespace)
 class TrackList;
@@ -56,6 +57,7 @@ namespace Project {
         void drawCursor(int x, int y, int w, int h);
         void drawGrid(int x, int y, int w, int h, bool isRuler = false);
         void drawPitchGrid(int x, int y, int w, int h);
+        void drawNotes(int x, int y, int w, int h, const Midi::Clip* clip);
         void updateHorizontalScrollbar();
         void syncVerticalScrollbar();
         void zoomIn();

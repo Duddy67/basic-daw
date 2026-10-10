@@ -6,7 +6,8 @@ namespace Midi {
     Track::Track(int id) : Core::Track(id)
     {
         // ...
-        fillEventList();
+        //fillEventList();
+        dummyClip();
     }
 
     Track::~Track()
@@ -47,6 +48,17 @@ namespace Midi {
         event4.samplePosition = 45000;
         event4.message = noteOff2;
         events.push_back(event4);
+    }
+
+    void Track::dummyClip()
+    {
+        Midi::Clip c;
+        c.getNotes().push_back({60, 0, 960, 100, false});  // C4, 1 beat
+        c.getNotes().push_back({64, 960, 960, 100, false});  // E4
+        c.getNotes().push_back({67, 2 * 960, 2 * 960, 100, false});  // G4, 2 beats
+        c.getNotes().push_back({60, 4 * 960, 480, 60, false});  // C4, 8th
+        c.getNotes().push_back({62, 4 * 960 + 480, 480, 100, false}); // D4
+        getClips().push_back(std::move(c));
     }
 }
 
