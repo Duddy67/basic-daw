@@ -53,8 +53,8 @@ int NoteCanvas::handle(int event)
         return 0;
     }
 
-    int mx = Fl::event_x() - x();
-    int my = Fl::event_y() - y();
+    int moveX = Fl::event_x() - x();
+    int moveY = Fl::event_y() - y();
 
     auto* clip = currentClip();
 
@@ -65,7 +65,7 @@ int NoteCanvas::handle(int event)
     // Right click - Delete the note under the cursor.
     if (Fl::event_button() == FL_RIGHT_MOUSE) {
         int edge = 0;
-        int idx = hitTest(mx, my, &edge);
+        int idx = hitTest(moveX, moveY, &edge);
 
         if (idx >= 0) {
             clip->getNotes().erase(clip->getNotes().begin() + idx);
@@ -82,11 +82,11 @@ int NoteCanvas::handle(int event)
     // Left click on empty space - Create a note.
     int edge = 0;
 
-    if (hitTest(mx, my, &edge) < 0) {
+    if (hitTest(moveX, moveY, &edge) < 0) {
         auto& tempoMap = projectCtrl.getTempoMap();
 
-        int pitch = PitchConverter::pitchAtY(my + y(), y(), h(), *viewState);
-        int64_t tick = TimeConverter::tickAtX(mx, tempoMap, *viewState);
+        int pitch = PitchConverter::pitchAtY(moveY + y(), y(), h(), *viewState);
+        int64_t tick = TimeConverter::tickAtX(moveX, tempoMap, *viewState);
         tick = snap(tick);
 
         if (tick < 0) {
@@ -120,7 +120,7 @@ int NoteCanvas::handle(int event)
         other.selected = false;
     }
 
-    clip->getNotes()[hitTest(mx, my, &edge)].selected = true;
+    clip->getNotes()[hitTest(moveX, moveY, &edge)].selected = true;
     redraw();
 
     return 1;
@@ -131,7 +131,7 @@ int NoteCanvas::handle(int event)
 //   edge = -1 : left edge  (resize left)
 //   edge =  0 : body       (move)
 //   edge = +1 : right edge (resize right)
-int NoteCanvas::hitTest(int mx, int my, int* edge) const
+int NoteCanvas::hitTest(int moveX, int moveY, int* edge) const
 {
     const auto* clip = const_cast<NoteCanvas*>(this)->currentClip();
 
@@ -140,11 +140,11 @@ int NoteCanvas::hitTest(int mx, int my, int* edge) const
     }
 
     auto& tempoMap = projectCtrl.getTempoMap();
-    int pitch = PitchConverter::pitchAtY(my + y(), y(), h(), *viewState);
+    int pitch = PitchConverter::pitchAtY(moveY + y(), y(), h(), *viewState);
 
-    // Iterate in reverse so the topmost-drawn note wins ties.
     const auto& notes = clip->getNotes();
 
+    // Iterate in reverse so the topmost-drawn note wins ties.
     for (int i = (int)notes.size() - 1; i >= 0; --i) {
         const auto& note = notes[i];
 
@@ -155,17 +155,17 @@ int NoteCanvas::hitTest(int mx, int my, int* edge) const
         int noteX1 = TimeConverter::xOfTick(note.startTick, tempoMap, *viewState);
         int noteX2 = TimeConverter::xOfTick(note.endTick(), tempoMap, *viewState);
 
-        if (mx < noteX1 || mx >= noteX2) {
+        if (moveX < noteX1 || moveX >= noteX2) {
             continue;
         }
 
         if (edge) {
             constexpr int kHandlePx = 4;
 
-            if (mx - noteX1 < kHandlePx) {
+            if (moveX - noteX1 < kHandlePx) {
                 *edge = -1;
             }
-            else if (noteX2 - mx < kHandlePx) {
+            else if (noteX2 - moveX < kHandlePx) {
                 *edge = +1;
             }
             else {
