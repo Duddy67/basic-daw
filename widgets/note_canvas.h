@@ -27,6 +27,7 @@ class NoteCanvas : public Fl_Widget
 
     int64_t snap(int64_t tick);
     Midi::Clip* currentClip();
+    int hitTest(int mx, int my, int* edge) const;
 
   protected:
     void draw() override;
