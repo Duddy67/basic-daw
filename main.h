@@ -131,6 +131,7 @@ class Application : public Fl_Double_Window
         ViewState& getViewState() { return viewState; }
         GridBar& getGridBar() { return *gridBar; }
         Project::View& getProjectView() { return *projectView; }
+        bool hasView() const { return projectView != nullptr; }
         std::string escapeMenuText(const std::string& input);
         void activateMenuItem(MenuItemID menuId);
         void deactivateMenuItem(MenuItemID menuId);

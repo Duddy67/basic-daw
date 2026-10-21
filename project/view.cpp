@@ -277,6 +277,10 @@ namespace Project {
                 continue;
             }
 
+            if (note.lengthTick <= 0) {
+                continue;
+            }
+
             int noteY = PitchConverter::yOfPitch(note.pitch, y, h, *viewState);
 
             if (noteY + keyHeight <= y) {

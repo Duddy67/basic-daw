@@ -47,14 +47,25 @@ int64_t NoteCanvas::snap(int64_t tick)
     return ((tick + gridTicks / 2) / gridTicks) * gridTicks;
 }
 
+int64_t NoteCanvas::minNoteLengthTicks() const
+{
+    constexpr int kMinNotePixel = 8;
+    auto& tempoMap = projectCtrl.getTempoMap();
+    double gridBeats = projectCtrl.getView().getGridStep();
+
+    int64_t gridTicks = tempoMap.beatsToTick(gridBeats);
+    int64_t pixelTicks = tempoMap.beatsToTick(kMinNotePixel / viewState->zoom);
+
+    return std::max<int64_t>(gridTicks, pixelTicks);
+}
+
 int NoteCanvas::handle(int event)
 {
-    if (event != FL_PUSH) {
+    // Important: Make sure the view does exist before going any further.
+    // note: FLTK might dispatches an FL_HIDE event while the view is not entirely created. 
+    if (!projectCtrl.hasView()) {
         return 0;
     }
-
-    int moveX = Fl::event_x() - x();
-    int moveY = Fl::event_y() - y();
 
     auto* clip = currentClip();
 
@@ -62,68 +73,220 @@ int NoteCanvas::handle(int event)
         return 0;
     }
 
-    // Right click - Delete the note under the cursor.
-    if (Fl::event_button() == FL_RIGHT_MOUSE) {
-        int edge = 0;
-        int idx = hitTest(moveX, moveY, &edge);
+    // Convert once at the top. moveX, moveY are widget-relative.
+    int moveX = Fl::event_x() - x();
+    int moveY = Fl::event_y() - y();
 
-        if (idx >= 0) {
-            clip->getNotes().erase(clip->getNotes().begin() + idx);
+    switch (event) {
+        case FL_PUSH: {
+            // Allows the delete key to reach the canvas.
+            Fl::focus(this);
+
+            // Right click - Delete the note under the cursor.
+            if (Fl::event_button() == FL_RIGHT_MOUSE) {
+                int edge = 0;
+                int idx = hitTest(moveX, moveY, &edge);
+
+                if (idx >= 0) {
+                    clip->getNotes().erase(clip->getNotes().begin() + idx);
+                    projectCtrl.notifyNotesChanged();
+                    redraw();
+                }
+
+                return 1;
+            }
+
+            if (Fl::event_button() != FL_LEFT_MOUSE) {
+                return 0;
+            }
+
+            int edge = 0;
+            int idx = hitTest(moveX, moveY, &edge);
+
+            // Left click on an existing note: begin move/resize.
+            if (idx >= 0) {
+                // Deselect everything
+                for (auto& note : clip->getNotes()) {
+                    note.selected = false;
+                }
+
+                // but the clicked note.
+                clip->getNotes()[idx].selected = true;
+
+                dragNoteIdx = idx;
+                dragOriginal = clip->getNotes()[idx];
+                dragStartX = moveX;
+                dragStartY = moveY;
+
+                if (edge < 0) {
+                    mode = DragMode::RESIZE_L;
+                }
+                else if (edge > 0) {
+                    mode = DragMode::RESIZE_R;
+                }
+                else {
+                    mode = DragMode::MOVE;
+                }
+
+                redraw();
+                return 1;
+            }
+
+            auto& tempoMap = projectCtrl.getTempoMap();
+
+            int pitch = PitchConverter::pitchAtY(moveY + y(), y(), h(), *viewState);
+            int64_t tick = TimeConverter::tickAtX(moveX, tempoMap, *viewState);
+            tick = snap(tick);
+
+            if (tick < 0) {
+                tick = 0;
+            }
+
+            // Create the new note.
+            Note note;
+            note.pitch = pitch;
+            note.startTick = tick;
+            note.lengthTick = minNoteLengthTicks();
+            note.velocity = 100;
+            note.selected = true;
+
+            // Deselect everything else.
+            for (auto& other : clip->getNotes()) {
+                other.selected = false;
+            }
+
+            // Store the newly created note.
+            clip->getNotes().push_back(note);
+
+            dragNoteIdx = (int)clip->getNotes().size() - 1;
+            dragOriginal = note;
+            dragStartX = moveX;
+            dragStartY = moveY;
+            mode = DragMode::CREATE;
+            projectCtrl.notifyNotesChanged();
+
             redraw();
+            return 1;
         }
 
-        return 1;
-    }
+        case FL_DRAG: {
+            if (mode == DragMode::NONE) {
+                return 0;
+            }
 
-    if (Fl::event_button() != FL_LEFT_MOUSE) {
-        return 0;
-    }
+            if (dragNoteIdx < 0) {
+                return 0;
+            }
 
-    // Left click on empty space - Create a note.
-    int edge = 0;
+            if (dragNoteIdx >= (int)clip->getNotes().size()) {
+                return 0;
+            }
 
-    if (hitTest(moveX, moveY, &edge) < 0) {
-        auto& tempoMap = projectCtrl.getTempoMap();
+            auto& tempoMap = projectCtrl.getTempoMap();
+            auto& note = clip->getNotes()[dragNoteIdx];
 
-        int pitch = PitchConverter::pitchAtY(moveY + y(), y(), h(), *viewState);
-        int64_t tick = TimeConverter::tickAtX(moveX, tempoMap, *viewState);
-        tick = snap(tick);
+            // Mouse up = pitch up.
+            int deltaPitch = (dragStartY - moveY) / viewState->keyHeight;
+            // Tick delta relative to where the mouse was at FL_PUSH.
+            int64_t deltaTick = TimeConverter::tickAtX(moveX, tempoMap, *viewState) - TimeConverter::tickAtX(dragStartX, tempoMap, *viewState);
+            int64_t minLength = minNoteLengthTicks();
 
-        if (tick < 0) {
-            tick = 0;
+            switch (mode) {
+                case DragMode::CREATE: {
+                    int64_t newEnd = snap(dragOriginal.startTick + deltaTick);
+
+                    if (newEnd - note.startTick < minLength) {
+                        newEnd = note.startTick + minLength;
+                    }
+
+                    note.lengthTick = newEnd - note.startTick;
+                    break;
+                }
+
+                case DragMode::MOVE: {
+                    note.pitch = std::clamp(dragOriginal.pitch + deltaPitch, 0, 127);
+                    int64_t newStart = snap(dragOriginal.startTick+ deltaTick);
+
+                    if (newStart < 0) {
+                        newStart = 0;
+                    }
+
+                    note.startTick = newStart;
+                    break;
+                }
+
+                case DragMode::RESIZE_L: {
+                    int64_t newStart = snap(dragOriginal.startTick + deltaTick);
+
+                    if (newStart < 0) {
+                        newStart = 0;
+                    }
+
+                    int64_t origEnd = dragOriginal.endTick();
+
+                    // Enforce minimum length, not just zero-length.
+                    if (newStart > origEnd - minLength) {
+                        newStart = origEnd - minLength;
+                    }
+
+                    if (newStart < 0) {
+                        newStart = 0;
+                    }
+
+                    note.startTick = newStart;
+                    note.lengthTick = origEnd - newStart;
+                    break;
+                }
+
+                case DragMode::RESIZE_R: {
+                    int64_t newEnd = snap(dragOriginal.endTick() + deltaTick);
+
+                    if (newEnd < note.startTick + minLength) {
+                        newEnd = note.startTick + minLength;
+                    }
+
+                    note.lengthTick = newEnd - note.startTick;
+                    break;
+                }
+
+                default:
+                    break;
+            }
+
+            redraw();
+            return 1;
         }
 
-        // Default length: one grid step, snapped in ticks.
-        double gridBeats = projectCtrl.getView().getGridStep();
-        int64_t gridTicks = tempoMap.beatsToTick(gridBeats);
+        case FL_RELEASE: {
+            if (mode == DragMode::NONE) {
+                return 0;
+            }
 
-        Note note;
-        note.pitch = pitch;
-        note.startTick = tick;
-        note.lengthTick = std::max<int64_t>(gridTicks, 1);
-        note.velocity = 100;
-        note.selected = true;
+            mode = DragMode::NONE; 
+            dragNoteIdx = -1;
 
-        // Deselect everything else.
-        for (auto& other : clip->getNotes()) {
-            other.selected = false;
+            projectCtrl.notifyNotesChanged();
+
+            redraw();
+            return 1;
         }
+                          
+        case FL_KEYBOARD:
+            // Check for the delete key.
+            if (Fl::event_key() == FL_Delete) {
+                // Delete the selected note(s).
+                auto& notes = clip->getNotes();
+                notes.erase(std::remove_if(notes.begin(), notes.end(), [](const Note& note){ return note.selected; }), notes.end());
+                projectCtrl.notifyNotesChanged();
+                redraw();
+                return 1;
+            }
 
-        clip->getNotes().push_back(note);
-        redraw();
+            return 0;
 
-        return 1;
+        default:
+            return Fl_Widget::handle(event);
     }
-
-    // Left click on a note: select it
-    for (auto& other : clip->getNotes()) {
-        other.selected = false;
-    }
-
-    clip->getNotes()[hitTest(moveX, moveY, &edge)].selected = true;
-    redraw();
-
-    return 1;
 }
 
 // Returns index of the note under the given widget-relative point, or -1.

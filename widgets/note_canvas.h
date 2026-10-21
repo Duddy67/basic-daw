@@ -19,11 +19,13 @@ class NoteCanvas : public Fl_Widget
     // Pointer to share state with other GUI elements.
     ViewState* viewState;
     DragMode mode = DragMode::NONE;
+    // Widget-relative mouse at FL_PUSH.
     int dragStartX = 0;
     int dragStartY = 0;
+    // Snapshot at FL_PUSH.
     Note dragOriginal;
-    int64_t dragStartTick = 0;
-    int dragPitch = -1;
+    // Index into clip->getNotes() during a drag.
+    int dragNoteIdx = -1;
 
     int64_t snap(int64_t tick);
     Midi::Clip* currentClip();
@@ -37,6 +39,8 @@ class NoteCanvas : public Fl_Widget
 
     NoteCanvas(int x, int y, int w, int h, Project::Controller& ctrl);
     ~NoteCanvas() {}
+
+    int64_t minNoteLengthTicks() const;
 };
 
 #endif // NOTE_CANVAS_H

@@ -106,6 +106,11 @@ namespace Project {
         getEngine().pushUiMidiEvent(event);
     }
 
+    void Controller::notifyNotesChanged() {
+        std::cout << "notifyNotesChanged() " << std::endl;
+        notify(CtrlEvent::MIDI_NOTES_CHANGED, 0);
+    }
+
     // Getters
 
     Transport& Controller::getTransport()
@@ -126,6 +131,11 @@ namespace Project {
     View& Controller::getView()
     {
         return application.getProjectView();
+    }
+
+    bool Controller::hasView()
+    {
+        return application.hasView();
     }
 
     ViewState& Controller::getViewState()

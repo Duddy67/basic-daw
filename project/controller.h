@@ -47,6 +47,7 @@ namespace Project {
         void onTrackSelected(int id);
         void onPreviewNoteOn(int pitch, int velocity);
         void onPreviewNoteOff(int pitch);
+        void notifyNotesChanged();
         void onPlay();
         void onStop();
         bool isSnapToGrid();
@@ -55,6 +56,7 @@ namespace Project {
         TempoMap& getTempoMap();
         Core::Engine& getEngine();
         View& getView();
+        bool hasView();
         Core::Track* getTrack(int id);
         ViewState& getViewState();
         //Application& getApplication() const { return application; }
