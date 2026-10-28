@@ -12,19 +12,15 @@ Transport::~Transport()
     // ...
 }
 
+void Transport::locateToSample(uint64_t sample)
+{
+    // Update the playhead position.
+    playheadSample.store(sample, std::memory_order_release);
+    // Update the playhead position in MIDI tracks.
+    application.getMidiScheduler().relocate(sample);
+}
+
 void Transport::play() {
-    // TEMPORARY (starts from the top each time)
-    /*locateToSample(0); 
-    auto& tracks = application.getProject()->getTracks();
-
-    for (auto& track : tracks) {
-        if (track->getType() == DataType::MIDI) {
-            auto* midiTrack = static_cast<Midi::Track*>(track.get());
-            midiTrack->playbackCursor = 0;
-        }
-    }*/
-    ///// END TEMPORARY  //////
-
     application.getProjectView().startLiveUpdate();
     playing.store(true);
 }

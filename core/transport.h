@@ -29,7 +29,7 @@ class Transport {
         void advancePlayhead(uint64_t frameCount) { playheadSample.fetch_add(frameCount, std::memory_order_relaxed); }
         // Jumps the playhead to an absolute sample position.
         // Called when the user clicks the timeline or relocates the song.
-        void locateToSample(uint64_t sample) { playheadSample.store(sample, std::memory_order_release); }
+        void locateToSample(uint64_t sample);
 };
 
 #endif // TRANSPORT_H

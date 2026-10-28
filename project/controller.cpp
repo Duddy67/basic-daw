@@ -107,8 +107,12 @@ namespace Project {
     }
 
     void Controller::notifyNotesChanged() {
-        std::cout << "notifyNotesChanged() " << std::endl;
         notify(CtrlEvent::MIDI_NOTES_CHANGED, 0);
+
+        if (!getTransport().isRolling()) {
+            // Compile the edited MIDI notes.
+            application.getMidiScheduler().compile(*this);
+        }
     }
 
     // Getters

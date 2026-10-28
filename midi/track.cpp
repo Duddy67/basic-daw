@@ -5,9 +5,14 @@ namespace Midi {
 
     Track::Track(int id) : Core::Track(id)
     {
-        // ...
         //fillEventList();
-        dummyClip();
+        //dummyClip();
+
+        // Create the initial clip.
+        Midi::Clip clip;
+        clip.setStartTick(0);
+        clip.setLengthTick(0);
+        getClips().push_back(std::move(clip));
     }
 
     Track::~Track()
@@ -18,6 +23,13 @@ namespace Midi {
     void Track::addEvent(MidiEvent& event)
     {
         events.push_back(event);
+    }
+
+    void Track::setEvents(std::vector<MidiEvent> newEvents)
+    {
+        events = std::move(newEvents);
+        //
+        nextEventId = 0;
     }
 
     /*
@@ -50,6 +62,9 @@ namespace Midi {
         events.push_back(event4);
     }
 
+    /*
+     * FOR TEST PURPOSE ONLY
+     */
     void Track::dummyClip()
     {
         Midi::Clip c;

@@ -21,6 +21,8 @@ namespace Midi {
         std::vector<Note>& getNotes() { return notes; }
         uint64_t getStartTick() const { return startTick; }
         uint64_t getLengthTick() const { return lengthTick; }
+        void setStartTick(int64_t tick) { startTick = tick; }
+        void setLengthTick(int64_t tick) { lengthTick = tick; }
     };
 }
 

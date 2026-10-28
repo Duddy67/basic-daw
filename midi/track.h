@@ -30,9 +30,10 @@ namespace Midi {
             void toggleOmni() { omni = !omni; }
             bool isOmni() const { return omni; }
             const std::vector<MidiEvent>& getEvents() const { return events; }
+            void setEvents(std::vector<MidiEvent> newEvents);
             // Override virtual functions.
             DataType getType() const override { return DataType::MIDI; }
-            size_t playbackCursor = 0;
+            size_t nextEventId = 0;
            
             void fillEventList(); // FOR TEST PURPOSE ONLY
             void dummyClip(); // FOR TEST PURPOSE ONLY
