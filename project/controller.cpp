@@ -113,6 +113,9 @@ namespace Project {
             // Compile the edited MIDI notes.
             application.getMidiScheduler().compile(*this);
         }
+        else {
+            recompile = true;
+        }
     }
 
     // Getters

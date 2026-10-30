@@ -28,6 +28,7 @@ namespace Project {
         Model& model;
         // List of all registered observers.
         std::vector<Observer*> observers;  
+        bool recompile = false;
 
         void notify(CtrlEvent event, int index);
 
@@ -57,6 +58,8 @@ namespace Project {
         Core::Engine& getEngine();
         View& getView();
         bool hasView();
+        bool needsRecompile() const { return recompile; }
+        void doneRecompiling() { recompile = false; }
         Core::Track* getTrack(int id);
         ViewState& getViewState();
         //Application& getApplication() const { return application; }

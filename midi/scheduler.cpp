@@ -149,7 +149,12 @@ namespace Midi {
             midiTrack->setEvents(std::move(compiled));
             // Reset the event index to zero as it's the only safe value after a swap.
             midiTrack->nextEventId = 0;
+            // Inform other elements recompiling is done.
+            controller.doneRecompiling();
         }
+
+        // Inform the controller that the recompiling is done.
+        controller.doneRecompiling();
     }
 
     void Scheduler::relocate(uint64_t sample)
