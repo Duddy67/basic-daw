@@ -4,7 +4,7 @@
 #include "../constants.h"
 
 
-namespace Project {
+namespace project {
 
     class Observer {
       public:

@@ -16,7 +16,7 @@ namespace Core {
     class Track;
 }
 
-namespace Project {
+namespace project {
 
     class Model;
     class Observer;

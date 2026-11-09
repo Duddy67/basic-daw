@@ -7,7 +7,7 @@
 #include "../project/controller.h"
 #include "../widgets/strip.h"
 
-namespace Project {
+namespace project {
     class Controller;
     class Observer;
 }
@@ -15,15 +15,15 @@ namespace Project {
 class Strip;
 
 
-class ChannelStrip : public Fl_Group, public Project::Observer
+class ChannelStrip : public Fl_Group, public project::Observer
 {
-    Project::Controller& projectCtrl;
+    project::Controller& projectCtrl;
     std::vector<Strip*> strips;
     void showCurrentStrip(int id);
 
     public:
 
-        ChannelStrip(int x, int y, int w, int h, Project::Controller& ctrl);
+        ChannelStrip(int x, int y, int w, int h, project::Controller& ctrl);
         ~ChannelStrip() {}
 
         void onCtrlEvent(CtrlEvent event, int index);

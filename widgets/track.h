@@ -8,7 +8,7 @@
 #include <iostream>
 #include "../constants.h"
 
-namespace Project {
+namespace project {
     class Controller;
 }
 
@@ -18,7 +18,7 @@ namespace Widget {
     {
         int id;
         DataType type;
-        Project::Controller& projectCtrl;
+        project::Controller& projectCtrl;
         Fl_Output* name = nullptr;
         Fl_Light_Button* solo = nullptr;
         Fl_Light_Button* mute = nullptr;
@@ -31,7 +31,7 @@ namespace Widget {
 
         public:
 
-            Track(int x, int y, int w, int h, int i, DataType t, Project::Controller& ctrl);
+            Track(int x, int y, int w, int h, int i, DataType t, project::Controller& ctrl);
             ~Track();
 
             int getId() { return id; }

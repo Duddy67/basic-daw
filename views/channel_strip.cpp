@@ -1,6 +1,6 @@
 #include "channel_strip.h"
 
-ChannelStrip::ChannelStrip(int x, int y, int w, int h, Project::Controller& ctrl) : Fl_Group(x, y, w, h), projectCtrl(ctrl)
+ChannelStrip::ChannelStrip(int x, int y, int w, int h, project::Controller& ctrl) : Fl_Group(x, y, w, h), projectCtrl(ctrl)
 {
     box(FL_DOWN_BOX);
     color((Fl_Color) FL_INACTIVE_COLOR);

@@ -1,7 +1,7 @@
 #include "keyboard.h"
 
 
-Keyboard::Keyboard(int x, int y, int w, int h, Project::Controller& ctrl)
+Keyboard::Keyboard(int x, int y, int w, int h, project::Controller& ctrl)
     : Fl_Widget(x, y, w, h), projectCtrl(ctrl)
 {
     box(FL_FLAT_BOX);

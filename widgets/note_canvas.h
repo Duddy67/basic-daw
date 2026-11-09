@@ -9,13 +9,13 @@
 #include "../constants.h"
 
 
-namespace Project {
+namespace project {
     class Controller;
 }
 
 class NoteCanvas : public Fl_Widget
 {
-    Project::Controller& projectCtrl;
+    project::Controller& projectCtrl;
     // Pointer to share state with other GUI elements.
     ViewState* viewState;
     DragMode mode = DragMode::NONE;
@@ -37,7 +37,7 @@ class NoteCanvas : public Fl_Widget
 
   public:
 
-    NoteCanvas(int x, int y, int w, int h, Project::Controller& ctrl);
+    NoteCanvas(int x, int y, int w, int h, project::Controller& ctrl);
     ~NoteCanvas() {}
 
     int64_t minNoteLengthTicks() const;

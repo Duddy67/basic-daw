@@ -7,15 +7,15 @@
 #include "../project/controller.h"
 #include "../core/time_converter.h"
 
-namespace Project {
+namespace project {
     class Controller;
     class Observer;
 }
 
 
-class Timeline : public Fl_Group, public Project::Observer
+class Timeline : public Fl_Group, public project::Observer
 {
-    Project::Controller& projectCtrl;
+    project::Controller& projectCtrl;
     // Pointer to share state with other GUI elements.
     ViewState* viewState;
 
@@ -25,7 +25,7 @@ class Timeline : public Fl_Group, public Project::Observer
 
   public:
 
-      Timeline(int x, int y, int w, int h, Project::Controller& ctrl);
+      Timeline(int x, int y, int w, int h, project::Controller& ctrl);
       ~Timeline() {}
 
       void onCtrlEvent(CtrlEvent event, int index);

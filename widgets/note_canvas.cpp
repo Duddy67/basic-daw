@@ -2,7 +2,7 @@
 #include "../midi/track.h"
 
 
-NoteCanvas::NoteCanvas(int x, int y, int w, int h, Project::Controller& ctrl)
+NoteCanvas::NoteCanvas(int x, int y, int w, int h, project::Controller& ctrl)
     : Fl_Widget(x, y, w, h), projectCtrl(ctrl)
 {
     viewState = &projectCtrl.getViewState();

@@ -3,7 +3,7 @@
 #include "../midi/track.h"
 
 
-namespace Project {
+namespace project {
 
     Model::Model(Application& app) : application(app)
     {

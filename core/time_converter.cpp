@@ -1,6 +1,6 @@
 #include "time_converter.h"
-#include "transport.h"
-#include "tempo_map.h"
+#include "../project/transport.h"
+#include "../project/tempo_map.h"
 
 
 

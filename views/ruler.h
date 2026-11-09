@@ -8,14 +8,14 @@
 #include "../core/time_converter.h"
 #include "../constants.h"
 
-namespace Project {
+namespace project {
     class Controller;
     class Observer;
 }
 
 class Ruler : public Fl_Group
 {
-        Project::Controller& projectCtrl;
+        project::Controller& projectCtrl;
         // Pointer to share state with other GUI elements.
         ViewState* viewState;
 
@@ -25,7 +25,7 @@ class Ruler : public Fl_Group
 
     public:
 
-        Ruler(int x, int y, int w, int h, Project::Controller& ctrl);
+        Ruler(int x, int y, int w, int h, project::Controller& ctrl);
         ~Ruler() {}
 
 };

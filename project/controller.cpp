@@ -1,7 +1,7 @@
 #include "controller.h"
 
 
-namespace Project {
+namespace project {
 
     Controller::Controller(Application& app, Model& m) : application(app), model(m)
     {

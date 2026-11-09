@@ -16,9 +16,9 @@ LOCAL_SRC = \
 	application/menu.cpp \
 	application/application.cpp \
 	application/callbacks.cpp \
-	core/transport.cpp \
+	project/transport.cpp \
 	core/engine.cpp \
-	core/tempo_map.cpp \
+	project/tempo_map.cpp \
 	core/time_converter.cpp \
 	dialogs/dialog.cpp \
 	dialogs/new.cpp \

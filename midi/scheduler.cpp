@@ -83,7 +83,7 @@ namespace Midi {
     /*
      * Turns the edited notes in the piano roll into events readable by JACK. 
      */
-    void Scheduler::compile(Project::Controller& controller)
+    void Scheduler::compile(project::Controller& controller)
     {
         auto& tempoMap = controller.getTempoMap();
         int sampleRate = controller.getEngine().getSampleRate();

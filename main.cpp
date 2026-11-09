@@ -52,7 +52,7 @@ Application::Application(int w, int h, const char *l, int argc, char *argv[]) : 
     fileChooser->preset_file(untitledDefault());
 
     // There is no track for now.
-    if (projectModel == nullptr) {
+    if (!activeProject) {
         deactivateMenuItem(MenuItemID::TRACK_ADD);
         deactivateMenuItem(MenuItemID::TRACK_REMOVE);
     }
@@ -63,8 +63,8 @@ Application::Application(int w, int h, const char *l, int argc, char *argv[]) : 
     // Start application in maximized state.
     //maximize();
 
-    transport = new Transport(*this);
-    tempoMap = new TempoMap(*this);
+    //transport = new Transport(*this);
+    //tempoMap = new TempoMap(*this);
     midiScheduler = new Midi::Scheduler(*this);
     audioProcessor = new Audio::Processor(*this);
 
@@ -73,10 +73,10 @@ Application::Application(int w, int h, const char *l, int argc, char *argv[]) : 
 
 Application::~Application() 
 {
-    delete transport;
-    delete tempoMap;
-    delete projectModel;
-    delete projectCtrl;
+    //delete transport;
+    //delete tempoMap;
+    //delete projectModel;
+    //delete projectCtrl;
     delete coreEngine;
     delete audioProcessor;
     delete fileChooser;

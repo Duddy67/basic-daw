@@ -9,13 +9,13 @@
 #include "../core/pitch_converter.h"
 
 
-namespace Project {
+namespace project {
     class Controller;
 }
 
 class Keyboard : public Fl_Widget
 {
-    Project::Controller& projectCtrl;
+    project::Controller& projectCtrl;
     int hoveredPitch = -1;
     int playingPitch = -1;
     // Pointer to share state with other GUI elements.
@@ -29,7 +29,7 @@ class Keyboard : public Fl_Widget
 
   public:
 
-      Keyboard(int x, int y, int w, int h, Project::Controller& ctrl);
+      Keyboard(int x, int y, int w, int h, project::Controller& ctrl);
       ~Keyboard() {}
 
 };

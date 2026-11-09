@@ -2,7 +2,7 @@
 #include <FL/fl_draw.H>
 #include "../midi/clip.h"
 
-namespace Project {
+namespace project {
 
     View::View(int x, int y, int w, int h, Controller& ctrl) :
       Fl_Group(x, y, w, h), controller(ctrl)

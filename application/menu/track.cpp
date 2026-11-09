@@ -12,8 +12,10 @@ void Application::onAdd()
         DataType type = options.midi ? DataType::MIDI : DataType::AUDIO;
 
         // Make sure the project pointer is valid.
-        if (projectCtrl != nullptr) {
-            projectCtrl->onAddTrack(type);
+        //if (projectCtrl != nullptr) {
+        if (activeProject) {
+            //projectCtrl->onAddTrack(type);
+            activeProject->getController().onAddTrack(type);
         }
     }
 }

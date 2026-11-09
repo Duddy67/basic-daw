@@ -2,7 +2,7 @@
 #include "../core/engine.h"
 #include <FL/fl_draw.H>
 
-Timeline::Timeline(int x, int y, int w, int h, Project::Controller& ctrl) : Fl_Group(x, y, w, h), projectCtrl(ctrl)
+Timeline::Timeline(int x, int y, int w, int h, project::Controller& ctrl) : Fl_Group(x, y, w, h), projectCtrl(ctrl)
 {
     box(FL_FLAT_BOX);
     projectCtrl.addObserver(this);

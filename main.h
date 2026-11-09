@@ -16,13 +16,14 @@
 #include "dialogs/audio_settings.h"
 #include "dialogs/midi_settings.h"
 #include "dialogs/add_track.h"
-#include "project/model.h"
-#include "project/controller.h"
-#include "project/view.h"
+#include "project/project.h"
+//#include "project/model.h"
+//#include "project/controller.h"
+//#include "project/view.h"
 #include "core/engine.h"
 #include "audio/processor.h"
-#include "core/transport.h"
-#include "core/tempo_map.h"
+//#include "project/transport.h"
+//#include "project/tempo_map.h"
 #include "midi/scheduler.h"
 #include "widgets/transport_bar.h"
 #include "widgets/grid_bar.h"
@@ -32,8 +33,7 @@ using json = nlohmann::json;
 
 // Forward class declarations.
 
-namespace Project {
-    class Controller;
+namespace project {
     class View;
 }
 
@@ -49,8 +49,9 @@ namespace Midi {
     class Scheduler;
 }
 
-class Transport;
-class TempoMap;
+class Project;
+//class Transport;
+//class TempoMap;
 
 
 class Application : public Fl_Double_Window 
@@ -71,18 +72,19 @@ class Application : public Fl_Double_Window
     // when updating labels.
     std::map<Fl_Menu_Item*, std::string> menuItemLabels;
     std::string message;
-    Project::Model* projectModel = nullptr;
-    Project::Controller* projectCtrl = nullptr;
-    Project::View* projectView = nullptr;
+    //project::Model* projectModel = nullptr;
+    //project::Controller* projectCtrl = nullptr;
+    //project::View* projectView = nullptr;
     Core::Engine* coreEngine = nullptr;
     Audio::Processor* audioProcessor = nullptr;
-    Transport* transport = nullptr;
-    TempoMap* tempoMap = nullptr;
+    //Transport* transport = nullptr;
+    //TempoMap* tempoMap = nullptr;
     TransportBar* transportBar = nullptr;
     GridBar* gridBar = nullptr;
     Midi::Scheduler* midiScheduler = nullptr;
     // The single GUI source of truth. Shared with GUI widgets Ruler, Timeline...
-    ViewState viewState;
+    //ViewState viewState;
+    Project* activeProject = nullptr;
 
     public:
 
@@ -119,23 +121,26 @@ class Application : public Fl_Double_Window
 
         void openFile(const char* filename);
         void createProject();
-        Project::Model* getProject() { return projectModel; }
+        project::Model* getProject() { return activeProject->getModelPtr(); }
         Core::Engine& getCoreEngine() { return *coreEngine; }
         Audio::Processor& getAudioProcessor() { return *audioProcessor; }
         //void initAudioSystem();
         void initJackClient();
-        Transport& getTransport() { return *transport; }
+        //Transport& getTransport() { return *transport; }
+        Transport& getTransport() { return activeProject->getTransport(); }
+        //TempoMap& getTempoMap() { return *tempoMap; }
+        TempoMap& getTempoMap() { return activeProject->getTempoMap(); }
+        project::View& getProjectView() { return activeProject->getView(); }
+        //ViewState& getViewState() { return viewState; }
+        ViewState& getViewState() { return activeProject->getViewState(); }
+        bool hasView() const { return activeProject->hasView(); }
         TransportBar& getTransportBar() { return *transportBar; }
-        TempoMap& getTempoMap() { return *tempoMap; }
         Midi::Scheduler& getMidiScheduler() { return *midiScheduler; }
-        ViewState& getViewState() { return viewState; }
         GridBar& getGridBar() { return *gridBar; }
-        Project::View& getProjectView() { return *projectView; }
-        bool hasView() const { return projectView != nullptr; }
         std::string escapeMenuText(const std::string& input);
         void activateMenuItem(MenuItemID menuId);
         void deactivateMenuItem(MenuItemID menuId);
-
+bool isActiveProject() { return activeProject == nullptr ? false : true; }
         // Call back functions.
         static void noEscapeKey_cb(Fl_Widget* w, void* data);
 };

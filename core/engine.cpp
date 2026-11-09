@@ -74,7 +74,8 @@ namespace Core {
         Engine* self = static_cast<Engine*>(arg);
 
         // Check first that a project exists.
-        if (!self->application.getProject()) {
+        //if (!self->application.getProject()) {
+        if (!self->application.isActiveProject()) {
             // JACK expects zero on success.
             return 0;
         }

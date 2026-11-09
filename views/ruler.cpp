@@ -1,7 +1,7 @@
 #include "ruler.h"
 #include <FL/fl_draw.H>
 
-Ruler::Ruler(int x, int y, int w, int h, Project::Controller& ctrl) : Fl_Group(x, y, w, h), projectCtrl(ctrl)
+Ruler::Ruler(int x, int y, int w, int h, project::Controller& ctrl) : Fl_Group(x, y, w, h), projectCtrl(ctrl)
 {
     box(FL_FLAT_BOX);
     color((Fl_Color) FL_LIGHT1);

@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <fstream>
 
+
 /*
  * Open the given file.
  */
@@ -45,9 +46,15 @@ int Application::isFileExist(const char* filename) {
 
 void Application::createProject()
 {
-    if (projectModel == nullptr) {
-        projectModel = new Project::Model(*this);
-        projectCtrl = new Project::Controller(*this, *projectModel);
+    if (activeProject) {
+        return;
+    }
+
+    //if (projectModel == nullptr) {
+        //projectModel = new project::Model(*this);
+        auto model = std::make_unique<project::Model>(*this);
+        //projectCtrl = new project::Controller(*this, *projectModel);
+        auto controller = std::make_unique<project::Controller>(*this, *model);
 
         // Calculate the standard side/bottom border thickness.
         int sideBorder = (decorated_w() - w()) / 2;
@@ -61,14 +68,25 @@ void Application::createProject()
         int viewW = Fl::w() - (sideBorder * 2);
         int viewH = Fl::h() - totalVerticalBorders - ((SMALL_SPACE * 2) + (TINY_SPACE * 2));
 
-        projectView = new Project::View(viewX, viewY, viewW, viewH, *projectCtrl);
+        //projectView = new project::View(viewX, viewY, viewW, viewH, *projectCtrl);
+        auto view = std::make_unique<project::View>(viewX, viewY, viewW, viewH, *controller);
+        auto tempoMap = std::make_unique<TempoMap>(*this);
+        auto transport = std::make_unique<Transport>(*this);
+
+        activeProject = new Project(std::move(model),
+                                    std::move(controller),
+                                    std::move(view),
+                                    std::move(transport),
+                                    std::move(tempoMap));
 
         // Make projectView child of Application (ie: the main window).
-        add(projectView);
+        //add(projectView);
+        add(activeProject->getViewPtr());
         redraw();
 
-        projectView->updateHorizontalScrollbar();
-    }
+        //projectView->updateHorizontalScrollbar();
+        activeProject->getView().updateHorizontalScrollbar();
+    //}
 }
 
 /*

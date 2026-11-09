@@ -8,7 +8,7 @@
 
 
 class Application;
-namespace Project {
+namespace project {
     class Controller;
 }
 
@@ -28,7 +28,7 @@ namespace Midi {
             void processInput(void* midiInBuffer, uint64_t currentSample);
             void relocate(uint64_t sample);
             void sendAllNotesOff(Track& track);
-            void compile(Project::Controller& controller);
+            void compile(project::Controller& controller);
     };
 }
 

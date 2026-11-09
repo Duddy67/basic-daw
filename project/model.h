@@ -15,7 +15,7 @@ namespace Midi {
     class Track;
 }
 
-namespace Project {
+namespace project {
 
     class Model {
 

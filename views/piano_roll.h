@@ -9,7 +9,7 @@
 #include "../widgets/note_canvas.h"
 #include "../core/time_converter.h"
 
-namespace Project {
+namespace project {
     class Controller;
     class Observer;
 }
@@ -17,9 +17,9 @@ namespace Project {
 class Keyboard;
 class NoteCanvas;
 
-class PianoRoll : public Fl_Group, public Project::Observer
+class PianoRoll : public Fl_Group, public project::Observer
 {
-    Project::Controller& projectCtrl;
+    project::Controller& projectCtrl;
     // Pointer to share state with other GUI elements.
     ViewState* viewState;
     Keyboard* keyboard = nullptr;
@@ -31,7 +31,7 @@ class PianoRoll : public Fl_Group, public Project::Observer
 
   public:
 
-      PianoRoll(int x, int y, int w, int h, Project::Controller& ctrl);
+      PianoRoll(int x, int y, int w, int h, project::Controller& ctrl);
       ~PianoRoll() {}
 
       void onCtrlEvent(CtrlEvent event, int index);

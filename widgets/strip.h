@@ -10,7 +10,7 @@
 #include "../constants.h"
 
 
-namespace Project {
+namespace project {
     class Controller;
 }
 
@@ -18,7 +18,7 @@ class Strip : public Fl_Group
 {
     int id;
     DataType type;
-    Project::Controller& projectCtrl;
+    project::Controller& projectCtrl;
     Fl_Choice* channel = nullptr;
     Fl_Check_Button* omni = nullptr;
     void buildMidi();
@@ -26,7 +26,7 @@ class Strip : public Fl_Group
 
     public:
 
-        Strip(int x, int y, int w, int h, int i, DataType t, Project::Controller& ctrl);
+        Strip(int x, int y, int w, int h, int i, DataType t, project::Controller& ctrl);
         ~Strip();
 
         int getId() { return id; }

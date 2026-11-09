@@ -7,7 +7,7 @@
 #include "../project/controller.h"
 #include "../widgets/track.h"
 
-namespace Project {
+namespace project {
     class Controller;
     class Observer;
 }
@@ -16,15 +16,15 @@ namespace Widget {
     class Track;
 }
 
-class TrackList : public Fl_Group, public Project::Observer
+class TrackList : public Fl_Group, public project::Observer
 {
-    Project::Controller& projectCtrl;
+    project::Controller& projectCtrl;
     std::vector<Widget::Track*> tracks;
     void setSelectedTrack(int id);
 
   public:
 
-      TrackList(int x, int y, int w, int h, Project::Controller& ctrl);
+      TrackList(int x, int y, int w, int h, project::Controller& ctrl);
       ~TrackList() {}
 
       void onCtrlEvent(CtrlEvent event, int index);

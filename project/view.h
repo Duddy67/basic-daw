@@ -12,10 +12,10 @@
 #include "../views/piano_roll.h"
 #include "../views/ruler.h"
 #include "../core/time_converter.h"
-#include "../core/tempo_map.h"
+#include "../project/tempo_map.h"
 #include "../midi/clip.h"
 
-// Forward declarations (for classes outside the Project namespace)
+// Forward declarations (for classes outside the project namespace)
 class TrackList;
 class ChannelStrip;
 class Timeline;
@@ -23,8 +23,8 @@ class PianoRoll;
 class Ruler;
 class TempoMap;
 
-namespace Project {
-    // Forward declarations (for classes inside the Project namespace)
+namespace project {
+    // Forward declarations (for classes inside the project namespace)
     class Controller;
 
     class View : public Fl_Group
