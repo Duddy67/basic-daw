@@ -99,3 +99,16 @@ Widget::Track& TrackList::getSelectedTrack()
     throw std::runtime_error("No selected track found on the list.");
 }
 
+size_t TrackList::trackCount(DataType type)
+{
+    size_t count = 0;
+
+    for (auto* track : tracks) {
+        if (track->getType() == type) {
+            count++;
+        }
+    }
+
+    return count;
+}
+

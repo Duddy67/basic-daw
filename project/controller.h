@@ -24,8 +24,8 @@ namespace project {
 
     class Controller {
 
-        Application& application;
         Model& model;
+        Application& application;
         // List of all registered observers.
         std::vector<Observer*> observers;  
         bool recompile = false;
@@ -34,7 +34,7 @@ namespace project {
 
       public:
 
-        Controller(Application& app, Model& m);
+        Controller(Model& m);
         ~Controller();
 
         // Register an observer.

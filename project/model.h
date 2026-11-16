@@ -24,13 +24,14 @@ namespace project {
       std::vector<int> soloTracks;  
       std::vector<std::unique_ptr<Core::Track>> tracks;  
       int currentTrackId = -1;
+      ViewState& viewState;
 
       int getNewTrackId();
       void deleteTrackId(int id);
 
       public:
 
-          Model(Application& app);
+          Model(Application& app, ViewState& vs);
           ~Model();
 
           int addAudioTrack();
@@ -44,6 +45,7 @@ namespace project {
           size_t trackCount() const { return tracks.size(); }
           size_t soloTrackCount() const { return soloTracks.size(); }
           Application& getApplication() const { return application; }
+          ViewState& getViewState() { return viewState; }
     };
 }
 

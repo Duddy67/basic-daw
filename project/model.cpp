@@ -5,7 +5,7 @@
 
 namespace project {
 
-    Model::Model(Application& app) : application(app)
+    Model::Model(Application& app, ViewState& vs) : application(app), viewState(vs)
     {
         // ...
     }

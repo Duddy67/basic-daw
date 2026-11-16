@@ -61,12 +61,6 @@ int64_t NoteCanvas::minNoteLengthTicks() const
 
 int NoteCanvas::handle(int event)
 {
-    // Important: Make sure the view does exist before going any further.
-    // note: FLTK might dispatches an FL_HIDE event while the view is not entirely created. 
-    if (!projectCtrl.hasView()) {
-        return 0;
-    }
-
     auto* clip = currentClip();
 
     if (!clip) {
@@ -344,6 +338,11 @@ int NoteCanvas::hitTest(int moveX, int moveY, int* edge) const
 
 Midi::Clip* NoteCanvas::currentClip()
 {
+    // Important: Make sure at least one MIDI track does exist before going any further.
+    if (!projectCtrl.getView().getTrackList().trackCount(DataType::MIDI)) {
+        return nullptr;
+    }
+
     // Get the selected widget track first.
     auto& wTrack = projectCtrl.getView().getTrackList().getSelectedTrack();
 
@@ -363,3 +362,4 @@ Midi::Clip* NoteCanvas::currentClip()
 
     return &mTrack->getClips()[0];
 }
+

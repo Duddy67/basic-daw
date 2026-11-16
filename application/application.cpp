@@ -50,43 +50,26 @@ void Application::createProject()
         return;
     }
 
-    //if (projectModel == nullptr) {
-        //projectModel = new project::Model(*this);
-        auto model = std::make_unique<project::Model>(*this);
-        //projectCtrl = new project::Controller(*this, *projectModel);
-        auto controller = std::make_unique<project::Controller>(*this, *model);
+    // Calculate the standard side/bottom border thickness.
+    int sideBorder = (decorated_w() - w()) / 2;
+    // Calculate the combined top + bottom border thickness.
+    int totalVerticalBorders = decorated_h() - h();
+    // 3. Subtract the bottom border (which equals the side border) to isolate the top border
+    //int topBorderThickness = totalVerticalBorders - sideBorder;
 
-        // Calculate the standard side/bottom border thickness.
-        int sideBorder = (decorated_w() - w()) / 2;
-        // Calculate the combined top + bottom border thickness.
-        int totalVerticalBorders = decorated_h() - h();
-        // 3. Subtract the bottom border (which equals the side border) to isolate the top border
-        //int topBorderThickness = totalVerticalBorders - sideBorder;
+    int viewX = sideBorder;
+    int viewY = (SMALL_SPACE * 2) + (TINY_SPACE * 2);
+    int viewW = Fl::w() - (sideBorder * 2);
+    int viewH = Fl::h() - totalVerticalBorders - ((SMALL_SPACE * 2) + (TINY_SPACE * 2));
 
-        int viewX = sideBorder;
-        int viewY = (SMALL_SPACE * 2) + (TINY_SPACE * 2);
-        int viewW = Fl::w() - (sideBorder * 2);
-        int viewH = Fl::h() - totalVerticalBorders - ((SMALL_SPACE * 2) + (TINY_SPACE * 2));
+    activeProject = new Project(*this);
+    activeProject->init(viewX, viewY, viewW, viewH);
 
-        //projectView = new project::View(viewX, viewY, viewW, viewH, *projectCtrl);
-        auto view = std::make_unique<project::View>(viewX, viewY, viewW, viewH, *controller);
-        auto tempoMap = std::make_unique<TempoMap>(*this);
-        auto transport = std::make_unique<Transport>(*this);
+    // Make projectView child of Application (ie: the main window).
+    add(activeProject->getViewPtr());
+    redraw();
 
-        activeProject = new Project(std::move(model),
-                                    std::move(controller),
-                                    std::move(view),
-                                    std::move(transport),
-                                    std::move(tempoMap));
-
-        // Make projectView child of Application (ie: the main window).
-        //add(projectView);
-        add(activeProject->getViewPtr());
-        redraw();
-
-        //projectView->updateHorizontalScrollbar();
-        activeProject->getView().updateHorizontalScrollbar();
-    //}
+    activeProject->getView().updateHorizontalScrollbar();
 }
 
 /*
@@ -145,4 +128,10 @@ void Application::initJackClient()
 
     coreEngine->printAllPorts(); // For debug purpose.
 }
+
+project::Model* Application::getProject() { return activeProject->getModelPtr(); }
+Transport& Application::getTransport() { return activeProject->getTransport(); }
+TempoMap& Application::getTempoMap() { return activeProject->getTempoMap(); }
+project::View& Application::getProjectView() { return activeProject->getView(); }
+bool Application::hasView() { return activeProject->hasView(); }
 

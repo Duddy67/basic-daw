@@ -9,22 +9,35 @@ namespace project {
     {
         viewState = &controller.getViewState();
 
+        // Important: Do not build the view inside the constructor as some widgets may refer
+        // to the View object whereas it's not entirely created yet and cause the program to
+        // crash. Use the init() method instead.
+    }
+
+    View::~View()
+    {
+       // Destructor implementation (can be empty).
+       // Prevent errors such as: undefined reference to `vtable for ProjectView'
+    }
+
+    void View::init()
+    {
         // Based on the width of the current screen (ie: Fl::w()).
-        int screenFourth = Fl::w() / 4; 
+        int screenFourth = Fl::w() / 4;
 
         // Create the project's elements.
 
-        channelStrip = new ChannelStrip(x, y, screenFourth / 2, h, controller);
+        channelStrip = new ChannelStrip(x(), y(), screenFourth / 2, h(), controller);
 
         // Shortcuts for the edit area coordinates.
-        int editAreaX = x + screenFourth + BORDER_INTERSTICE;
-        int editAreaY = y + RULER_HEIGHT + BORDER_INTERSTICE;
+        int editAreaX = x() + screenFourth + BORDER_INTERSTICE;
+        int editAreaY = y() + RULER_HEIGHT + BORDER_INTERSTICE;
         int editAreaW = (screenFourth * 3) - (BORDER_INTERSTICE * 2) - SCROLLBAR_HEIGHT;
-        int editAreaH = h - (BORDER_INTERSTICE * 2) - (RULER_HEIGHT + SCROLLBAR_HEIGHT);
+        int editAreaH = h() - (BORDER_INTERSTICE * 2) - (RULER_HEIGHT + SCROLLBAR_HEIGHT);
 
-        Fl_Group* workspace = new Fl_Group(x + screenFourth / 2, y, Fl::w() - (screenFourth / 2), h);
-            ruler = new Ruler(x + screenFourth + BORDER_INTERSTICE, y, (screenFourth * 3) - (BORDER_INTERSTICE * 2), RULER_HEIGHT, controller);
-            trackList = new TrackList(x + screenFourth / 2, y + RULER_HEIGHT, screenFourth / 2, h - RULER_HEIGHT, controller);
+        Fl_Group* workspace = new Fl_Group(x() + screenFourth / 2, y(), Fl::w() - (screenFourth / 2), h());
+            ruler = new Ruler(x() + screenFourth + BORDER_INTERSTICE, y(), (screenFourth * 3) - (BORDER_INTERSTICE * 2), RULER_HEIGHT, controller);
+            trackList = new TrackList(x() + screenFourth / 2, y() + RULER_HEIGHT, screenFourth / 2, h() - RULER_HEIGHT, controller);
             // Views have the same size and shift from one to the other.
             timeline = new Timeline(editAreaX, editAreaY, editAreaW, editAreaH, controller);
             pianoRoll = new PianoRoll(editAreaX, editAreaY, editAreaW, editAreaH, controller);
@@ -56,12 +69,6 @@ namespace project {
 
         // Elements shouldn't be resizable.
         resizable(nullptr);
-    }
-
-    View::~View()
-    {
-       // Destructor implementation (can be empty).
-       // Prevent errors such as: undefined reference to `vtable for ProjectView'
     }
 
     Timeline& View::getTimeline()

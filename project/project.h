@@ -14,11 +14,13 @@ namespace project {
     class View;
 }
 
+class Application;
 class Transport;
 class TempoMap;
 
 class Project
 {
+    Application& application;
     std::unique_ptr<project::Model> model;
     std::unique_ptr<project::Controller> controller;
     std::unique_ptr<project::View> view;
@@ -28,14 +30,10 @@ class Project
     ViewState viewState;
 
   public:
-    Project(std::unique_ptr<project::Model>,
-            std::unique_ptr<project::Controller>,
-            std::unique_ptr<project::View>,
-            std::unique_ptr<Transport>,
-            std::unique_ptr<TempoMap>) {}
+    Project(Application& app);
+    ~Project() = default;
 
-    //~Project();
-
+    void init(int x, int y, int w, int h);
     project::Model& getModel() { return *model; }
     project::Controller& getController() { return *controller; }
     project::View& getView() { return *view; }

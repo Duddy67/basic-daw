@@ -17,13 +17,8 @@
 #include "dialogs/midi_settings.h"
 #include "dialogs/add_track.h"
 #include "project/project.h"
-//#include "project/model.h"
-//#include "project/controller.h"
-//#include "project/view.h"
 #include "core/engine.h"
 #include "audio/processor.h"
-//#include "project/transport.h"
-//#include "project/tempo_map.h"
 #include "midi/scheduler.h"
 #include "widgets/transport_bar.h"
 #include "widgets/grid_bar.h"
@@ -34,6 +29,7 @@ using json = nlohmann::json;
 // Forward class declarations.
 
 namespace project {
+    class Model;
     class View;
 }
 
@@ -50,8 +46,8 @@ namespace Midi {
 }
 
 class Project;
-//class Transport;
-//class TempoMap;
+class Transport;
+class TempoMap;
 
 
 class Application : public Fl_Double_Window 
@@ -72,18 +68,11 @@ class Application : public Fl_Double_Window
     // when updating labels.
     std::map<Fl_Menu_Item*, std::string> menuItemLabels;
     std::string message;
-    //project::Model* projectModel = nullptr;
-    //project::Controller* projectCtrl = nullptr;
-    //project::View* projectView = nullptr;
     Core::Engine* coreEngine = nullptr;
     Audio::Processor* audioProcessor = nullptr;
-    //Transport* transport = nullptr;
-    //TempoMap* tempoMap = nullptr;
     TransportBar* transportBar = nullptr;
     GridBar* gridBar = nullptr;
     Midi::Scheduler* midiScheduler = nullptr;
-    // The single GUI source of truth. Shared with GUI widgets Ruler, Timeline...
-    //ViewState viewState;
     Project* activeProject = nullptr;
 
     public:
@@ -121,26 +110,22 @@ class Application : public Fl_Double_Window
 
         void openFile(const char* filename);
         void createProject();
-        project::Model* getProject() { return activeProject->getModelPtr(); }
+        project::Model* getProject();
         Core::Engine& getCoreEngine() { return *coreEngine; }
         Audio::Processor& getAudioProcessor() { return *audioProcessor; }
         //void initAudioSystem();
         void initJackClient();
-        //Transport& getTransport() { return *transport; }
-        Transport& getTransport() { return activeProject->getTransport(); }
-        //TempoMap& getTempoMap() { return *tempoMap; }
-        TempoMap& getTempoMap() { return activeProject->getTempoMap(); }
-        project::View& getProjectView() { return activeProject->getView(); }
-        //ViewState& getViewState() { return viewState; }
-        ViewState& getViewState() { return activeProject->getViewState(); }
-        bool hasView() const { return activeProject->hasView(); }
+        Transport& getTransport();
+        TempoMap& getTempoMap();
+        project::View& getProjectView();
+        bool hasView();
         TransportBar& getTransportBar() { return *transportBar; }
         Midi::Scheduler& getMidiScheduler() { return *midiScheduler; }
         GridBar& getGridBar() { return *gridBar; }
         std::string escapeMenuText(const std::string& input);
         void activateMenuItem(MenuItemID menuId);
         void deactivateMenuItem(MenuItemID menuId);
-bool isActiveProject() { return activeProject == nullptr ? false : true; }
+        bool isActiveProject() { return activeProject == nullptr ? false : true; }
         // Call back functions.
         static void noEscapeKey_cb(Fl_Widget* w, void* data);
 };

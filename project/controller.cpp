@@ -3,9 +3,9 @@
 
 namespace project {
 
-    Controller::Controller(Application& app, Model& m) : application(app), model(m)
+    Controller::Controller(Model& m) : model(m), application(m.getApplication())
     {
-
+        // ...
     }
 
     Controller::~Controller()
@@ -147,7 +147,7 @@ namespace project {
 
     ViewState& Controller::getViewState()
     {
-        return application.getViewState();
+        return model.getViewState();
     }
 
     bool Controller::isSnapToGrid()

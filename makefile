@@ -23,6 +23,7 @@ LOCAL_SRC = \
 	dialogs/dialog.cpp \
 	dialogs/new.cpp \
 	application/menu/edit.cpp \
+	project/project.cpp \
 	project/model.cpp \
 	project/view.cpp \
 	application/menu/file.cpp \

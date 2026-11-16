@@ -52,6 +52,7 @@ namespace project {
         View(int x, int y, int w, int h, Controller& ctrl);
         ~View();
 
+        void init();
         Timeline& getTimeline();
         PianoRoll& getPianoRoll();
         void startLiveUpdate();
