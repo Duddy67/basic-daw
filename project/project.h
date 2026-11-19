@@ -31,7 +31,7 @@ class Project
 
   public:
     Project(Application& app);
-    ~Project() = default;
+    ~Project();
 
     void init(int x, int y, int w, int h);
     project::Model& getModel() { return *model; }

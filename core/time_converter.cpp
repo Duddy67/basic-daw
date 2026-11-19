@@ -16,11 +16,11 @@ double TimeConverter::getCurrentBeat(const Transport& transport, const TempoMap&
     return tempoMap.ticksToBeats(ticks);
 }
 
-void TimeConverter::locateToTick(Transport& transport, const TempoMap& tempoMap, int64_t tick, int sampleRate)
+/*void TimeConverter::locateToTick(Transport& transport, const TempoMap& tempoMap, int64_t tick, int sampleRate)
 {
     uint64_t samples = tempoMap.ticksToSamples(tick, sampleRate);
     transport.locateToSample(samples);
-}
+}*/
 
 int TimeConverter::xOfBeat(double beat, const ViewState& viewState)
 {

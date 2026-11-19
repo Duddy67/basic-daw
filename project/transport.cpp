@@ -2,7 +2,7 @@
 #include "../midi/track.h"
 
 
-Transport::Transport(Application& app) : application(app)
+Transport::Transport()
 {
     // ...
 }
@@ -12,24 +12,34 @@ Transport::~Transport()
     // ...
 }
 
-void Transport::locateToSample(uint64_t sample)
+/*
+ * Setter used to register callback functions.
+ */
+void Transport::setPlayCallbacks(std::function<void()> start, std::function<void()> stop)
 {
-    // Update the playhead position.
-    playheadSample.store(sample, std::memory_order_release);
-    // Update the playhead position in MIDI tracks.
-    application.getMidiScheduler().relocate(sample);
+    // Registers callback functions.
+    onPlayStarted = start;
+    onPlayStopped = stop;
 }
 
 void Transport::play() {
-    application.getProjectView().startLiveUpdate();
     playing.store(true);
+
+    // Is there a callback registered?
+    if (onPlayStarted) {
+        onPlayStarted();
+    }
 }
 
 void Transport::stop()
 {
     playing.store(false);
     recording.store(false);
-    application.getProjectView().stopLiveUpdate();
+
+    // Is there a callback registered?
+    if (onPlayStopped) {
+        onPlayStopped();
+    }
 }
 
 void Transport::record()

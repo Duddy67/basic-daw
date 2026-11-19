@@ -7,11 +7,11 @@
 #include <cmath>
 #include "../constants.h"
 
-class Application;
+//class Application;
 
 class TempoMap 
 {
-        Application& application;
+        //Application& application;
         std::vector<TempoChange> tempos;
         // Manages time signature vector as well because it shares the same beat-coordinate system.
         std::vector<TimeSignatureChange> timeSignatures;
@@ -22,7 +22,8 @@ class TempoMap
 
     public:
 
-        TempoMap(Application& app);
+        //TempoMap(Application& app);
+        TempoMap();
         ~TempoMap();
 
         void setPPQ(int newPpq) { ppq = newPpq; }

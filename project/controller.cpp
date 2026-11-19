@@ -32,6 +32,20 @@ namespace project {
         }
     }
 
+    /*
+     * Jumps the playhead to an absolute sample position.
+     * Called when the user clicks the timeline or relocates the song.
+     */
+    void Controller::locateToSample(uint64_t sample)
+    {
+        // Update the playhead position.
+        application.getTransport().setPlayheadSample(sample);
+        // Update the playhead position in MIDI tracks.
+        application.getMidiScheduler().relocate(sample);
+
+        notify(CtrlEvent::PLAYHEAD_MOVED, 0);
+    }
+
     void Controller::onAddTrack(DataType type)
     {
         CtrlEvent event = type == DataType::MIDI ? CtrlEvent::ADD_MIDI_TRACK : CtrlEvent::ADD_AUDIO_TRACK;

@@ -2,20 +2,23 @@
 #define TRANSPORT_H
 
 #include <atomic>
-#include "../main.h"
+#include <functional>
+//#include "../main.h"
 
-class Application;
 
 class Transport {
-    Application& application;
     std::atomic<uint64_t> playheadSample{0};
     std::atomic<bool> playing{false};
     std::atomic<bool> recording{false};
 
+    std::function<void()> onPlayStarted;
+    std::function<void()> onPlayStopped;
+
     public:
-        Transport(Application& app);
+        Transport();
         ~Transport();
 
+        void setPlayCallbacks(std::function<void()> start, std::function<void()> stop); 
         void play();
         void stop();
         void record();
@@ -24,12 +27,11 @@ class Transport {
         bool isRolling() const { return playing.load() || recording.load(); }
         // Returns the current playhead position in samples.
         uint64_t getPlayheadSample() const { return playheadSample.load(); }
+        // Updates the current playhead position in samples.
+        void setPlayheadSample(uint64_t sample) { playheadSample.store(sample, std::memory_order_release); }
         // Advances the playhead by the number of frames just processed.
         // This is called every audio callback.
         void advancePlayhead(uint64_t frameCount) { playheadSample.fetch_add(frameCount, std::memory_order_relaxed); }
-        // Jumps the playhead to an absolute sample position.
-        // Called when the user clicks the timeline or relocates the song.
-        void locateToSample(uint64_t sample);
 };
 
 #endif // TRANSPORT_H

@@ -1,7 +1,8 @@
 #include "tempo_map.h"
 
 
-TempoMap::TempoMap(Application& app) : application(app)
+//TempoMap::TempoMap(Application& app) : application(app)
+TempoMap::TempoMap()
 {
     // Default: 120 BPM, 4/4 time starting at beat 0.
     tempos.push_back({0.0, DEFAULT_BPM});

@@ -74,7 +74,7 @@ int Ruler::handle(int event)
                 uint64_t sample = (uint64_t)tempoMap.ticksToSamples(tick, sampleRate);
 
                 // Relocate the transport.
-                projectCtrl.getTransport().locateToSample(sample);
+                projectCtrl.locateToSample(sample);
 
                 // Redraw the ruler and the all widgets that show the playheader.
                 redraw();

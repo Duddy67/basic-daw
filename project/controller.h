@@ -52,6 +52,7 @@ namespace project {
         void onPlay();
         void onStop();
         bool isSnapToGrid();
+        void locateToSample(uint64_t sample);
         size_t getTrackCount() const;
         Transport& getTransport();
         TempoMap& getTempoMap();

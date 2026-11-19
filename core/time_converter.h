@@ -17,7 +17,7 @@ class TimeConverter
 
         static int64_t getCurrentTick(const Transport& transport, const TempoMap& tempoMap, int sampleRate);
         static double getCurrentBeat(const Transport& transport, const TempoMap& tempoMap, int sampleRate);
-        static void locateToTick(Transport& transport, const TempoMap& tempoMap, int64_t tick, int sampleRate);
+        //static void locateToTick(Transport& transport, const TempoMap& tempoMap, int64_t tick, int sampleRate);
         static int xOfBeat(double beat, const ViewState& viewState);
         static double beatAtX(int x, const ViewState& viewState);
         static int xOfTick(int64_t tick, const TempoMap& tempoMap, const ViewState& viewState);
