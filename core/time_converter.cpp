@@ -4,21 +4,21 @@
 
 
 
-int64_t TimeConverter::getCurrentTick(const Transport& transport, const TempoMap& tempoMap, int sampleRate)
+int64_t TimeConverter::getCurrentTick(const Transport& transport, const TempoMap& tempoMap)
 {
     uint64_t samples = transport.getPlayheadSample();
-    return tempoMap.samplesToTicks(samples, sampleRate);
+    return tempoMap.samplesToTicks(samples);
 }
 
-double TimeConverter::getCurrentBeat(const Transport& transport, const TempoMap& tempoMap, int sampleRate)
+double TimeConverter::getCurrentBeat(const Transport& transport, const TempoMap& tempoMap)
 {
-    int64_t ticks = getCurrentTick(transport, tempoMap, sampleRate);
+    int64_t ticks = getCurrentTick(transport, tempoMap);
     return tempoMap.ticksToBeats(ticks);
 }
 
-/*void TimeConverter::locateToTick(Transport& transport, const TempoMap& tempoMap, int64_t tick, int sampleRate)
+/*void TimeConverter::locateToTick(Transport& transport, const TempoMap& tempoMap, int64_t tick)
 {
-    uint64_t samples = tempoMap.ticksToSamples(tick, sampleRate);
+    uint64_t samples = tempoMap.ticksToSamples(tick);
     transport.locateToSample(samples);
 }*/
 

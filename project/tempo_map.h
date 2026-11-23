@@ -16,14 +16,15 @@ class TempoMap
         // Manages time signature vector as well because it shares the same beat-coordinate system.
         std::vector<TimeSignatureChange> timeSignatures;
         int ppq = DEFAULT_PPQ;
+        uint32_t sampleRate;
 
         // Helper - Find the index of the time signature that applies at the given beat.
         int getTimeSignatureIndex(double beat) const;
 
     public:
 
-        //TempoMap(Application& app);
-        TempoMap();
+        TempoMap(uint32_t sr);
+        //TempoMap();
         ~TempoMap();
 
         void setPPQ(int newPpq) { ppq = newPpq; }
@@ -35,10 +36,10 @@ class TempoMap
         int64_t beatsToTick(double beats) const { return (int64_t)std::llround(beats * ppq); } 
         double ticksToSeconds(int64_t ticks) const;
         uint64_t secondsToTicks(double seconds) const;
-        int64_t ticksToSamples(int64_t ticks, int sampleRate) const;
-        int64_t samplesToTicks(int64_t samples, int sampleRate) const;
-        double samplesToBeats(jack_nframes_t samples, int sampleRate);
-        double beatToSamples(double beat, int sampleRate);
+        int64_t ticksToSamples(int64_t ticks) const;
+        int64_t samplesToTicks(int64_t samples) const;
+        double samplesToBeats(jack_nframes_t samples);
+        double beatToSamples(double beat);
         double secondsToBeats(double seconds) const;
         double beatToSeconds(double beat) const;
         std::pair<int, double> getBarBeat(double beat) const;

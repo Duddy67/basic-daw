@@ -10,8 +10,11 @@
 
 namespace project {
     class Controller;
+    class View;
     class Observer;
 }
+
+class TempoMap;
 
 class Ruler : public Fl_Group
 {
@@ -26,6 +29,7 @@ class Ruler : public Fl_Group
     public:
 
         Ruler(int x, int y, int w, int h, project::Controller& ctrl);
+        //Ruler(int x, int y, int w, int h, project::Controller& ctrl, project::View&, TempoMap&);
         ~Ruler() {}
 
 };

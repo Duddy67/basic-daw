@@ -13,6 +13,7 @@
 #include "../views/ruler.h"
 #include "../core/time_converter.h"
 #include "../project/tempo_map.h"
+#include "../project/transport.h"
 #include "../midi/clip.h"
 
 // Forward declarations (for classes outside the project namespace)
@@ -22,6 +23,7 @@ class Timeline;
 class PianoRoll;
 class Ruler;
 class TempoMap;
+class Transport;
 
 namespace project {
     // Forward declarations (for classes inside the project namespace)
@@ -30,6 +32,10 @@ namespace project {
     class View : public Fl_Group
     {
         Controller& controller;
+        Transport& transport;
+        TempoMap& tempoMap;
+        // Reference to share state with other GUI elements.
+        ViewState& viewState;
         TrackList* trackList = nullptr;
         ChannelStrip* channelStrip = nullptr;
         Timeline* timeline = nullptr;
@@ -38,8 +44,6 @@ namespace project {
         Fl_Scrollbar* hScrollbar = nullptr;
         Fl_Scrollbar* vScrollbar = nullptr;
         bool isLiveUpdating = false;
-        // Pointer to share state with other GUI elements.
-        ViewState* viewState;
 
         static void liveUpdate_cb(void* userData);
 
@@ -49,10 +53,11 @@ namespace project {
 
       public:
 
-        View(int x, int y, int w, int h, Controller& ctrl);
+        View(int x, int y, int w, int h, Controller& ctrl, Transport& t, TempoMap& tm, ViewState& vs);
         ~View();
 
         void init();
+        ViewState& getViewState();
         Timeline& getTimeline();
         PianoRoll& getPianoRoll();
         void startLiveUpdate();

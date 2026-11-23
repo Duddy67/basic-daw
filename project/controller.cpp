@@ -3,7 +3,8 @@
 
 namespace project {
 
-    Controller::Controller(Model& m) : model(m), application(m.getApplication())
+    Controller::Controller(Model& m, Transport& t, TempoMap& tm, Midi::Scheduler& s, Core::Engine& e) : 
+        model(m), transport(t), tempoMap(tm), scheduler(s), engine(e)
     {
         // ...
     }
@@ -39,9 +40,11 @@ namespace project {
     void Controller::locateToSample(uint64_t sample)
     {
         // Update the playhead position.
-        application.getTransport().setPlayheadSample(sample);
+        //application.getTransport().setPlayheadSample(sample);
+        transport.setPlayheadSample(sample);
         // Update the playhead position in MIDI tracks.
-        application.getMidiScheduler().relocate(sample);
+        //application.getMidiScheduler().relocate(sample);
+        scheduler.relocate(sample);
 
         notify(CtrlEvent::PLAYHEAD_MOVED, 0);
     }
@@ -81,12 +84,14 @@ namespace project {
 
     void Controller::onPlay()
     {
-        application.getTransportBar().onPlay();
+        //application.getTransportBar().onPlay();
+        transport.play();
     }
 
     void Controller::onStop()
     {
-        application.getTransportBar().onStop();
+        //application.getTransportBar().onStop();
+        transport.stop();
     }
 
     /*
@@ -101,7 +106,7 @@ namespace project {
         event.bytes[1] = (uint8_t)pitch;
         event.bytes[2] = (uint8_t)velocity;
 
-        getEngine().pushUiMidiEvent(event);
+        engine.pushUiMidiEvent(event);
     }
 
     /*
@@ -117,7 +122,7 @@ namespace project {
         // Release velocity.
         event.bytes[2] = 0x40;
 
-        getEngine().pushUiMidiEvent(event);
+        engine.pushUiMidiEvent(event);
     }
 
     void Controller::notifyNotesChanged() {
@@ -125,7 +130,8 @@ namespace project {
 
         if (!getTransport().isRolling()) {
             // Compile the edited MIDI notes.
-            application.getMidiScheduler().compile(*this);
+            //application.getMidiScheduler().compile(*this);
+            scheduler.compile(*this);
         }
         else {
             recompile = true;
@@ -136,27 +142,32 @@ namespace project {
 
     Transport& Controller::getTransport()
     {
-        return application.getTransport();
+        //return application.getTransport();
+        return transport;
     }
 
     TempoMap& Controller::getTempoMap()
     {
-        return application.getTempoMap();
+        //return application.getTempoMap();
+        return tempoMap;
     }
 
     Core::Engine& Controller::getEngine()
     {
-        return application.getCoreEngine();
+        //return application.getCoreEngine();
+        return engine;
     }
 
     View& Controller::getView()
     {
-        return application.getProjectView();
+        //return application.getProjectView();
+        return model.getApplication().getProjectView();
     }
 
     bool Controller::hasView()
     {
-        return application.hasView();
+        //return application.hasView();
+        return model.getApplication().hasView();
     }
 
     ViewState& Controller::getViewState()
@@ -166,7 +177,8 @@ namespace project {
 
     bool Controller::isSnapToGrid()
     {
-        return application.getGridBar().isSnapToGrid();
+        //return application.getGridBar().isSnapToGrid();
+        return model.getApplication().getGridBar().isSnapToGrid();
     }
 
     size_t Controller::getTrackCount() const

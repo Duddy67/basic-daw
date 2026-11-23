@@ -86,7 +86,6 @@ namespace Midi {
     void Scheduler::compile(project::Controller& controller)
     {
         auto& tempoMap = controller.getTempoMap();
-        int sampleRate = controller.getEngine().getSampleRate();
         auto& tracks = application.getProject()->getTracks();
 
         // Loop through tracks.
@@ -110,7 +109,7 @@ namespace Midi {
                     // Create the On and Off events for each note.
 
                     MidiEvent On;
-                    On.samplePosition = tempoMap.ticksToSamples(startTick, sampleRate);
+                    On.samplePosition = tempoMap.ticksToSamples(startTick);
                     On.message = {
                         (unsigned char)(0x90 | (channel & 0x0F)),
                         (unsigned char)note.pitch,
@@ -118,7 +117,7 @@ namespace Midi {
                     };
 
                     MidiEvent Off;
-                    Off.samplePosition = tempoMap.ticksToSamples(endTick, sampleRate);
+                    Off.samplePosition = tempoMap.ticksToSamples(endTick);
                     Off.message = {
                         (unsigned char)(0x80 | (channel & 0x0F)),
                         (unsigned char)note.pitch,

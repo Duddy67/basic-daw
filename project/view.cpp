@@ -4,11 +4,9 @@
 
 namespace project {
 
-    View::View(int x, int y, int w, int h, Controller& ctrl) :
-      Fl_Group(x, y, w, h), controller(ctrl)
+    View::View(int x, int y, int w, int h, Controller& ctrl, Transport& t, TempoMap& tm, ViewState& vs) :
+      Fl_Group(x, y, w, h), controller(ctrl), transport(t), tempoMap(tm), viewState(vs)
     {
-        viewState = &controller.getViewState();
-
         // Important: Do not build the view inside the constructor as some widgets may refer
         // to the View object whereas it's not entirely created yet and cause the program to
         // crash. Use the init() method instead.
@@ -71,6 +69,11 @@ namespace project {
         resizable(nullptr);
     }
 
+    ViewState& View::getViewState()
+    {
+        return viewState;
+    }
+
     Timeline& View::getTimeline()
     {
         return *timeline;
@@ -105,21 +108,19 @@ namespace project {
         View* self = static_cast<View*>(userData);
 
         // Only auto scroll (page scroll) while the transport is rolling.
-        if (self->controller.getTransport().isRolling()) {
+        if (self->transport.isRolling()) {
             // Compute playhead position.
-            double playheadBeat = TimeConverter::getCurrentBeat(self->controller.getTransport(),
-                                                                self->controller.getTempoMap(),
-                                                                 self->controller.getEngine().getSampleRate());
+            double playheadBeat = TimeConverter::getCurrentBeat(self->transport, self->tempoMap);
 
-            int playheadPixel = (int)(playheadBeat * self->viewState->zoom) - self->viewState->horizontalOffset;
+            int playheadPixel = (int)(playheadBeat * self->viewState.zoom) - self->viewState.horizontalOffset;
             int w = self->timeline->w();
             int margin = 50;
 
             if (playheadPixel > w - margin) {
-                int newOffset = self->viewState->horizontalOffset + (w - margin * 2);
+                int newOffset = self->viewState.horizontalOffset + (w - margin * 2);
                 newOffset = std::min(newOffset, (int)self->hScrollbar->maximum());
 
-                self->viewState->horizontalOffset = newOffset;
+                self->viewState.horizontalOffset = newOffset;
                 self->hScrollbar->value(newOffset);
             }
         }
@@ -141,11 +142,9 @@ namespace project {
      */
     void View::drawCursor(int x, int y, int w, int h)
     {
-        double playhead = TimeConverter::getCurrentBeat(controller.getTransport(),
-                                                        controller.getTempoMap(),
-                                                        controller.getEngine().getSampleRate());
+        double playhead = TimeConverter::getCurrentBeat(transport, tempoMap);
 
-        int pixel = (int)(playhead * viewState->zoom) - viewState->horizontalOffset;
+        int pixel = (int)(playhead * viewState.zoom) - viewState.horizontalOffset;
 
         // Draw the playhead.
         // Important: Make the pixel value relative to the actual direct widget 
@@ -162,16 +161,15 @@ namespace project {
     void View::drawGrid(int x, int y, int w, int h, bool isRuler/* = false*/)
     {
         // Compute start and end beats according to the view state.
-        double startBeat = viewState->horizontalOffset / viewState->zoom;
-        double endBeat = (viewState->horizontalOffset + w) / viewState->zoom;
-        auto tempoMap = controller.getTempoMap();
+        double startBeat = viewState.horizontalOffset / viewState.zoom;
+        double endBeat = (viewState.horizontalOffset + w) / viewState.zoom;
 
         double gridStep = getGridStep();
         auto bars = tempoMap.getBarLines(startBeat, endBeat);
 
         // Draw the bar lines.
         for (double beat : bars) {
-            int pixel = (int)(beat * viewState->zoom) - viewState->horizontalOffset;
+            int pixel = (int)(beat * viewState.zoom) - viewState.horizontalOffset;
             fl_color(FL_BLACK);
             fl_line(x + pixel, y, x + pixel, y + h);
 
@@ -186,7 +184,7 @@ namespace project {
         const double eps = 1e-9;
 
         while (beat <= endBeat) {
-            int pixel = (int) std::round((beat * viewState->zoom) - viewState->horizontalOffset);
+            int pixel = (int) std::round((beat * viewState.zoom) - viewState.horizontalOffset);
 
             double barStart = tempoMap.getBarStart(beat);
             auto [barNum, beatsInBar] = tempoMap.getBarBeat(beat);
@@ -239,19 +237,19 @@ namespace project {
      */
     void View::drawPitchGrid(int x, int y, int w, int h)
     {
-        int top = PitchConverter::pitchAtY(y, y, h, *viewState);
-        int bottom = PitchConverter::pitchAtY(y + h - 1, y, h, *viewState);
+        int top = PitchConverter::pitchAtY(y, y, h, viewState);
+        int bottom = PitchConverter::pitchAtY(y + h - 1, y, h, viewState);
 
         for (int pitch = bottom; pitch <= top; ++pitch) {
             if (pitch < 0 || pitch > 127) {
                 continue;
             }
 
-            int pitchY = PitchConverter::yOfPitch(pitch, y, h, *viewState);
+            int pitchY = PitchConverter::yOfPitch(pitch, y, h, viewState);
 
             if (PitchConverter::isBlackKey(pitch)) {
                 fl_color((Fl_Color)FL_DARK2);
-                fl_rectf(x, pitchY, w, viewState->keyHeight);
+                fl_rectf(x, pitchY, w, viewState.keyHeight);
             }
 
             fl_color(FL_GRAY0);
@@ -265,11 +263,9 @@ namespace project {
             return;
         }
 
-        auto& tempoMap = controller.getTempoMap();
-        const int keyHeight = viewState->keyHeight;
-
-        const int64_t firstTick = TimeConverter::tickAtX(0, tempoMap, *viewState);
-        const int64_t lastTick = TimeConverter::tickAtX(w, tempoMap, *viewState);
+        const int keyHeight = viewState.keyHeight;
+        const int64_t firstTick = TimeConverter::tickAtX(0, tempoMap, viewState);
+        const int64_t lastTick = TimeConverter::tickAtX(w, tempoMap, viewState);
 
         for (const auto& note : clip->getNotes()) {
             // Cull
@@ -288,7 +284,7 @@ namespace project {
                 continue;
             }
 
-            int noteY = PitchConverter::yOfPitch(note.pitch, y, h, *viewState);
+            int noteY = PitchConverter::yOfPitch(note.pitch, y, h, viewState);
 
             if (noteY + keyHeight <= y) {
                 // Entirely above.
@@ -301,8 +297,8 @@ namespace project {
             }
 
             // Convert.
-            int noteX1 = x + TimeConverter::xOfTick(note.startTick, tempoMap, *viewState);
-            int noteX2 = x + TimeConverter::xOfTick(note.endTick(), tempoMap, *viewState);
+            int noteX1 = x + TimeConverter::xOfTick(note.startTick, tempoMap, viewState);
+            int noteX2 = x + TimeConverter::xOfTick(note.endTick(), tempoMap, viewState);
 
             // Very short note would vanish.
             if (noteX2 - noteX1 < 2) {
@@ -326,19 +322,19 @@ namespace project {
         Fl_Scrollbar* sb = static_cast<Fl_Scrollbar*>(w);
 
         // Get the current view.
-        bool isPianoRoll = self->viewState->currentView == ViewType::PIANO_ROLL;
+        bool isPianoRoll = self->viewState.currentView == ViewType::PIANO_ROLL;
         // Compute offset.
         int maxOffset = (int)sb->maximum();
         int offset = maxOffset - (int)sb->value();
 
         // Update the scrollbar according to the view.
         if (isPianoRoll) {
-            self->viewState->pitchVerticalOffset = offset;
+            self->viewState.pitchVerticalOffset = offset;
             self->pianoRoll->redraw();
         }
         // Timeline view.
         else {
-            self->viewState->trackVerticalOffset = offset;
+            self->viewState.trackVerticalOffset = offset;
             self->timeline->redraw();
         }
     }
@@ -346,7 +342,7 @@ namespace project {
     void View::hScrollbar_cb(Fl_Widget* w, void* data)
     {
         View* self = static_cast<View*>(data);
-        self->viewState->horizontalOffset = (int)self->hScrollbar->value();
+        self->viewState.horizontalOffset = (int)self->hScrollbar->value();
         self->ruler->redraw();
         self->redrawCurrentView();
     }
@@ -354,7 +350,7 @@ namespace project {
     void View::updateHorizontalScrollbar()
     {
         double maxBeats = 10000.0;
-        int totalPixels = (int)(maxBeats * viewState->zoom);
+        int totalPixels = (int)(maxBeats * viewState.zoom);
         int visiblePixels = timeline->h();
 
         if (totalPixels > visiblePixels) {
@@ -372,20 +368,20 @@ namespace project {
 
     void View::syncVerticalScrollbar() 
     {
-        bool isPianoRoll = viewState->currentView == ViewType::PIANO_ROLL;
+        bool isPianoRoll = viewState.currentView == ViewType::PIANO_ROLL;
         int totalHeight, visibleHeight, offset, lineStep;
 
         if (isPianoRoll) {
-            totalHeight = 128 * viewState->keyHeight;
+            totalHeight = 128 * viewState.keyHeight;
             visibleHeight = pianoRoll->h();
-            offset = viewState->pitchVerticalOffset;
-            lineStep = viewState->keyHeight;
+            offset = viewState.pitchVerticalOffset;
+            lineStep = viewState.keyHeight;
         }
         // Timeline view.
         else {
             totalHeight = (int)controller.getTrackCount() * TRACK_HEIGHT;
             visibleHeight = timeline->h();
-            offset = viewState->trackVerticalOffset;
+            offset = viewState.trackVerticalOffset;
             lineStep = TRACK_HEIGHT;
         }
 
@@ -413,22 +409,22 @@ namespace project {
         }
 
         // Find the beat under the anchor point (before zoom).
-        double anchorBeat = (viewState->horizontalOffset + anchorScreenX) / viewState->zoom;
+        double anchorBeat = (viewState.horizontalOffset + anchorScreenX) / viewState.zoom;
 
         // Apply the new zoom.
-        viewState->zoom = newZoom;
+        viewState.zoom = newZoom;
 
         // Recompute the offset so the anchor beat stays at the same screen x.
-        viewState->horizontalOffset = (int)((anchorBeat * viewState->zoom) - anchorScreenX);
+        viewState.horizontalOffset = (int)((anchorBeat * viewState.zoom) - anchorScreenX);
 
-        if (viewState->horizontalOffset < 0) {
-            viewState->horizontalOffset = 0;
+        if (viewState.horizontalOffset < 0) {
+            viewState.horizontalOffset = 0;
         }
 
         // Update the horizontal scrollbar range and value.
         updateHorizontalScrollbar();
         // Recompute range based on new zoom.
-        hScrollbar->value(viewState->horizontalOffset);
+        hScrollbar->value(viewState.horizontalOffset);
 
         // Redraw all affected widgets.
         ruler->redraw();
@@ -464,7 +460,6 @@ namespace project {
 
                 // Spacebar: ' ' => ASCII code 32.
                 if (key == ' ') {
-                    auto& transport = controller.getTransport();
                     // Toggle start/stop.
                     if (transport.isRolling()) {
                         controller.onStop();
@@ -503,13 +498,13 @@ namespace project {
     {
         // Anchor at the playhead if visible, otherwise at the center.
         int anchorX = getAnchorScreenX();
-        setZoom(viewState->zoom * 1.25, anchorX);
+        setZoom(viewState.zoom * 1.25, anchorX);
     }
 
     void View::zoomOut()
     {
         int anchorX = getAnchorScreenX();
-        setZoom(viewState->zoom / 1.25, anchorX);
+        setZoom(viewState.zoom / 1.25, anchorX);
     }
 
     /*
@@ -517,11 +512,9 @@ namespace project {
      */
     int View::getAnchorScreenX()
     {
-        double playheadBeat = TimeConverter::getCurrentBeat(controller.getTransport(),
-                                                            controller.getTempoMap(),
-                                                            controller.getEngine().getSampleRate());
+        double playheadBeat = TimeConverter::getCurrentBeat(transport, tempoMap);
 
-        int playheadX = (int)((playheadBeat * viewState->zoom) - viewState->horizontalOffset);
+        int playheadX = (int)((playheadBeat * viewState.zoom) - viewState.horizontalOffset);
 
         if (playheadX >= 0 && playheadX < timeline->w()) {
             return playheadX;
@@ -536,19 +529,19 @@ namespace project {
         // Choose grid step (smallest subdivision)
         double gridStep;
 
-        if (viewState->zoom < 10.0) {
+        if (viewState.zoom < 10.0) {
             gridStep = 4.0; // quadruple beat. eg: whole note
         }      
-        else if (viewState->zoom < 25.0) {
+        else if (viewState.zoom < 25.0) {
             gridStep = 2.0; // double beat. eg: half note
         } 
-        else if (viewState->zoom < 60.0) {
+        else if (viewState.zoom < 60.0) {
             gridStep = 1.0; // beat. eg: quarter note
         }
-        else if (viewState->zoom < 150.0) {
+        else if (viewState.zoom < 150.0) {
             gridStep = 0.5; // half beat. eg: 8th note
         }
-        else if (viewState->zoom < 400.0) {
+        else if (viewState.zoom < 400.0) {
             gridStep = 0.25; // quarter beat. eg: 16th note
         }
         else {
@@ -566,7 +559,7 @@ namespace project {
         // ...
 
         // set the new current view
-        viewState->currentView = view;
+        viewState.currentView = view;
 
         // then show the given view.
         switch (view) {
@@ -592,7 +585,7 @@ namespace project {
 
     void View::redrawCurrentView()
     {
-        switch (viewState->currentView) {
+        switch (viewState.currentView) {
             case ViewType::TIMELINE: 
                 timeline->redraw();
                 break;

@@ -1,8 +1,8 @@
 #include "tempo_map.h"
 
 
-//TempoMap::TempoMap(Application& app) : application(app)
-TempoMap::TempoMap()
+TempoMap::TempoMap(uint32_t sr) : sampleRate(sr)
+//TempoMap::TempoMap()
 {
     // Default: 120 BPM, 4/4 time starting at beat 0.
     tempos.push_back({0.0, DEFAULT_BPM});
@@ -37,7 +37,7 @@ uint64_t TempoMap::secondsToTicks(double seconds) const
 /*
  * Direct conversion from absolute MIDI ticks to audio samples.
  */
-int64_t TempoMap::ticksToSamples(int64_t ticks, int sampleRate) const
+int64_t TempoMap::ticksToSamples(int64_t ticks) const
 {
     double seconds = ticksToSeconds(ticks);
     return (int64_t)(seconds * sampleRate);
@@ -46,7 +46,7 @@ int64_t TempoMap::ticksToSamples(int64_t ticks, int sampleRate) const
 /*
  * Direct conversion from audio samples to absolute MIDI ticks.
  */
-int64_t TempoMap::samplesToTicks(int64_t samples, int sampleRate) const
+int64_t TempoMap::samplesToTicks(int64_t samples) const
 {
     double seconds = (double)samples / (double)sampleRate;
     return secondsToTicks(seconds);
@@ -54,7 +54,7 @@ int64_t TempoMap::samplesToTicks(int64_t samples, int sampleRate) const
 
 // ------------------- Beat <=> Sample conversions  -------------------
 
-double TempoMap::samplesToBeats(jack_nframes_t samples, int sampleRate)
+double TempoMap::samplesToBeats(jack_nframes_t samples)
 {
     // Convert samples to seconds.
     double seconds = (double)samples / (double) sampleRate;
@@ -62,7 +62,7 @@ double TempoMap::samplesToBeats(jack_nframes_t samples, int sampleRate)
     return secondsToBeats(seconds);
 }
 
-double TempoMap::beatToSamples(double beat, int sampleRate)
+double TempoMap::beatToSamples(double beat)
 {
     // Convert the given beat to seconds.
     double seconds = beatToSeconds(beat);

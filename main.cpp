@@ -63,10 +63,9 @@ Application::Application(int w, int h, const char *l, int argc, char *argv[]) : 
     // Start application in maximized state.
     //maximize();
 
-    //transport = new Transport(*this);
-    //tempoMap = new TempoMap(*this);
     midiScheduler = new Midi::Scheduler(*this);
     audioProcessor = new Audio::Processor(*this);
+    std::cout << "midiScheduler application: " << &midiScheduler << std::endl;
 
     this->callback(noEscapeKey_cb, this);
 }

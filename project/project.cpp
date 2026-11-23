@@ -1,7 +1,7 @@
 #include "project.h"
 
 
-Project::Project(Application& app) : application(app)
+Project::Project(Application& app, Midi::Scheduler& ms) : application(app), midiScheduler(ms)
 {
     // ...
 }
@@ -23,11 +23,12 @@ void Project::init(int x, int y, int w, int h)
         return;
     }
 
+    uint32_t sampleRate = application.getCoreEngine().getSampleRate();
     transport = std::make_unique<Transport>();
-    tempoMap = std::make_unique<TempoMap>();
+    tempoMap = std::make_unique<TempoMap>(sampleRate);
     model = std::make_unique<project::Model>(application, viewState);
-    controller = std::make_unique<project::Controller>(*model);
-    view = std::make_unique<project::View>(x, y, w, h, *controller);
+    controller = std::make_unique<project::Controller>(*model, *transport, *tempoMap, midiScheduler, application.getCoreEngine());
+    view = std::make_unique<project::View>(x, y, w, h, *controller, *transport, *tempoMap, viewState);
 
     // Wire the inversion: Transport publishes, View reacts.
     // The only place in the codebase that knows both transport and view exist.

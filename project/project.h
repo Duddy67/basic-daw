@@ -14,6 +14,10 @@ namespace project {
     class View;
 }
 
+namespace Midi {
+    class Scheduler;
+}
+
 class Application;
 class Transport;
 class TempoMap;
@@ -26,11 +30,13 @@ class Project
     std::unique_ptr<project::View> view;
     std::unique_ptr<Transport> transport;
     std::unique_ptr<TempoMap> tempoMap;
+    uint32_t sampleRate;
     // The single GUI source of truth. Shared with GUI widgets Ruler, Timeline...
     ViewState viewState;
+    Midi::Scheduler& midiScheduler;
 
   public:
-    Project(Application& app);
+    Project(Application& app, Midi::Scheduler& ms);
     ~Project();
 
     void init(int x, int y, int w, int h);

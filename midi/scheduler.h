@@ -2,6 +2,7 @@
 #define MIDI_SCHEDULER_H
 
 #include <cstdint>
+#include <jack/midiport.h>
 #include "../main.h"
 #include "../project/model.h"
 #include "track.h"

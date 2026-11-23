@@ -7,13 +7,20 @@
 #include "model.h"
 #include "observer.h"
 #include "view.h"
+#include "../midi/scheduler.h"
+#include "../core/engine.h"
 
 class Application;
 class Transport;
 class TempoMap;
+
 namespace Core {
     class Engine;
     class Track;
+}
+
+namespace Midi {
+    class Scheduler;
 }
 
 namespace project {
@@ -25,7 +32,11 @@ namespace project {
     class Controller {
 
         Model& model;
-        Application& application;
+        Transport& transport;
+        TempoMap& tempoMap;
+        Midi::Scheduler& scheduler;
+        Core::Engine& engine;
+        //Application& application;
         // List of all registered observers.
         std::vector<Observer*> observers;  
         bool recompile = false;
@@ -34,7 +45,8 @@ namespace project {
 
       public:
 
-        Controller(Model& m);
+        //Controller(Model& m);
+        Controller(Model& m, Transport& t, TempoMap& tm, Midi::Scheduler& s, Core::Engine& e);
         ~Controller();
 
         // Register an observer.

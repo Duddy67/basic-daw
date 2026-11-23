@@ -62,7 +62,7 @@ void Application::createProject()
     int viewW = Fl::w() - (sideBorder * 2);
     int viewH = Fl::h() - totalVerticalBorders - ((SMALL_SPACE * 2) + (TINY_SPACE * 2));
 
-    activeProject = new Project(*this);
+    activeProject = new Project(*this, getMidiScheduler());
     activeProject->init(viewX, viewY, viewW, viewH);
 
     // Make projectView child of Application (ie: the main window).

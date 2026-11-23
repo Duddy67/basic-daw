@@ -69,9 +69,8 @@ int Ruler::handle(int event)
 
                 // Convert beat to sample via ticks.
                 auto& tempoMap = projectCtrl.getTempoMap();
-                int sampleRate = projectCtrl.getEngine().getSampleRate();
                 int64_t tick = tempoMap.beatsToTick(beat);
-                uint64_t sample = (uint64_t)tempoMap.ticksToSamples(tick, sampleRate);
+                uint64_t sample = (uint64_t)tempoMap.ticksToSamples(tick);
 
                 // Relocate the transport.
                 projectCtrl.locateToSample(sample);
