@@ -9,13 +9,15 @@
 
 namespace project {
     class Controller;
+    class View;
     class Observer;
 }
 
 
 class Timeline : public Fl_Group, public project::Observer
 {
-    project::Controller& projectCtrl;
+    project::Controller& controller;
+    project::View& view;
     // Pointer to share state with other GUI elements.
     ViewState* viewState;
 
@@ -25,7 +27,7 @@ class Timeline : public Fl_Group, public project::Observer
 
   public:
 
-      Timeline(int x, int y, int w, int h, project::Controller& ctrl);
+      Timeline(int x, int y, int w, int h, project::Controller& ctrl, project::View& v);
       ~Timeline() {}
 
       void onCtrlEvent(CtrlEvent event, int index);

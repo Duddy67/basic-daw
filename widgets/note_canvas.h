@@ -11,13 +11,16 @@
 
 namespace project {
     class Controller;
+    class View;
 }
+
+class TempoMap;
 
 class NoteCanvas : public Fl_Widget
 {
-    project::Controller& projectCtrl;
-    // Pointer to share state with other GUI elements.
-    ViewState* viewState;
+    project::Controller& controller;
+    project::View& view;
+    TempoMap& tempoMap;
     DragMode mode = DragMode::NONE;
     // Widget-relative mouse at FL_PUSH.
     int dragStartX = 0;
@@ -37,7 +40,7 @@ class NoteCanvas : public Fl_Widget
 
   public:
 
-    NoteCanvas(int x, int y, int w, int h, project::Controller& ctrl);
+    NoteCanvas(int x, int y, int w, int h, project::Controller& ctrl, project::View& v, TempoMap& tm);
     ~NoteCanvas() {}
 
     int64_t minNoteLengthTicks() const;

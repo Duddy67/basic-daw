@@ -11,17 +11,18 @@
 
 namespace project {
     class Controller;
+    class View;
     class Observer;
 }
 
+class TempoMap;
 class Keyboard;
 class NoteCanvas;
 
 class PianoRoll : public Fl_Group, public project::Observer
 {
-    project::Controller& projectCtrl;
-    // Pointer to share state with other GUI elements.
-    ViewState* viewState;
+    project::Controller& controller;
+    project::View& view;
     Keyboard* keyboard = nullptr;
     NoteCanvas* noteCanvas = nullptr;
 
@@ -31,7 +32,7 @@ class PianoRoll : public Fl_Group, public project::Observer
 
   public:
 
-      PianoRoll(int x, int y, int w, int h, project::Controller& ctrl);
+      PianoRoll(int x, int y, int w, int h, project::Controller& ctrl, project::View& v, TempoMap& tempoMap);
       ~PianoRoll() {}
 
       void onCtrlEvent(CtrlEvent event, int index);

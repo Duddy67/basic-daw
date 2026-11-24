@@ -1,11 +1,11 @@
 #include "ruler.h"
 #include <FL/fl_draw.H>
 
-Ruler::Ruler(int x, int y, int w, int h, project::Controller& ctrl) : Fl_Group(x, y, w, h), projectCtrl(ctrl)
+Ruler::Ruler(int x, int y, int w, int h, project::Controller& ctrl, project::View& v, TempoMap& tm) :
+                                         Fl_Group(x, y, w, h), controller(ctrl), view(v), tempoMap(tm)
 {
     box(FL_FLAT_BOX);
     color((Fl_Color) FL_LIGHT1);
-    viewState = &projectCtrl.getViewState();
     end();
 }
 
@@ -18,11 +18,10 @@ void Ruler::draw()
     fl_color((Fl_Color)  FL_LIGHT1);
     fl_rectf(x(), y(), w(), h());
 
-    auto& view = projectCtrl.getView();
     int offset = 0;
 
     // Check for piano roll view.
-    if (viewState->currentView == ViewType::PIANO_ROLL) {
+    if (view.getViewState().currentView == ViewType::PIANO_ROLL) {
         // Save room for the keyboard on the left edge.
         offset = KEY_LENGHT;
     }
@@ -47,18 +46,17 @@ int Ruler::handle(int event)
 
                 // Mouse x relative to the widget.
                 int mouseX = Fl::event_x() - x();
-                auto& view = projectCtrl.getView();
 
-                if (viewState->currentView == ViewType::PIANO_ROLL) {
+                if (view.getViewState().currentView == ViewType::PIANO_ROLL) {
                     mouseX = mouseX - KEY_LENGHT;
                 }
 
                 // Convert pixel to beat.
                 // The viewport's left edge corresponds to beat: startBeat = horizontalOffset / zoom
                 // Adding mouseX / zoom gives the beat at the cursor.
-                double beat = (mouseX + viewState->horizontalOffset) / viewState->zoom;
+                double beat = (mouseX + view.getViewState().horizontalOffset) / view.getViewState().zoom;
 
-                if (projectCtrl.isSnapToGrid()) {
+                if (controller.isSnapToGrid()) {
                     double gridStep = view.getGridStep();
                     beat = std::round(beat / gridStep) * gridStep;
                 }
@@ -68,20 +66,19 @@ int Ruler::handle(int event)
                 }
 
                 // Convert beat to sample via ticks.
-                auto& tempoMap = projectCtrl.getTempoMap();
                 int64_t tick = tempoMap.beatsToTick(beat);
                 uint64_t sample = (uint64_t)tempoMap.ticksToSamples(tick);
 
                 // Relocate the transport.
-                projectCtrl.locateToSample(sample);
+                controller.locateToSample(sample);
 
                 // Redraw the ruler and the all widgets that show the playheader.
                 redraw();
 
-                if (viewState->currentView == ViewType::TIMELINE) {
+                if (view.getViewState().currentView == ViewType::TIMELINE) {
                     view.getTimeline().redraw();
                 }
-                else if (viewState->currentView == ViewType::PIANO_ROLL) {
+                else if (view.getViewState().currentView == ViewType::PIANO_ROLL) {
                     view.getPianoRoll().redraw();
                 }
 

@@ -1,10 +1,10 @@
 #include "track_list.h"
 
-TrackList::TrackList(int x, int y, int w, int h, project::Controller& ctrl) : Fl_Group(x, y, w, h), projectCtrl(ctrl)
+TrackList::TrackList(int x, int y, int w, int h, project::Controller& ctrl) : Fl_Group(x, y, w, h), controller(ctrl)
 {
     box(FL_DOWN_BOX);
     color((Fl_Color) FL_INACTIVE_COLOR);
-    projectCtrl.addObserver(this);
+    controller.addObserver(this);
     end();
 }
 
@@ -61,7 +61,7 @@ void TrackList::addTrack(int id, DataType type)
         y = lastTrack->y() + MEDIUM_SPACE + BORDER_INTERSTICE;
     }
 
-    Widget::Track* track = new Widget::Track(x, y, w() - (BORDER_INTERSTICE * 2), TRACK_HEIGHT, id, type, projectCtrl);
+    Widget::Track* track = new Widget::Track(x, y, w() - (BORDER_INTERSTICE * 2), TRACK_HEIGHT, id, type, controller);
     // Add the new track as TrackList's child.
     add(track);
     // Add the new track to the list.

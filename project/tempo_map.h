@@ -46,6 +46,7 @@ class TempoMap
         double getBarStart(double beat) const;
         int getBarNumber(double beat) const;
         std::vector<double> getBarLines(double startBeat, double endBeat) const;
+        uint32_t getSampleRate() const;
 };
 
 #endif // TEMPO_MAP_H

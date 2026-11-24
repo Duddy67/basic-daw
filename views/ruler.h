@@ -18,9 +18,9 @@ class TempoMap;
 
 class Ruler : public Fl_Group
 {
-        project::Controller& projectCtrl;
-        // Pointer to share state with other GUI elements.
-        ViewState* viewState;
+        project::Controller& controller;
+        project::View& view;
+        TempoMap& tempoMap;
 
     protected: 
         void draw() override;
@@ -28,8 +28,7 @@ class Ruler : public Fl_Group
 
     public:
 
-        Ruler(int x, int y, int w, int h, project::Controller& ctrl);
-        //Ruler(int x, int y, int w, int h, project::Controller& ctrl, project::View&, TempoMap&);
+        Ruler(int x, int y, int w, int h, project::Controller& ctrl, project::View& v, TempoMap& tm);
         ~Ruler() {}
 
 };

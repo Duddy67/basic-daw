@@ -2,11 +2,11 @@
 #include "../core/engine.h"
 #include <FL/fl_draw.H>
 
-Timeline::Timeline(int x, int y, int w, int h, project::Controller& ctrl) : Fl_Group(x, y, w, h), projectCtrl(ctrl)
+Timeline::Timeline(int x, int y, int w, int h, project::Controller& ctrl, project::View& v) : 
+                   Fl_Group(x, y, w, h), controller(ctrl), view(v)
 {
     box(FL_FLAT_BOX);
-    projectCtrl.addObserver(this);
-    viewState = &projectCtrl.getViewState();
+    controller.addObserver(this);
     end();
 }
 
@@ -29,8 +29,8 @@ void Timeline::draw()
     fl_color((Fl_Color)  FL_LIGHT1);
     fl_rectf(x(), y(), w(), h());
 
-    projectCtrl.getView().drawGrid(x(), y(), w(), h());
-    projectCtrl.getView().drawCursor(x(), y(), w(), h());
+    view.drawGrid(x(), y(), w(), h());
+    view.drawCursor(x(), y(), w(), h());
 
     // Paints Timeline's children.
     draw_children();

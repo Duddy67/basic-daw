@@ -14,6 +14,11 @@ TempoMap::~TempoMap()
     // ...
 }
 
+uint32_t TempoMap::getSampleRate() const
+{
+    return sampleRate;
+}
+
 // ------------------- Tick <=> Time conversions  -------------------
 
 /*

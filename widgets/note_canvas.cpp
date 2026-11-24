@@ -2,10 +2,10 @@
 #include "../midi/track.h"
 
 
-NoteCanvas::NoteCanvas(int x, int y, int w, int h, project::Controller& ctrl)
-    : Fl_Widget(x, y, w, h), projectCtrl(ctrl)
+NoteCanvas::NoteCanvas(int x, int y, int w, int h, project::Controller& ctrl, project::View& v, TempoMap& tm) :
+                        Fl_Widget(x, y, w, h), controller(ctrl), view(v), tempoMap(tm)
 {
-    viewState = &projectCtrl.getViewState();
+    // ...
 }
 
 void NoteCanvas::draw()
@@ -18,11 +18,11 @@ void NoteCanvas::draw()
     fl_rectf(x(), y(), w(), h());
 
     // Start with the pitch grid, so grid's vertical lines will be drawn over.
-    projectCtrl.getView().drawPitchGrid(x(), y(), w(), h());
-    projectCtrl.getView().drawGrid(x(), y(), w(), h());
-    projectCtrl.getView().drawNotes(x(), y(), w(), h(), currentClip());
+    view.drawPitchGrid(x(), y(), w(), h());
+    view.drawGrid(x(), y(), w(), h());
+    view.drawNotes(x(), y(), w(), h(), currentClip());
     // Playhead on top.
-    projectCtrl.getView().drawCursor(x(), y(), w(), h());
+    view.drawCursor(x(), y(), w(), h());
 
     // Paints PianoRoll's children.
     //draw_children();
@@ -32,12 +32,11 @@ void NoteCanvas::draw()
 
 int64_t NoteCanvas::snap(int64_t tick)
 {
-    if (!projectCtrl.isSnapToGrid()) {
+    if (!controller.isSnapToGrid()) {
         return tick;
     }
 
-    auto& tempoMap = projectCtrl.getTempoMap();
-    double gridBeats = projectCtrl.getView().getGridStep();
+    double gridBeats = view.getGridStep();
     int64_t gridTicks = tempoMap.beatsToTick(gridBeats);
 
     if (gridTicks <= 0) {
@@ -50,11 +49,10 @@ int64_t NoteCanvas::snap(int64_t tick)
 int64_t NoteCanvas::minNoteLengthTicks() const
 {
     constexpr int kMinNotePixel = 8;
-    auto& tempoMap = projectCtrl.getTempoMap();
-    double gridBeats = projectCtrl.getView().getGridStep();
+    double gridBeats = view.getGridStep();
 
     int64_t gridTicks = tempoMap.beatsToTick(gridBeats);
-    int64_t pixelTicks = tempoMap.beatsToTick(kMinNotePixel / viewState->zoom);
+    int64_t pixelTicks = tempoMap.beatsToTick(kMinNotePixel / view.getViewState().zoom);
 
     return std::max<int64_t>(gridTicks, pixelTicks);
 }
@@ -83,7 +81,7 @@ int NoteCanvas::handle(int event)
 
                 if (idx >= 0) {
                     clip->getNotes().erase(clip->getNotes().begin() + idx);
-                    projectCtrl.notifyNotesChanged();
+                    controller.notifyNotesChanged();
                     redraw();
                 }
 
@@ -126,10 +124,8 @@ int NoteCanvas::handle(int event)
                 return 1;
             }
 
-            auto& tempoMap = projectCtrl.getTempoMap();
-
-            int pitch = PitchConverter::pitchAtY(moveY + y(), y(), h(), *viewState);
-            int64_t tick = TimeConverter::tickAtX(moveX, tempoMap, *viewState);
+            int pitch = PitchConverter::pitchAtY(moveY + y(), y(), h(), view.getViewState());
+            int64_t tick = TimeConverter::tickAtX(moveX, tempoMap, view.getViewState());
             tick = snap(tick);
 
             if (tick < 0) {
@@ -157,7 +153,7 @@ int NoteCanvas::handle(int event)
             dragStartX = moveX;
             dragStartY = moveY;
             mode = DragMode::CREATE;
-            projectCtrl.notifyNotesChanged();
+            controller.notifyNotesChanged();
 
             redraw();
             return 1;
@@ -176,13 +172,13 @@ int NoteCanvas::handle(int event)
                 return 0;
             }
 
-            auto& tempoMap = projectCtrl.getTempoMap();
             auto& note = clip->getNotes()[dragNoteIdx];
 
             // Mouse up = pitch up.
-            int deltaPitch = (dragStartY - moveY) / viewState->keyHeight;
+            int deltaPitch = (dragStartY - moveY) / view.getViewState().keyHeight;
             // Tick delta relative to where the mouse was at FL_PUSH.
-            int64_t deltaTick = TimeConverter::tickAtX(moveX, tempoMap, *viewState) - TimeConverter::tickAtX(dragStartX, tempoMap, *viewState);
+            int64_t deltaTick = TimeConverter::tickAtX(moveX, tempoMap,
+                view.getViewState()) - TimeConverter::tickAtX(dragStartX, tempoMap, view.getViewState());
             int64_t minLength = minNoteLengthTicks();
 
             switch (mode) {
@@ -259,7 +255,7 @@ int NoteCanvas::handle(int event)
             mode = DragMode::NONE; 
             dragNoteIdx = -1;
 
-            projectCtrl.notifyNotesChanged();
+            controller.notifyNotesChanged();
 
             redraw();
             return 1;
@@ -271,7 +267,7 @@ int NoteCanvas::handle(int event)
                 // Delete the selected note(s).
                 auto& notes = clip->getNotes();
                 notes.erase(std::remove_if(notes.begin(), notes.end(), [](const Note& note){ return note.selected; }), notes.end());
-                projectCtrl.notifyNotesChanged();
+                controller.notifyNotesChanged();
                 redraw();
                 return 1;
             }
@@ -296,8 +292,7 @@ int NoteCanvas::hitTest(int moveX, int moveY, int* edge) const
         return -1;
     }
 
-    auto& tempoMap = projectCtrl.getTempoMap();
-    int pitch = PitchConverter::pitchAtY(moveY + y(), y(), h(), *viewState);
+    int pitch = PitchConverter::pitchAtY(moveY + y(), y(), h(), view.getViewState());
 
     const auto& notes = clip->getNotes();
 
@@ -309,8 +304,8 @@ int NoteCanvas::hitTest(int moveX, int moveY, int* edge) const
             continue;
         }
 
-        int noteX1 = TimeConverter::xOfTick(note.startTick, tempoMap, *viewState);
-        int noteX2 = TimeConverter::xOfTick(note.endTick(), tempoMap, *viewState);
+        int noteX1 = TimeConverter::xOfTick(note.startTick, tempoMap, view.getViewState());
+        int noteX2 = TimeConverter::xOfTick(note.endTick(), tempoMap, view.getViewState());
 
         if (moveX < noteX1 || moveX >= noteX2) {
             continue;
@@ -339,12 +334,12 @@ int NoteCanvas::hitTest(int moveX, int moveY, int* edge) const
 Midi::Clip* NoteCanvas::currentClip()
 {
     // Important: Make sure at least one MIDI track does exist before going any further.
-    if (!projectCtrl.getView().getTrackList().trackCount(DataType::MIDI)) {
+    if (!controller.getView().getTrackList().trackCount(DataType::MIDI)) {
         return nullptr;
     }
 
     // Get the selected widget track first.
-    auto& wTrack = projectCtrl.getView().getTrackList().getSelectedTrack();
+    auto& wTrack = controller.getView().getTrackList().getSelectedTrack();
 
     // Make sure it's a MIDI track.
     if (wTrack.getType() != DataType::MIDI) {
@@ -352,7 +347,7 @@ Midi::Clip* NoteCanvas::currentClip()
     }
 
     // Now get the actual midi track from its id.
-    auto* track = projectCtrl.getTrack(wTrack.getId());
+    auto* track = controller.getTrack(wTrack.getId());
     auto* mTrack = static_cast<Midi::Track*>(track);
 
     // Make sure there is one or more clips.

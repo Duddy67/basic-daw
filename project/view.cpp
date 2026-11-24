@@ -34,11 +34,12 @@ namespace project {
         int editAreaH = h() - (BORDER_INTERSTICE * 2) - (RULER_HEIGHT + SCROLLBAR_HEIGHT);
 
         Fl_Group* workspace = new Fl_Group(x() + screenFourth / 2, y(), Fl::w() - (screenFourth / 2), h());
-            ruler = new Ruler(x() + screenFourth + BORDER_INTERSTICE, y(), (screenFourth * 3) - (BORDER_INTERSTICE * 2), RULER_HEIGHT, controller);
+            ruler = new Ruler(x() + screenFourth + BORDER_INTERSTICE, y(),
+                              (screenFourth * 3) - (BORDER_INTERSTICE * 2), RULER_HEIGHT, controller, *this, tempoMap);
             trackList = new TrackList(x() + screenFourth / 2, y() + RULER_HEIGHT, screenFourth / 2, h() - RULER_HEIGHT, controller);
             // Views have the same size and shift from one to the other.
-            timeline = new Timeline(editAreaX, editAreaY, editAreaW, editAreaH, controller);
-            pianoRoll = new PianoRoll(editAreaX, editAreaY, editAreaW, editAreaH, controller);
+            timeline = new Timeline(editAreaX, editAreaY, editAreaW, editAreaH, controller, *this);
+            pianoRoll = new PianoRoll(editAreaX, editAreaY, editAreaW, editAreaH, controller, *this, tempoMap);
 
             hScrollbar = new Fl_Scrollbar(editAreaX, editAreaY + editAreaH, editAreaW, SCROLLBAR_HEIGHT);
             hScrollbar->type(FL_HORIZONTAL);

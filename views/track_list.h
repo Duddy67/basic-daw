@@ -18,7 +18,7 @@ namespace Widget {
 
 class TrackList : public Fl_Group, public project::Observer
 {
-    project::Controller& projectCtrl;
+    project::Controller& controller;
     std::vector<Widget::Track*> tracks;
     void setSelectedTrack(int id);
 

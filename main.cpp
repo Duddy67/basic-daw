@@ -65,7 +65,6 @@ Application::Application(int w, int h, const char *l, int argc, char *argv[]) : 
 
     midiScheduler = new Midi::Scheduler(*this);
     audioProcessor = new Audio::Processor(*this);
-    std::cout << "midiScheduler application: " << &midiScheduler << std::endl;
 
     this->callback(noEscapeKey_cb, this);
 }

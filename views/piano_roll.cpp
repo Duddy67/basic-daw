@@ -2,15 +2,15 @@
 #include "../core/engine.h"
 #include <FL/fl_draw.H>
 
-PianoRoll::PianoRoll(int x, int y, int w, int h, project::Controller& ctrl) : Fl_Group(x, y, w, h), projectCtrl(ctrl)
+PianoRoll::PianoRoll(int x, int y, int w, int h, project::Controller& ctrl, project::View& v, TempoMap& tempoMap) :
+                      Fl_Group(x, y, w, h), controller(ctrl), view(v)
 {
     box(FL_FLAT_BOX);
-    projectCtrl.addObserver(this);
-    viewState = &projectCtrl.getViewState();
+    controller.addObserver(this);
     // Create the virtual keyboard on the left edge.
     keyboard = new Keyboard(x, y, KEY_LENGHT, h, ctrl);
     // Save room for the keyboard on the left edge.
-    noteCanvas = new NoteCanvas(x + KEY_LENGHT, y, w - KEY_LENGHT, h, ctrl);
+    noteCanvas = new NoteCanvas(x + KEY_LENGHT, y, w - KEY_LENGHT, h, ctrl, view, tempoMap);
     add(keyboard);
     end();
 }
@@ -36,10 +36,10 @@ void PianoRoll::onCtrlEvent(CtrlEvent event, int index)
 
     // Start with the pitch grid, so grid's vertical lines will be drawn over.
     // Save room for the keyboard on the left edge.
-    projectCtrl.getView().drawPitchGrid(x() + KEY_LENGHT, y(), w() - KEY_LENGHT, h());
-    projectCtrl.getView().drawGrid(x() + KEY_LENGHT, y(), w() - KEY_LENGHT, h());
+    controller.getView().drawPitchGrid(x() + KEY_LENGHT, y(), w() - KEY_LENGHT, h());
+    controller.getView().drawGrid(x() + KEY_LENGHT, y(), w() - KEY_LENGHT, h());
     // Playhead on top.
-    projectCtrl.getView().drawCursor(x() + KEY_LENGHT, y(), w() - KEY_LENGHT, h());
+    controller.getView().drawCursor(x() + KEY_LENGHT, y(), w() - KEY_LENGHT, h());
 
     // Paints PianoRoll's children.
     draw_children();
@@ -59,12 +59,12 @@ int PianoRoll::handle(int event)
 
 void PianoRoll::centerOnPitch(int pitch)
 {
-    int rowsShown = h() / viewState->keyHeight;
+    int rowsShown = h() / view.getViewState().keyHeight;
     int lowest = pitch - rowsShown / 2;
 
     if (lowest < 0) {
         lowest = 0;
     }
 
-    viewState->pitchVerticalOffset = lowest * viewState->keyHeight;
+    view.getViewState().pitchVerticalOffset = lowest * view.getViewState().keyHeight;
 }
