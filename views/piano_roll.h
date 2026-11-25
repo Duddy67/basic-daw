@@ -27,7 +27,6 @@ class PianoRoll : public Fl_Group, public project::Observer
     NoteCanvas* noteCanvas = nullptr;
 
   protected: 
-      //void draw() override;
       int handle(int event) override;
 
   public:

@@ -131,7 +131,6 @@ void Application::initJackClient()
 
 project::Model* Application::getProject() { return activeProject->getModelPtr(); }
 Transport& Application::getTransport() { return activeProject->getTransport(); }
-TempoMap& Application::getTempoMap() { return activeProject->getTempoMap(); }
 project::View& Application::getProjectView() { return activeProject->getView(); }
 bool Application::hasView() { return activeProject->hasView(); }
 

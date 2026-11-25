@@ -128,10 +128,9 @@ namespace project {
     void Controller::notifyNotesChanged() {
         notify(CtrlEvent::MIDI_NOTES_CHANGED, 0);
 
-        if (!getTransport().isRolling()) {
+        if (!transport.isRolling()) {
             // Compile the edited MIDI notes.
-            //application.getMidiScheduler().compile(*this);
-            scheduler.compile(*this);
+            scheduler.compile(*this, tempoMap);
         }
         else {
             recompile = true;
@@ -139,41 +138,6 @@ namespace project {
     }
 
     // Getters
-
-    Transport& Controller::getTransport()
-    {
-        //return application.getTransport();
-        return transport;
-    }
-
-    TempoMap& Controller::getTempoMap()
-    {
-        //return application.getTempoMap();
-        return tempoMap;
-    }
-
-    Core::Engine& Controller::getEngine()
-    {
-        //return application.getCoreEngine();
-        return engine;
-    }
-
-    View& Controller::getView()
-    {
-        //return application.getProjectView();
-        return model.getApplication().getProjectView();
-    }
-
-    bool Controller::hasView()
-    {
-        //return application.hasView();
-        return model.getApplication().hasView();
-    }
-
-    ViewState& Controller::getViewState()
-    {
-        return model.getViewState();
-    }
 
     bool Controller::isSnapToGrid()
     {

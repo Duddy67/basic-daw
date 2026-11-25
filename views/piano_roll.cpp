@@ -8,7 +8,7 @@ PianoRoll::PianoRoll(int x, int y, int w, int h, project::Controller& ctrl, proj
     box(FL_FLAT_BOX);
     controller.addObserver(this);
     // Create the virtual keyboard on the left edge.
-    keyboard = new Keyboard(x, y, KEY_LENGHT, h, ctrl);
+    keyboard = new Keyboard(x, y, KEY_LENGHT, h, ctrl, view);
     // Save room for the keyboard on the left edge.
     noteCanvas = new NoteCanvas(x + KEY_LENGHT, y, w - KEY_LENGHT, h, ctrl, view, tempoMap);
     add(keyboard);
@@ -24,28 +24,6 @@ void PianoRoll::onCtrlEvent(CtrlEvent event, int index)
           return;
     }
 }
-
-/*void PianoRoll::draw()
-{
-    // Prevents drawing outside the widget boundaries.
-    fl_push_clip(x(), y(), w(), h());
-
-    // Clear the background (erases old playhead, grid...).
-    fl_color((Fl_Color)  FL_LIGHT1);
-    fl_rectf(x(), y(), w(), h());
-
-    // Start with the pitch grid, so grid's vertical lines will be drawn over.
-    // Save room for the keyboard on the left edge.
-    controller.getView().drawPitchGrid(x() + KEY_LENGHT, y(), w() - KEY_LENGHT, h());
-    controller.getView().drawGrid(x() + KEY_LENGHT, y(), w() - KEY_LENGHT, h());
-    // Playhead on top.
-    controller.getView().drawCursor(x() + KEY_LENGHT, y(), w() - KEY_LENGHT, h());
-
-    // Paints PianoRoll's children.
-    draw_children();
-
-    fl_pop_clip();
-}*/
 
 /*
  * Handles the events happening into the track widget.

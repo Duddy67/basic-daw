@@ -11,15 +11,15 @@
 
 namespace project {
     class Controller;
+    class View;
 }
 
 class Keyboard : public Fl_Widget
 {
-    project::Controller& projectCtrl;
+    project::Controller& controller;
+    project::View& view;
     int hoveredPitch = -1;
     int playingPitch = -1;
-    // Pointer to share state with other GUI elements.
-    ViewState* viewState;
     int velocityAtX(int eventX) const;
 
   protected: 
@@ -29,9 +29,8 @@ class Keyboard : public Fl_Widget
 
   public:
 
-      Keyboard(int x, int y, int w, int h, project::Controller& ctrl);
+      Keyboard(int x, int y, int w, int h, project::Controller& ctrl, project::View& v);
       ~Keyboard() {}
-
 };
 
 #endif // KEYBOARD_H

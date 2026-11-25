@@ -1,12 +1,10 @@
 #include "keyboard.h"
 
 
-Keyboard::Keyboard(int x, int y, int w, int h, project::Controller& ctrl)
-    : Fl_Widget(x, y, w, h), projectCtrl(ctrl)
+Keyboard::Keyboard(int x, int y, int w, int h, project::Controller& ctrl, project::View& v)
+    : Fl_Widget(x, y, w, h), controller(ctrl), view(v)
 {
     box(FL_FLAT_BOX);
-    viewState = &projectCtrl.getViewState();
-
 }
 
 void Keyboard::draw()
@@ -18,8 +16,8 @@ void Keyboard::draw()
     fl_color((Fl_Color)  FL_LIGHT1);
     fl_rectf(x(), y(), w(), h());
 
-    int top = PitchConverter::pitchAtY(y(), y(), h(), *viewState);
-    int bottom = PitchConverter::pitchAtY(y() + h() - 1, y(), h(), *viewState);
+    int top = PitchConverter::pitchAtY(y(), y(), h(), view.getViewState());
+    int bottom = PitchConverter::pitchAtY(y() + h() - 1, y(), h(), view.getViewState());
 
     for (int pitch = bottom; pitch <= top && pitch <= 127; ++pitch) {
 
@@ -27,8 +25,8 @@ void Keyboard::draw()
             continue;
         }
 
-        int keyY = PitchConverter::yOfPitch(pitch, y(), h(), *viewState);
-        int keyH = viewState->keyHeight;
+        int keyY = PitchConverter::yOfPitch(pitch, y(), h(), view.getViewState());
+        int keyH = view.getViewState().keyHeight;
 
         // Set the key color.
 
@@ -60,7 +58,7 @@ void Keyboard::draw()
 
 int Keyboard::handle(int event)
 {
-    int pitch = PitchConverter::pitchAtY(Fl::event_y(), y(), h(), *viewState);
+    int pitch = PitchConverter::pitchAtY(Fl::event_y(), y(), h(), view.getViewState());
 
     switch (event) {
         case FL_ENTER:
@@ -96,7 +94,7 @@ int Keyboard::handle(int event)
                 }
 
                 playingPitch = pitch;
-                projectCtrl.onPreviewNoteOn(pitch, velocity);
+                controller.onPreviewNoteOn(pitch, velocity);
                 redraw();
 
                 return 1;
@@ -113,9 +111,9 @@ int Keyboard::handle(int event)
                         return 1;
                     }
 
-                    projectCtrl.onPreviewNoteOff(playingPitch);
+                    controller.onPreviewNoteOff(playingPitch);
                     playingPitch = pitch;
-                    projectCtrl.onPreviewNoteOn(pitch, velocity);
+                    controller.onPreviewNoteOn(pitch, velocity);
                     redraw();
                 }
 
@@ -123,7 +121,7 @@ int Keyboard::handle(int event)
             }
 
         case FL_RELEASE:
-            projectCtrl.onPreviewNoteOff(playingPitch);
+            controller.onPreviewNoteOff(playingPitch);
             playingPitch = -1;
             redraw();
 

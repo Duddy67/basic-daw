@@ -116,7 +116,6 @@ class Application : public Fl_Double_Window
         //void initAudioSystem();
         void initJackClient();
         Transport& getTransport();
-        TempoMap& getTempoMap();
         project::View& getProjectView();
         bool hasView();
         TransportBar& getTransportBar() { return *transportBar; }

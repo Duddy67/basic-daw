@@ -334,12 +334,12 @@ int NoteCanvas::hitTest(int moveX, int moveY, int* edge) const
 Midi::Clip* NoteCanvas::currentClip()
 {
     // Important: Make sure at least one MIDI track does exist before going any further.
-    if (!controller.getView().getTrackList().trackCount(DataType::MIDI)) {
+    if (!view.getTrackList().trackCount(DataType::MIDI)) {
         return nullptr;
     }
 
     // Get the selected widget track first.
-    auto& wTrack = controller.getView().getTrackList().getSelectedTrack();
+    auto& wTrack = view.getTrackList().getSelectedTrack();
 
     // Make sure it's a MIDI track.
     if (wTrack.getType() != DataType::MIDI) {

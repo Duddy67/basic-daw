@@ -5,10 +5,13 @@
 #include <jack/midiport.h>
 #include "../main.h"
 #include "../project/model.h"
+#include "../project/tempo_map.h"
 #include "track.h"
 
 
 class Application;
+class TempoMap;
+
 namespace project {
     class Controller;
 }
@@ -29,7 +32,7 @@ namespace Midi {
             void processInput(void* midiInBuffer, uint64_t currentSample);
             void relocate(uint64_t sample);
             void sendAllNotesOff(Track& track);
-            void compile(project::Controller& controller);
+            void compile(project::Controller& controller, TempoMap& tempoMap);
     };
 }
 

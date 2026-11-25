@@ -66,16 +66,9 @@ namespace project {
         bool isSnapToGrid();
         void locateToSample(uint64_t sample);
         size_t getTrackCount() const;
-        Transport& getTransport();
-        TempoMap& getTempoMap();
-        Core::Engine& getEngine();
-        View& getView();
-        bool hasView();
         bool needsRecompile() const { return recompile; }
         void doneRecompiling() { recompile = false; }
         Core::Track* getTrack(int id);
-        ViewState& getViewState();
-        //Application& getApplication() const { return application; }
     };
 }
 
