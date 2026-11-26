@@ -18,13 +18,17 @@ namespace Midi {
     class Scheduler;
 }
 
-class Application;
+namespace Core {
+    class Engine;
+}
+
 class Transport;
 class TempoMap;
 
 class Project
 {
-    Application& application;
+    Core::Engine& engine;
+    Midi::Scheduler& midiScheduler;
     std::unique_ptr<project::Model> model;
     std::unique_ptr<project::Controller> controller;
     std::unique_ptr<project::View> view;
@@ -33,10 +37,9 @@ class Project
     uint32_t sampleRate;
     // The single GUI source of truth. Shared with GUI widgets Ruler, Timeline...
     ViewState viewState;
-    Midi::Scheduler& midiScheduler;
 
   public:
-    Project(Application& app, Midi::Scheduler& ms);
+    Project(Core::Engine& e, Midi::Scheduler& ms);
     ~Project();
 
     void init(int x, int y, int w, int h);

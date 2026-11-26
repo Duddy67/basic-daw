@@ -28,9 +28,11 @@ class Transport;
 namespace project {
     // Forward declarations (for classes inside the project namespace)
     class Controller;
+    class Model;
 
     class View : public Fl_Group
     {
+        Model& model;
         Controller& controller;
         Transport& transport;
         TempoMap& tempoMap;
@@ -53,7 +55,7 @@ namespace project {
 
       public:
 
-        View(int x, int y, int w, int h, Controller& ctrl, Transport& t, TempoMap& tm, ViewState& vs);
+        View(int x, int y, int w, int h, Model& m, Controller& ctrl, Transport& t, TempoMap& tm, ViewState& vs);
         ~View();
 
         void init();

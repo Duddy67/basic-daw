@@ -10,6 +10,7 @@
 
 
 namespace project {
+    class Model;
     class Controller;
     class View;
 }
@@ -18,6 +19,7 @@ class TempoMap;
 
 class NoteCanvas : public Fl_Widget
 {
+    project::Model& model;
     project::Controller& controller;
     project::View& view;
     TempoMap& tempoMap;
@@ -40,7 +42,7 @@ class NoteCanvas : public Fl_Widget
 
   public:
 
-    NoteCanvas(int x, int y, int w, int h, project::Controller& ctrl, project::View& v, TempoMap& tm);
+    NoteCanvas(int x, int y, int w, int h, project::Model& m, project::Controller& ctrl, project::View& v, TempoMap& tm);
     ~NoteCanvas() {}
 
     int64_t minNoteLengthTicks() const;

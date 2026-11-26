@@ -4,8 +4,8 @@
 
 namespace project {
 
-    View::View(int x, int y, int w, int h, Controller& ctrl, Transport& t, TempoMap& tm, ViewState& vs) :
-      Fl_Group(x, y, w, h), controller(ctrl), transport(t), tempoMap(tm), viewState(vs)
+    View::View(int x, int y, int w, int h, Model& m, Controller& ctrl, Transport& t, TempoMap& tm, ViewState& vs) :
+      Fl_Group(x, y, w, h), model(m), controller(ctrl), transport(t), tempoMap(tm), viewState(vs)
     {
         // Important: Do not build the view inside the constructor as some widgets may refer
         // to the View object whereas it's not entirely created yet and cause the program to
@@ -39,7 +39,7 @@ namespace project {
             trackList = new TrackList(x() + screenFourth / 2, y() + RULER_HEIGHT, screenFourth / 2, h() - RULER_HEIGHT, controller);
             // Views have the same size and shift from one to the other.
             timeline = new Timeline(editAreaX, editAreaY, editAreaW, editAreaH, controller, *this);
-            pianoRoll = new PianoRoll(editAreaX, editAreaY, editAreaW, editAreaH, controller, *this, tempoMap);
+            pianoRoll = new PianoRoll(editAreaX, editAreaY, editAreaW, editAreaH, model, controller, *this, tempoMap);
 
             hScrollbar = new Fl_Scrollbar(editAreaX, editAreaY + editAreaH, editAreaW, SCROLLBAR_HEIGHT);
             hScrollbar->type(FL_HORIZONTAL);
@@ -380,7 +380,7 @@ namespace project {
         }
         // Timeline view.
         else {
-            totalHeight = (int)controller.getTrackCount() * TRACK_HEIGHT;
+            totalHeight = (int)model.trackCount() * TRACK_HEIGHT;
             visibleHeight = timeline->h();
             offset = viewState.trackVerticalOffset;
             lineStep = TRACK_HEIGHT;

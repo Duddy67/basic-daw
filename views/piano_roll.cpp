@@ -2,7 +2,7 @@
 #include "../core/engine.h"
 #include <FL/fl_draw.H>
 
-PianoRoll::PianoRoll(int x, int y, int w, int h, project::Controller& ctrl, project::View& v, TempoMap& tempoMap) :
+PianoRoll::PianoRoll(int x, int y, int w, int h, project::Model& model, project::Controller& ctrl, project::View& v, TempoMap& tempoMap) :
                       Fl_Group(x, y, w, h), controller(ctrl), view(v)
 {
     box(FL_FLAT_BOX);
@@ -10,7 +10,7 @@ PianoRoll::PianoRoll(int x, int y, int w, int h, project::Controller& ctrl, proj
     // Create the virtual keyboard on the left edge.
     keyboard = new Keyboard(x, y, KEY_LENGHT, h, ctrl, view);
     // Save room for the keyboard on the left edge.
-    noteCanvas = new NoteCanvas(x + KEY_LENGHT, y, w - KEY_LENGHT, h, ctrl, view, tempoMap);
+    noteCanvas = new NoteCanvas(x + KEY_LENGHT, y, w - KEY_LENGHT, h, model, ctrl, view, tempoMap);
     add(keyboard);
     end();
 }

@@ -136,18 +136,4 @@ namespace project {
             recompile = true;
         }
     }
-
-    // Getters
-
-    size_t Controller::getTrackCount() const
-    {
-        // Use the model's method.
-        return model.trackCount();
-    }
-
-    Core::Track* Controller::getTrack(int id)
-    {
-        // Use the model's method.
-        return model.getTrack(id);
-    }
 }

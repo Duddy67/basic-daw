@@ -10,7 +10,6 @@
 #include "../midi/scheduler.h"
 #include "../core/engine.h"
 
-class Application;
 class Transport;
 class TempoMap;
 
@@ -36,7 +35,6 @@ namespace project {
         TempoMap& tempoMap;
         Midi::Scheduler& scheduler;
         Core::Engine& engine;
-        //Application& application;
         // List of all registered observers.
         std::vector<Observer*> observers;  
         bool recompile = false;
@@ -64,10 +62,8 @@ namespace project {
         void onPlay();
         void onStop();
         void locateToSample(uint64_t sample);
-        size_t getTrackCount() const;
         bool needsRecompile() const { return recompile; }
         void doneRecompiling() { recompile = false; }
-        Core::Track* getTrack(int id);
     };
 }
 

@@ -5,8 +5,6 @@
 #include "../main.h"
 #include "../core/track.h"
 
-class Application;
-
 namespace Audio {
     class Track;
 }
@@ -19,19 +17,17 @@ namespace project {
 
     class Model {
 
-      Application& application;
       std::vector<int> trackIds;  
       std::vector<int> soloTracks;  
       std::vector<std::unique_ptr<Core::Track>> tracks;  
       int currentTrackId = -1;
-      ViewState& viewState;
 
       int getNewTrackId();
       void deleteTrackId(int id);
 
       public:
 
-          Model(Application& app, ViewState& vs);
+          Model();
           ~Model();
 
           int addAudioTrack();
@@ -44,8 +40,6 @@ namespace project {
           void toggleArm(int trackId);
           size_t trackCount() const { return tracks.size(); }
           size_t soloTrackCount() const { return soloTracks.size(); }
-          Application& getApplication() const { return application; }
-          ViewState& getViewState() { return viewState; }
     };
 }
 

@@ -10,6 +10,7 @@
 #include "../core/time_converter.h"
 
 namespace project {
+    class Model;
     class Controller;
     class View;
     class Observer;
@@ -31,7 +32,7 @@ class PianoRoll : public Fl_Group, public project::Observer
 
   public:
 
-      PianoRoll(int x, int y, int w, int h, project::Controller& ctrl, project::View& v, TempoMap& tempoMap);
+      PianoRoll(int x, int y, int w, int h, project::Model& model, project::Controller& ctrl, project::View& v, TempoMap& tempoMap);
       ~PianoRoll() {}
 
       void onCtrlEvent(CtrlEvent event, int index);

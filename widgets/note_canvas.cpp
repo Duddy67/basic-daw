@@ -2,8 +2,8 @@
 #include "../midi/track.h"
 
 
-NoteCanvas::NoteCanvas(int x, int y, int w, int h, project::Controller& ctrl, project::View& v, TempoMap& tm) :
-                        Fl_Widget(x, y, w, h), controller(ctrl), view(v), tempoMap(tm)
+NoteCanvas::NoteCanvas(int x, int y, int w, int h, project::Model& m, project::Controller& ctrl, project::View& v, TempoMap& tm) :
+                        Fl_Widget(x, y, w, h), model(m), controller(ctrl), view(v), tempoMap(tm)
 {
     // ...
 }
@@ -347,7 +347,7 @@ Midi::Clip* NoteCanvas::currentClip()
     }
 
     // Now get the actual midi track from its id.
-    auto* track = controller.getTrack(wTrack.getId());
+    auto* track = model.getTrack(wTrack.getId());
     auto* mTrack = static_cast<Midi::Track*>(track);
 
     // Make sure there is one or more clips.
