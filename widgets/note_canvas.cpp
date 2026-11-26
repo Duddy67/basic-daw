@@ -32,7 +32,7 @@ void NoteCanvas::draw()
 
 int64_t NoteCanvas::snap(int64_t tick)
 {
-    if (!controller.isSnapToGrid()) {
+    if (!view.getViewState().snapToGrid) {
         return tick;
     }
 

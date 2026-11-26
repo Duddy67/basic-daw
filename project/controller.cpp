@@ -139,12 +139,6 @@ namespace project {
 
     // Getters
 
-    bool Controller::isSnapToGrid()
-    {
-        //return application.getGridBar().isSnapToGrid();
-        return model.getApplication().getGridBar().isSnapToGrid();
-    }
-
     size_t Controller::getTrackCount() const
     {
         // Use the model's method.

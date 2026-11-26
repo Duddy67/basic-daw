@@ -160,6 +160,7 @@ struct ViewState {
     // Pixel per semitone.
     int keyHeight = 24; 
     ViewType currentView = ViewType::TIMELINE;
+    bool snapToGrid = true;
 };
 
 inline std::map<EditID, std::string> EditLabels {

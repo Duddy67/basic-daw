@@ -67,6 +67,8 @@ void Application::createProject()
 
     // Make projectView child of Application (ie: the main window).
     add(activeProject->getViewPtr());
+    // Synchronize the grid bar to the project view state.
+    gridBar->setViewState(activeProject->getViewState());
     redraw();
 
     activeProject->getView().updateHorizontalScrollbar();

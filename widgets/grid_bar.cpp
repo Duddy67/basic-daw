@@ -13,7 +13,7 @@ GridBar::GridBar(int x, int y, int w, int h, Application& app) :
     // Assign a callback function to snap button.
     snap->callback([](Fl_Widget* w, void* userData) {
                           GridBar* gb = static_cast<GridBar*>(userData);
-                          gb->onSnap();
+                          gb->onSnapToGrid();
                       }, (void*) this);
 
     // Disable keyboard focus on snap button.
@@ -26,7 +26,29 @@ GridBar::~GridBar()
 
 }
 
-void GridBar::onSnap()
+void GridBar::setViewState(ViewState& vs)
 {
-    snapToGrid = snapToGrid ? false : true;
+    viewState = &vs;
+    refresh();
+}
+
+void GridBar::refresh()
+{
+    if (!viewState) {
+        return;
+    }
+
+    snap->value(viewState->snapToGrid);
+
+    redraw();
+}
+
+void GridBar::onSnapToGrid()
+{
+    if (!viewState) {
+        return;
+    }
+
+    viewState->snapToGrid = !viewState->snapToGrid;
+    refresh();
 }

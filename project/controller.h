@@ -63,7 +63,6 @@ namespace project {
         void notifyNotesChanged();
         void onPlay();
         void onStop();
-        bool isSnapToGrid();
         void locateToSample(uint64_t sample);
         size_t getTrackCount() const;
         bool needsRecompile() const { return recompile; }

@@ -16,7 +16,8 @@ class GridBar : public Fl_Group
 {
     Application& application;
     Fl_Light_Button* snap = nullptr;
-    bool snapToGrid = false;
+    // Pointer to share the project state with other GUI elements.
+    ViewState* viewState = nullptr;
 
     //protected:
 
@@ -27,8 +28,9 @@ class GridBar : public Fl_Group
         GridBar(int x, int y, int w, int h, Application& app);
         ~GridBar();
 
-        void onSnap();
-        bool isSnapToGrid() const { return snapToGrid; }
+        void setViewState(ViewState& vs);
+        void refresh();
+        void onSnapToGrid();
 };
 
 #endif // GRID_BAR_H
